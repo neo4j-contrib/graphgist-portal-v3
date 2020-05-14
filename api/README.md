@@ -1,5 +1,6 @@
-# GRANDstack Starter - GraphQL API
+# Graphgist Portal API - v3
 
+![GraphQL API diagram](../diagram.png)
 
 ## Quick Start
 
@@ -35,20 +36,19 @@ Note that grand-stack-starter does not currently bundle a distribution of Neo4j.
 
 ## Deployment
 
-You can deploy to any service that hosts Node.js apps, but [Zeit Now](https://zeit.co/now) is a great easy to use service for hosting your app that has an easy to use free plan for small projects. 
+This is currently deployed to Heroku, since this repository contains both API and UI repository we need to individually push each one, to achieve that we can create a subtree branch with only that specific folder:
 
-To deploy your GraphQL service on Zeit Now, first install [Now Desktop](https://zeit.co/download) - you'll need to provide an email address. Then run
-
-```
-now
-```
-
-to deploy your GraphQL service on Zeit Now. Once deployed you'll be given a fresh URL that represents the current state of your application where you can access your GraphQL endpoint and GraphQL Playgound. For example: https://grand-stack-starter-api-pqdeodpvok.now.sh/
-
-## Seeding The Database
-
-Optionally you can seed the GraphQL service by executing mutations that will write sample data to the database:
+For API:
 
 ```
-npm run seedDb
+git subtree split --prefix api -b heroku-api
+```
+
+This will make the `heroku-api` branch hold only the `api` folder.
+
+Then we can deploy our local `heroku-api` to heroku `master`:
+
+```
+heroku git:remote -r remote-api -a graphgist-porta-v3
+git push -f remote-api heroku-api:master
 ```
