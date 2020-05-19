@@ -1,45 +1,210 @@
 type User {
-  id: ID!
+  uuid: ID!
+}
+
+interface Asset {
+  uuid: ID!
+  image: String
   name: String
-  friends: [User] @relation(name: "FRIENDS", direction: "BOTH")
-  reviews: [Review] @relation(name: "WROTE", direction: "OUT")
-  avgStars: Float
-    @cypher(
-      statement: "MATCH (this)-[:WROTE]->(r:Review) RETURN toFloat(avg(r.stars))"
-    )
-  numReviews: Int
-    @cypher(statement: "MATCH (this)-[:WROTE]->(r:Review) RETURN COUNT(r)")
-  recommendations(first: Int = 3): [Business] @cypher(statement: "MATCH (this)-[:WROTE]->(r:Review)-[:REVIEWS]->(:Business)<-[:REVIEWS]-(:Review)<-[:WROTE]-(:User)-[:WROTE]->(:Review)-[:REVIEWS]->(rec:Business) WHERE NOT EXISTS( (this)-[:WROTE]->(:Review)-[:REVIEWS]->(rec) )WITH rec, COUNT(*) AS num ORDER BY num DESC LIMIT $first RETURN rec")
+  slug: String
+  summary: String
 }
 
-type Business {
-  id: ID!
+type Person implements Asset {
+  uuid: ID!
+  image: String
   name: String
-  address: String
-  city: String
-  state: String
-  avgStars: Float @cypher(statement: "MATCH (this)<-[:REVIEWS]-(r:Review) RETURN coalesce(avg(r.stars),0.0)")
-  reviews: [Review] @relation(name: "REVIEWS", direction: "IN")
-  categories: [Category] @relation(name: "IN_CATEGORY", direction: "OUT")
+  slug: String
+  summary: String
+  email: String
+
+  twitter_username: String
+
+  legacy_id: Int
+  legacy_neo_id: Int
+
+  postal_address: String
+  tshirt_size: String
+  tshirt_size_other: String
+
+  authored_gists: [GraphGist] @relation(name: "WROTE", direction: "OUT")
+
+  user: User @relation(name: "IS_PERSON", direction: "IN")
 }
 
-type Review {
-  id: ID!
-  stars: Int
-  text: String
-  date: Date
-  business: Business @relation(name: "REVIEWS", direction: "OUT")
-  user: User @relation(name: "WROTE", direction: "IN")
+type Industry implements Asset {
+  uuid: ID!
+  image: String
+  name: String
+  slug: String
+  summary: String
+
+  graphgist: GraphGist @relation(name: "FOR_INDUSTRY", direction: "IN")
+  num_graphgists: Int
 }
 
-type Category {
-  name: ID!
-  businesses: [Business] @relation(name: "IN_CATEGORY", direction: "IN")
+type UseCase implements Asset {
+  uuid: ID!
+  image: String
+  name: String
+  slug: String
+  summary: String
+
+  graphgist: GraphGist @relation(name: "FOR_USE_CASE", direction: "IN")
+  num_graphgists: Int
 }
 
-type Query {
-  usersBySubstring(substring: String): [User]
-    @cypher(
-      statement: "MATCH (u:User) WHERE u.name CONTAINS $substring RETURN u"
-    )
+type Challenge implements Asset {
+  uuid: ID!
+  image: String
+  name: String
+  slug: String
+  summary: String
+
+  start_date: DateTime
+  end_date: DateTime
+  graphgist: GraphGist @relation(name: "FOR_CHALLENGE", direction: "IN")
+  num_graphgists: Int
+}
+
+enum GraphGistStatus {
+  live
+  disabled
+  candidate
+  draft
+}
+
+interface GraphGistInterface {
+  uuid: ID!
+  image: String
+  name: String
+  slug: String
+  summary: String
+
+  author: Person @relation(name: "WROTE", direction: "IN")
+
+  is_guide: Boolean
+
+  url: String
+  raw_url: String
+
+  asciidoc: String!
+  html: String!
+  raw_html: String!
+  neo4j_version: String
+
+  query_cache: String!
+  query_cache_html: String
+  has_errors: Boolean!
+
+  status: GraphGistStatus
+
+  cached: Boolean
+
+  legacy_id: String
+  legacy_neo_id: Int
+  legacy_poster_image: String
+  legacy_rated: String
+
+  created_at: DateTime
+  updated_at: DateTime
+
+  render_id: String
+
+  industries: [Industry] @relation(name: "FOR_INDUSTRY", direction: "OUT")
+  use_cases: [UseCase] @relation(name: "FOR_USE_CASE", direction: "OUT")
+  challenges: [Challenge] @relation(name: "FOR_CHALLENGE", direction: "OUT")
+}
+
+type GraphGist implements GraphGistInterface & Asset {
+  uuid: ID!
+  image: String
+  name: String
+  slug: String
+  summary: String
+
+  title: String
+
+  author: Person @relation(name: "WROTE", direction: "IN")
+
+  is_guide: Boolean
+
+  url: String
+  raw_url: String
+
+  asciidoc: String!
+  html: String!
+  raw_html: String!
+  neo4j_version: String
+
+  query_cache: String!
+  query_cache_html: String
+  has_errors: Boolean!
+
+  status: GraphGistStatus
+
+  cached: Boolean
+
+  legacy_id: String
+  legacy_neo_id: Int
+  legacy_poster_image: String
+  legacy_rated: String
+
+  created_at: DateTime
+  updated_at: DateTime
+
+  render_id: String
+
+  industries: [Industry] @relation(name: "FOR_INDUSTRY", direction: "OUT")
+  use_cases: [UseCase] @relation(name: "FOR_USE_CASE", direction: "OUT")
+  challenges: [Challenge] @relation(name: "FOR_CHALLENGE", direction: "OUT")
+
+  is_candidate_updated: Boolean
+  featured: Boolean
+}
+
+type GraphGistCandidate implements GraphGistInterface & Asset {
+  uuid: ID!
+  image: String
+  name: String
+  slug: String
+  summary: String
+
+  title: String
+
+  author: Person @relation(name: "WROTE", direction: "IN")
+
+  is_guide: Boolean
+
+  url: String
+  raw_url: String
+
+  asciidoc: String!
+  html: String!
+  raw_html: String!
+  neo4j_version: String
+
+  query_cache: String!
+  query_cache_html: String
+  has_errors: Boolean!
+
+  status: GraphGistStatus
+
+  cached: Boolean
+
+  legacy_id: String
+  legacy_neo_id: Int
+  legacy_poster_image: String
+  legacy_rated: String
+
+  created_at: DateTime
+  updated_at: DateTime
+
+  render_id: String
+
+  graphgist: GraphGist @relation(name: "IS_VERSION", direction: "OUT")
+
+  industries: [Industry] @relation(name: "FOR_INDUSTRY", direction: "OUT")
+  use_cases: [UseCase] @relation(name: "FOR_USE_CASE", direction: "OUT")
+  challenges: [Challenge] @relation(name: "FOR_CHALLENGE", direction: "OUT")
 }

@@ -18,8 +18,11 @@ const app = express();
  * https://grandstack.io/docs/neo4j-graphql-js-api.html#makeaugmentedschemaoptions-graphqlschema
  */
 
-const schema = makeAugmentedSchema({
-  typeDefs
+export const schema = makeAugmentedSchema({
+  typeDefs,
+  config: {
+    mutation: false
+  }
 });
 
 /*
@@ -27,7 +30,7 @@ const schema = makeAugmentedSchema({
  * using credentials specified as environment variables
  * with fallback to defaults
  */
-const driver = neo4j.driver(
+export const driver = neo4j.driver(
   process.env.NEO4J_URI || "bolt://localhost:7687",
   neo4j.auth.basic(
     process.env.NEO4J_USER || "neo4j",
@@ -49,7 +52,7 @@ const server = new ApolloServer({
 });
 
 // Specify port and path for GraphQL endpoint
-const port = process.env.GRAPHQL_LISTEN_PORT || 4001;
+const port = process.env.PORT || process.env.GRAPHQL_LISTEN_PORT || 4001;
 const path = "/graphql";
 
 /*
