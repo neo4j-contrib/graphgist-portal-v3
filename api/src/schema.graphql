@@ -1,5 +1,5 @@
 type Query {
-  graphgistSearch(searchString: String): [GraphGist] @cypher(statement: """
+  graphGistSearch(searchString: String): [GraphGist] @cypher(statement: """
     MATCH (asset:GraphGist {status:'live'})
     WHERE toLower(asset.title) CONTAINS toLower($searchString)
     RETURN asset
@@ -10,6 +10,11 @@ type Query {
     UNION
     MATCH (asset:GraphGist {status:'live'})<-[:WROTE]-(author:Person)
     WHERE toLower(author.name) CONTAINS toLower($searchString)
+    RETURN asset
+  """)
+  graphGistsByCategory(slug: String): [GraphGist] @cypher(statement: """
+    MATCH (asset:GraphGist {status:'live'})-[:FOR_INDUSTRY|:FOR_USE_CASE]->(category)
+    WHERE category.slug = $slug
     RETURN asset
   """)
 }
