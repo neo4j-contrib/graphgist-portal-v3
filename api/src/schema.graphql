@@ -1,10 +1,31 @@
+type Query {
+  graphGistSearch(searchString: String): [GraphGist] @cypher(statement: """
+    MATCH (asset:GraphGist {status:'live'})
+    WHERE toLower(asset.title) CONTAINS toLower($searchString)
+    RETURN asset
+    UNION
+    MATCH (asset:GraphGist {status:'live'})-[:FOR_INDUSTRY|:FOR_USE_CASE]->(category)
+    WHERE toLower(category.name) CONTAINS toLower($searchString)
+    RETURN asset
+    UNION
+    MATCH (asset:GraphGist {status:'live'})<-[:WROTE]-(author:Person)
+    WHERE toLower(author.name) CONTAINS toLower($searchString)
+    RETURN asset
+  """)
+  graphGistsByCategory(slug: String): [GraphGist] @cypher(statement: """
+    MATCH (asset:GraphGist {status:'live'})-[:FOR_INDUSTRY|:FOR_USE_CASE]->(category)
+    WHERE category.slug = $slug
+    RETURN asset
+  """)
+}
+
 type User {
   uuid: ID!
 }
 
 interface Asset {
   uuid: ID!
-  image: String
+  image: Image @relation(name: "HAS_IMAGE", direction: "OUT")
   name: String
   slug: String
   summary: String
@@ -12,7 +33,7 @@ interface Asset {
 
 type Person implements Asset {
   uuid: ID!
-  image: String
+  image: Image @relation(name: "HAS_IMAGE", direction: "OUT")
   name: String
   slug: String
   summary: String
@@ -32,9 +53,27 @@ type Person implements Asset {
   user: User @relation(name: "IS_PERSON", direction: "IN")
 }
 
+type Image {
+  uuid: ID!
+
+  title: String
+  description: String
+  details: String
+  original_url: String
+  source_url: String @cypher(statement: "RETURN this")
+
+  source_content_type: String
+  source_file_name: String
+  source_file_size: Int
+  source_updated_at: DateTime
+
+  created_at: DateTime
+  updated_at: DateTime
+}
+
 type Industry implements Asset {
   uuid: ID!
-  image: String
+  image: Image @relation(name: "HAS_IMAGE", direction: "OUT")
   name: String
   slug: String
   summary: String
@@ -45,7 +84,7 @@ type Industry implements Asset {
 
 type UseCase implements Asset {
   uuid: ID!
-  image: String
+  image: Image @relation(name: "HAS_IMAGE", direction: "OUT")
   name: String
   slug: String
   summary: String
@@ -56,7 +95,7 @@ type UseCase implements Asset {
 
 type Challenge implements Asset {
   uuid: ID!
-  image: String
+  image: Image @relation(name: "HAS_IMAGE", direction: "OUT")
   name: String
   slug: String
   summary: String
@@ -76,7 +115,7 @@ enum GraphGistStatus {
 
 interface GraphGistInterface {
   uuid: ID!
-  image: String
+  image: Image @relation(name: "HAS_IMAGE", direction: "OUT")
   name: String
   slug: String
   summary: String
@@ -118,7 +157,7 @@ interface GraphGistInterface {
 
 type GraphGist implements GraphGistInterface & Asset {
   uuid: ID!
-  image: String
+  image: Image @relation(name: "HAS_IMAGE", direction: "OUT")
   name: String
   slug: String
   summary: String
@@ -165,7 +204,7 @@ type GraphGist implements GraphGistInterface & Asset {
 
 type GraphGistCandidate implements GraphGistInterface & Asset {
   uuid: ID!
-  image: String
+  image: Image @relation(name: "HAS_IMAGE", direction: "OUT")
   name: String
   slug: String
   summary: String

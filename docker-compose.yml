@@ -18,9 +18,6 @@ services:
     ports:
       - 4001:4001
     environment:
-      - NEO4J_URI=bolt://192.168.99.13:7687
-      - NEO4J_USER=
-      - NEO4J_PASSWORD=
       - GRAPHQL_LISTEN_PORT=4001
       - GRAPHQL_URI=http://api:4001/graphql      
       
