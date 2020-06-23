@@ -1,0 +1,16 @@
+.ui.card {
+  padding-top: 10px;
+  padding-bottom: 10px;
+  margin-top: 5px;
+  margin-bottom: 5px;
+}
+
+.ui.card > .content:after,
+.ui.cards > .card > .content:after {
+  display: none !important;
+  content: " ";
+  height: 0;
+  clear: both;
+  overflow: hidden;
+  visibility: hidden;
+}

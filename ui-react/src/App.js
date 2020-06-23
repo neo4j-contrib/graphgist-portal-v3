@@ -20,13 +20,13 @@ import {
   Menu as MenuIcon,
   ChevronLeft as ChevronLeftIcon,
   Dashboard as DashboardIcon,
-  EventNote as EventNoteIcon,
-  People as PeopleIcon
+  EventNote as EventNoteIcon
 } from "@material-ui/icons";
 
-import UserList from "./UserList";
+import GraphGists from "./graphgists/GraphGists";
 import classNames from "classnames";
 import "./App.css";
+import "semantic-ui-css/semantic.min.css";
 
 const drawerWidth = 240;
 
@@ -151,7 +151,7 @@ class App extends Component {
                 noWrap
                 className={classes.title}
               >
-                Welcome To GRANDstack
+                About the GraphGist Portal
               </Typography>
             </Toolbar>
           </AppBar>
@@ -179,20 +179,12 @@ class App extends Component {
                 <ListItemText primary="Home" />
               </ListItem>
             </Link>
-            <Link to="/business" className="navLink">
+            <Link to="/graph_gists" className="navLink">
               <ListItem button>
                 <ListItemIcon>
                   <EventNoteIcon />
                 </ListItemIcon>
-                <ListItemText primary="Businesses" />
-              </ListItem>
-            </Link>
-            <Link to="/" className="navLink">
-              <ListItem button>
-                <ListItemIcon>
-                  <PeopleIcon />
-                </ListItemIcon>
-                <ListItemText primary="Users" />
+                <ListItemText primary="GraphGists" />
               </ListItem>
             </Link>
           </Drawer>
@@ -200,8 +192,7 @@ class App extends Component {
             <div className={classes.appBarSpacer} />
             <Typography component="div" className={classes.chartContainer}>
               <Switch>
-                <Route exact path="/" component={UserList} />
-                <Route exact path="/business" component={Business} />
+                <Route exact path="/graph_gists" component={GraphGists} />
               </Switch>
             </Typography>
           </main>
@@ -210,7 +201,5 @@ class App extends Component {
     );
   }
 }
-
-const Business = () => <div></div>;
 
 export default withRouter(withStyles(styles)(App));
