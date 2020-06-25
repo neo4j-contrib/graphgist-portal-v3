@@ -197,9 +197,23 @@ type GraphGist implements GraphGistInterface & Asset {
   industries: [Industry] @relation(name: "FOR_INDUSTRY", direction: "OUT")
   use_cases: [UseCase] @relation(name: "FOR_USE_CASE", direction: "OUT")
   challenges: [Challenge] @relation(name: "FOR_CHALLENGE", direction: "OUT")
+  categories: [Asset] @cypher(statement: """
+    MATCH (this)-[:FOR_CHALLENGE|:FOR_USE_CASE|:FOR_INDUSTRY]->(category)
+    RETURN category
+  """)
 
   is_candidate_updated: Boolean
   featured: Boolean
+  avg_rating: Float! @cypher(statement: """
+    MATCH (this)<-[r:RATES]-(User)
+    WHERE exists(r.level)
+    WITH avg(r.level) as avg_rating
+    RETURN CASE
+      WHEN avg_rating >= 0
+      THEN avg_rating
+      ELSE 0
+    END
+  """)
 }
 
 type GraphGistCandidate implements GraphGistInterface & Asset {
