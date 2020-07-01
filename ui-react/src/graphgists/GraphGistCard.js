@@ -5,6 +5,8 @@ import { Card, Image, Icon, List } from "semantic-ui-react";
 import { Link } from "react-router-dom";
 import { createUseStyles } from 'react-jss'
 
+import missingImg from "../assets/missing.png";
+
 const useStyles = createUseStyles({
   categoryIcon: {
     width: '1.7em',
@@ -41,7 +43,7 @@ function GraphGistCard(props) {
         src={
           graphGist.image
             ? graphGist.image.source_url
-            : "https://graphgist-portal.herokuapp.com/assets/missing-3de5afa143a851909bf3ab0ac4add47749974608b7b790a2bcb0a2203a53eb92.png"
+            : missingImg
         }
       />
 
