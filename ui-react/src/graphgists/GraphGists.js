@@ -28,7 +28,9 @@ function GraphGists() {
       offset: 0,
     },
     onCompleted: (data) => {
-      setHasMore(data.GraphGist.length >= rowsPerPage);
+      if (data && data.GraphGist) {
+        setHasMore(data.GraphGist.length >= rowsPerPage);
+      }
     }
   });
 

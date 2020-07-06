@@ -1,205 +1,36 @@
-import React, { Component } from "react";
-import { Switch, Route, Link } from "react-router-dom";
-import { withRouter } from "react-router";
-import { withStyles } from "@material-ui/core/styles";
+import React from "react";
+import { Switch, Route, NavLink } from "react-router-dom";
+import { Menu, Container } from "semantic-ui-react";
+import { createUseStyles } from "react-jss";
 
-import {
-  AppBar,
-  Toolbar,
-  Typography,
-  IconButton,
-  CssBaseline,
-  Drawer,
-  Divider,
-  ListItem,
-  ListItemIcon,
-  ListItemText
-} from "@material-ui/core";
-
-import {
-  Menu as MenuIcon,
-  ChevronLeft as ChevronLeftIcon,
-  Dashboard as DashboardIcon,
-  EventNote as EventNoteIcon
-} from "@material-ui/icons";
-
+import Home from "./Home";
 import GraphGists from "./graphgists/GraphGists";
-import classNames from "classnames";
-import "./App.css";
+
 import "semantic-ui-css/semantic.min.css";
 
-const drawerWidth = 240;
-
-const styles = theme => ({
-  root: {
-    display: "flex"
-  },
-  toolbar: {
-    paddingRight: 24
-  },
-  toolbarIcon: {
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "flex-end",
-    padding: "0 8px",
-    ...theme.mixins.toolbar
-  },
-  appBar: {
-    zIndex: theme.zIndex.drawer + 1,
-    transition: theme.transitions.create(["width", "margin"], {
-      easing: theme.transitions.easing.sharp,
-      duration: theme.transitions.duration.leavingScreen
-    }),
-    backgroundColor: "#383838"
-  },
-  appBarShift: {
-    marginLeft: drawerWidth,
-    width: `calc(100% - ${drawerWidth}px)`,
-    transition: theme.transitions.create(["width", "margin"], {
-      easing: theme.transitions.easing.sharp,
-      duration: theme.transitions.duration.enteringScreen
-    })
-  },
-  menuButton: {
-    marginLeft: 12,
-    marginRight: 36
-  },
-  menuButtonHidden: {
-    display: "none"
-  },
-  title: {
-    flexGrow: 1
-  },
-  drawerPaper: {
-    position: "relative",
-    whiteSpace: "nowrap",
-    width: drawerWidth,
-    transition: theme.transitions.create("width", {
-      easing: theme.transitions.easing.sharp,
-      duration: theme.transitions.duration.enteringScreen
-    })
-  },
-  drawerPaperClose: {
-    overflowX: "hidden",
-    transition: theme.transitions.create("width", {
-      easing: theme.transitions.easing.sharp,
-      duration: theme.transitions.duration.leavingScreen
-    }),
-    width: theme.spacing(7),
-    [theme.breakpoints.up("sm")]: {
-      width: theme.spacing(9)
-    }
-  },
-  appBarSpacer: theme.mixins.toolbar,
-  content: {
-    flexGrow: 1,
-    padding: theme.spacing(3),
-    height: "100vh",
-    overflow: "auto"
-  }
+const useStyles = createUseStyles({
+	container: {
+		marginTop: 60,
+	},
 });
 
-class App extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      open: true
-    };
-  }
+function App() {
+  const classes = useStyles();
 
-  handleDrawerOpen = () => {
-    this.setState({ open: true });
-  };
-
-  handleDrawerClose = () => {
-    this.setState({ open: false });
-  };
-
-  render() {
-    const { classes } = this.props;
-
-    return (
-      <React.Fragment>
-        <CssBaseline />
-        <div className={classes.root}>
-          <AppBar
-            position="absolute"
-            className={classNames(
-              classes.appBar,
-              this.state.open && classes.appBarShift
-            )}
-          >
-            <Toolbar
-              disableGutters={!this.state.open}
-              className={classes.toolbar}
-            >
-              <IconButton
-                color="inherit"
-                aria-label="Open drawer"
-                onClick={this.handleDrawerOpen}
-                className={classNames(
-                  classes.menuButton,
-                  this.state.open && classes.menuButtonHidden
-                )}
-              >
-                <MenuIcon />
-              </IconButton>
-              <Typography
-                component="h1"
-                variant="h2"
-                color="inherit"
-                noWrap
-                className={classes.title}
-              >
-                About the GraphGist Portal
-              </Typography>
-            </Toolbar>
-          </AppBar>
-          <Drawer
-            variant="permanent"
-            classes={{
-              paper: classNames(
-                classes.drawerPaper,
-                !this.state.open && classes.drawerPaperClose
-              )
-            }}
-            open={this.state.open}
-          >
-            <div className={classes.toolbarIcon}>
-              <IconButton onClick={this.handleDrawerClose}>
-                <ChevronLeftIcon />
-              </IconButton>
-            </div>
-            <Divider />
-            <Link to="/" className="navLink">
-              <ListItem button>
-                <ListItemIcon>
-                  <DashboardIcon />
-                </ListItemIcon>
-                <ListItemText primary="Home" />
-              </ListItem>
-            </Link>
-            <Link to="/graph_gists" className="navLink">
-              <ListItem button>
-                <ListItemIcon>
-                  <EventNoteIcon />
-                </ListItemIcon>
-                <ListItemText primary="GraphGists" />
-              </ListItem>
-            </Link>
-          </Drawer>
-          <main className={classes.content}>
-            <div className={classes.appBarSpacer} />
-            <Typography component="div" className={classes.chartContainer}>
-              <Switch>
-                <Route exact path="/graph_gists" component={GraphGists} />
-              </Switch>
-            </Typography>
-          </main>
-        </div>
-      </React.Fragment>
-    );
-  }
+	return (
+		<React.Fragment>
+			<Menu pointing fixed="top">
+				<Menu.Item as={NavLink} exact to="/">Home</Menu.Item>
+				<Menu.Item as={NavLink} to="/graph_gists">GraphGists</Menu.Item>
+			</Menu>
+			<Container className={classes.container}>
+				<Switch>
+					<Route exact path="/" component={Home} />
+					<Route exact path="/graph_gists" component={GraphGists} />
+				</Switch>
+			</Container>
+		</React.Fragment>
+	);
 }
 
-export default withRouter(withStyles(styles)(App));
+export default App;
