@@ -23,7 +23,8 @@
     "sanitize-html": "^1.27.0",
     "semantic-ui-css": "^2.4.1",
     "semantic-ui-react": "^0.88.2",
-    "underscore": "^1.10.2"
+    "underscore": "^1.10.2",
+    "http-proxy-middleware": "^0.20.0"
   },
   "scripts": {
     "start": "react-scripts start",
@@ -32,7 +33,6 @@
     "eject": "react-scripts eject"
   },
   "devDependencies": {
-    "http-proxy-middleware": "^0.20.0",
     "husky": "^2.7.0",
     "lint-staged": "^8.2.1"
   },
