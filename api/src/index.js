@@ -1,12 +1,27 @@
-import { typeDefs } from "./graphql-schema";
-import { ApolloServer } from "apollo-server-express";
+import { ApolloServer, AuthenticationError } from "apollo-server-express";
 import express from "express";
 import neo4j from 'neo4j-driver';
 import { makeAugmentedSchema } from "neo4j-graphql-js";
-import dotenv from "dotenv";
+import { v4 as uuidv4 } from 'uuid';
 
-// set environment variables from ../.env
+import dotenv from "dotenv";
 dotenv.config();
+
+import { auth0Verify } from "./auth";
+import { typeDefs } from "./graphql-schema";
+
+/*
+ * Create a Neo4j driver instance to connect to the database
+ * using credentials specified as environment variables
+ * with fallback to defaults
+ */
+export const driver = neo4j.driver(
+  process.env.NEO4J_URI || "bolt://localhost:7687",
+  neo4j.auth.basic(
+    process.env.NEO4J_USER || "neo4j",
+    process.env.NEO4J_PASSWORD || "neo4j"
+  )
+);
 
 const app = express();
 
@@ -23,6 +38,89 @@ const S3_BUCKET_NAME = process.env.S3_BUCKET_NAME;
 export const schema = makeAugmentedSchema({
   typeDefs,
   resolvers: {
+    Mutation: {
+      Authenticate: async (root, args, context, info) => {
+        const session = driver.session();
+        const txc = session.beginTransaction();
+
+        try {
+          const user = await auth0Verify(args.token);
+          const [provider, uid] = user.sub.split('|');
+
+          const result = await txc.run(`MATCH (u:User) WHERE (u.provider = $provider AND u.uid = $uid) OR u.uid = '${provider}|${uid}' OR u.email = $email RETURN u`, {
+            provider,
+            uid,
+            email: user.email,
+          });
+
+          if (result.records.length === 0) {
+            const createUser = await txc.run(`CREATE (u:User {
+              uuid: $uuid,
+              uid: $uid,
+              password: $password,
+              username: $username,
+              email: $email,
+              name: $name,
+              image: $image,
+              provider: $provider
+            }) RETURN u`, {
+              uid: user.sub,
+              provider,
+              uuid: uuidv4(),
+              password: user.aud,
+              username: user.nickname,
+              email: user.email,
+              name: user.name,
+              image: user.picture,
+            });
+            await txc.commit();
+            return createUser.records[0].get('u').properties;
+          } else {
+            await txc.commit();
+            return result.records[0].get('u').properties;
+          }
+        } catch (error) {
+          console.error(error)
+          await txc.rollback()
+          throw new AuthenticationError('Unable to retrieve user');
+        } finally {
+          await session.close()
+        }
+
+        return null;
+      },
+    },
+    Query: {
+      me: async (obj, args, context, info) => {
+        const session = driver.session();
+        const txc = session.beginTransaction();
+
+        try {
+          const user = await context.user;
+          const [provider, uid] = user.sub.split('|');
+
+          const result = await txc.run(`MATCH (u:User) WHERE (u.provider = $provider AND u.uid = $uid) OR u.uid = '${provider}|${uid}' OR u.email = $email RETURN u`, {
+            provider,
+            uid,
+            email: user.email,
+          });
+
+          if (result.records.length > 0) {
+            const userObj = result.records[0];
+            await txc.commit();
+            return userObj.get('u').properties;
+          }
+        } catch (error) {
+          console.error(error)
+          await txc.rollback();
+          throw new AuthenticationError('You must be logged in to do this');
+        } finally {
+          await session.close();
+        }
+
+        return null;
+      }
+    },
     Image: {
       source_url: (obj, args, context, info) => {
         const {uuid, source_file_name, source_updated_at} = obj.source_url.properties;
@@ -30,25 +128,12 @@ export const schema = makeAugmentedSchema({
         const partitions = uuid.match(/.{9}/g)[0].match(/.{1,3}/g).join("/");
         return `https://${S3_BUCKET_NAME}.s3.amazonaws.com/graph_starter/images/sources/${partitions}/${size}/${source_file_name}?${source_updated_at}`;
       }
-    }
+    },
   },
   config: {
     mutation: false
   }
 });
-
-/*
- * Create a Neo4j driver instance to connect to the database
- * using credentials specified as environment variables
- * with fallback to defaults
- */
-export const driver = neo4j.driver(
-  process.env.NEO4J_URI || "bolt://localhost:7687",
-  neo4j.auth.basic(
-    process.env.NEO4J_USER || "neo4j",
-    process.env.NEO4J_PASSWORD || "neo4j"
-  )
-);
 
 /*
  * Create a new ApolloServer instance, serving the GraphQL schema
@@ -57,7 +142,13 @@ export const driver = neo4j.driver(
  * generated resolvers to connect to the database.
  */
 const server = new ApolloServer({
-  context: { driver },
+  context: ({ req }) => {
+    const user = auth0Verify(req.headers.authorization);
+    return {
+      driver,
+      user
+    };
+  },
   schema: schema,
   introspection: true,
   playground: true

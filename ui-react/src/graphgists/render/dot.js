@@ -11,16 +11,19 @@
  * specific language governing permissions and limitations under the License.
  */
 export default function($) {
-
   var vizLoaded = false;
   var loading = false;
   var queue = [];
 
   function scanForScriptBlocks() {
-    if (!document.createElementNS && !!document.createElementNS('http://www.w3.org/2000/svg', "svg").createSVGRect) {
+    if (
+      !document.createElementNS &&
+      !!document.createElementNS("http://www.w3.org/2000/svg", "svg")
+        .createSVGRect
+    ) {
       return;
     }
-    $('script[type="text/vnd.graphviz"]').each(function () {
+    $('script[type="text/vnd.graphviz"]').each(function() {
       var $script = $(this);
       var dot = $script.html();
       insertSvg(dot, $script);
@@ -30,24 +33,23 @@ export default function($) {
   function insertSvg(dot, $element) {
     if (!vizLoaded) {
       if (loading) {
-        queue.push({'dot': dot, 'element': $element});
+        queue.push({ dot: dot, element: $element });
       } else {
         loading = true;
-        queue.push({'dot': dot, 'element': $element});
+        queue.push({ dot: dot, element: $element });
         $.ajax({
-          'url': 'js/viz.js',
-          'dataType': 'script',
-          'cache': true,
-          'success': function () {
+          url: "js/viz.js",
+          dataType: "script",
+          cache: true,
+          success: function() {
             vizLoaded = true;
-            $.each(queue, function () {
+            $.each(queue, function() {
               executeAndInsert(this.dot, this.element);
             });
           }
         });
       }
-    }
-    else {
+    } else {
       executeAndInsert(dot, $element);
     }
 
@@ -56,11 +58,11 @@ export default function($) {
       //     var svg = Viz(dotSource, 'svg');
       //     $elementTarget.after(svg);
       // } catch (ex) {
-        // console.error('Graphviz rendering failed:\n', ex);
-        console.error('Graphviz rendering failed.');
+      // console.error('Graphviz rendering failed:\n', ex);
+      console.error("Graphviz rendering failed.");
       // }
     }
   }
 
-  return {'scan': scanForScriptBlocks};
+  return { scan: scanForScriptBlocks };
 }

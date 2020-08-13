@@ -1,6 +1,6 @@
 import { ApolloServer } from "apollo-server-express";
 import { createTestClient as apolloCreateTestClient } from "apollo-server-testing";
-import neo4j from 'neo4j-driver';
+import neo4j from "neo4j-driver";
 import { makeAugmentedSchema } from "neo4j-graphql-js";
 import dotenv from "dotenv";
 import { typeDefs } from "./graphql-schema";
@@ -10,8 +10,8 @@ dotenv.config();
 const schema = makeAugmentedSchema({
   typeDefs,
   config: {
-    mutation: false
-  }
+    mutation: false,
+  },
 });
 
 const driver = neo4j.driver(
@@ -25,7 +25,7 @@ const driver = neo4j.driver(
 const server = new ApolloServer({
   context: { driver },
   schema: schema,
-  mocks: true
+  mocks: true,
 });
 
 export function createTestClient() {

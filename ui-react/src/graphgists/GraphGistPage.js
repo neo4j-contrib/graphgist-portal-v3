@@ -12,26 +12,24 @@ import "./GraphGistPage.scss";
 
 const GET_GRAPHGIST = gql`
   query graphGistPage($id: String) {
-    GraphGist(
-      slug: $id
-    ) {
+    GraphGist(slug: $id) {
       uuid
       render_id
-			status
+      status
       slug
       title
       summary
       featured
       avg_rating
-			raw_html
-			cached
-			author {
-				name
-				slug
-			}
-			created_at {
-				formatted
-			}
+      raw_html
+      cached
+      author {
+        name
+        slug
+      }
+      created_at {
+        formatted
+      }
       image {
         source_url
       }
@@ -64,57 +62,64 @@ function GraphGistPage() {
     variables: {
       id: id,
       first: rowsPerPage,
-      offset: 0,
-    },
+      offset: 0
+    }
   });
 
   const graphGist = _.get(data, "GraphGist[0]", null);
 
   if (loading && !error) {
-    return <p>Loading...</p>
+    return <p>Loading...</p>;
   }
 
   if (!graphGist) {
-    return <p>Not found</p>
+    return <p>Not found</p>;
   }
 
   return (
     <React.Fragment>
-      <Header as='h1' textAlign='center' size='huge'>
+      <Header as="h1" textAlign="center" size="huge">
         {graphGist.title}
       </Header>
 
       <Grid>
         <Grid.Column width={13}>
-          {graphGist.summary && <React.Fragment>
-            <Divider horizontal>Summary</Divider>
-            <SimpleFormat text={graphGist.summary} />
-          </React.Fragment>}
+          {graphGist.summary && (
+            <React.Fragment>
+              <Divider horizontal>Summary</Divider>
+              <SimpleFormat text={graphGist.summary} />
+            </React.Fragment>
+          )}
           <GraphGistRenderer>
             <div
               id="gist-body"
               data-gist-id={graphGist.render_id || graphGist.uuid}
               className={graphGist.cached && "cached"}
-              dangerouslySetInnerHTML={{__html: graphGist.raw_html}}
+              dangerouslySetInnerHTML={{ __html: graphGist.raw_html }}
             />
           </GraphGistRenderer>
         </Grid.Column>
         <Grid.Column width={3}>
-					{graphGist.status === 'live' && <a href={`https://neo4j.com/graphgist/${graphGist.slug}`}>Live Version</a>} 
-	
-					<AssetExtraButtons graphGist={graphGist} />
+          {graphGist.status === "live" && (
+            <a href={`https://neo4j.com/graphgist/${graphGist.slug}`}>
+              Live Version
+            </a>
+          )}
+
+          <AssetExtraButtons graphGist={graphGist} />
         </Grid.Column>
       </Grid>
     </React.Fragment>
   );
 }
 
-function AssetExtraButtons({graphGist}) {
-	return <React.Fragment>
-		<Divider />
-		<a href=".">Run this gist in the Neo4j console</a>
+function AssetExtraButtons({ graphGist }) {
+  return (
+    <React.Fragment>
+      <Divider />
+      <a href=".">Run this gist in the Neo4j console</a>
 
-{/*
+      {/*
 	- if @asset.persisted?
     - if @access_level == 'write'
       .ui.divider
@@ -147,41 +152,48 @@ function AssetExtraButtons({graphGist}) {
       div
         | If approved, your graphgist will appear on the Neo4j.com/graphgists. You can make edits at any time, and when you are ready for the edits to appear on the Neo4j.com/graphgists you can submit again
 */}
-		
-		<Divider />
-		<Button icon labelPosition='left' fluid as={Link} to={`/graph_gists/${graphGist.uuid}/source`}>
-			<Icon name='file text' />
-			Show Source
-		</Button>
 
-		<Item.Group>
-			<Item>
-				<Item.Content>
-					<Divider horizontal>Author</Divider>
-					<Item.Description>
-						<Icon name='user' size='large' />
-						<Link to={`/people/${graphGist.author.slug}`}>{graphGist.author.name}</Link>
-					</Item.Description>
-				</Item.Content>
-			</Item>
-			<Item>
-				<Item.Content>
-					<Divider horizontal>Rating</Divider>
-					<Item.Description>
-						{graphGist.avg_rating}
-					</Item.Description>
-				</Item.Content>
-			</Item>
-			<Item>
-				<Item.Content>
-					<Divider horizontal>Created</Divider>
-					<Item.Description>
-						{moment.unix(graphGist.created_at.formatted).format()}
-					</Item.Description>
-				</Item.Content>
-			</Item>
-		</Item.Group>
-	</React.Fragment>
+      <Divider />
+      <Button
+        icon
+        labelPosition="left"
+        fluid
+        as={Link}
+        to={`/graph_gists/${graphGist.uuid}/source`}
+      >
+        <Icon name="file text" />
+        Show Source
+      </Button>
+
+      <Item.Group>
+        <Item>
+          <Item.Content>
+            <Divider horizontal>Author</Divider>
+            <Item.Description>
+              <Icon name="user" size="large" />
+              <Link to={`/people/${graphGist.author.slug}`}>
+                {graphGist.author.name}
+              </Link>
+            </Item.Description>
+          </Item.Content>
+        </Item>
+        <Item>
+          <Item.Content>
+            <Divider horizontal>Rating</Divider>
+            <Item.Description>{graphGist.avg_rating}</Item.Description>
+          </Item.Content>
+        </Item>
+        <Item>
+          <Item.Content>
+            <Divider horizontal>Created</Divider>
+            <Item.Description>
+              {moment.unix(graphGist.created_at.formatted).format()}
+            </Item.Description>
+          </Item.Content>
+        </Item>
+      </Item.Group>
+    </React.Fragment>
+  );
 }
 
 export default GraphGistPage;

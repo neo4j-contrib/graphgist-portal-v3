@@ -3,21 +3,21 @@ import gql from "graphql-tag";
 import { useHistory } from "react-router";
 import { Card, Image, Icon, List } from "semantic-ui-react";
 import { Link } from "react-router-dom";
-import { createUseStyles } from 'react-jss'
+import { createUseStyles } from "react-jss";
 
 import missingImg from "../assets/missing.png";
 
 const useStyles = createUseStyles({
   categoryIcon: {
-    width: '1.7em',
-    height: '1.7em'
-  },
+    width: "1.7em",
+    height: "1.7em"
+  }
 });
 
 const categoriesUrlPath = {
-  "UseCase": "use_cases",
-  "Industry": "industries",
-  "Challenge": "challenges",
+  UseCase: "use_cases",
+  Industry: "industries",
+  Challenge: "challenges"
 };
 
 function GraphGistCard(props) {
@@ -40,16 +40,12 @@ function GraphGistCard(props) {
 
       <Image
         width="100%"
-        src={
-          graphGist.image
-            ? graphGist.image.source_url
-            : missingImg
-        }
+        src={graphGist.image ? graphGist.image.source_url : missingImg}
       />
 
       {graphGist.featured && (
         <Card.Content>
-          <Icon name="thumbs up" size="large" style={{paddingRight: 0}} />
+          <Icon name="thumbs up" size="large" style={{ paddingRight: 0 }} />
           Featured by Neo Team
         </Card.Content>
       )}
@@ -85,15 +81,13 @@ function GraphGistCard(props) {
                     </Link>
                   </List.Content>
                 </List.Item>
-              )
+              );
             })}
 
             {graphGist.categories.length > 2 && (
               <List.Item>
                 <List.Icon name="ellipsis horizontal" />
-                <List.Content>
-                  More categories
-                </List.Content>
+                <List.Content>More categories</List.Content>
               </List.Item>
             )}
           </List>
@@ -132,6 +126,6 @@ GraphGistCard.fragments = {
       }
     }
   `
-}
+};
 
 export default GraphGistCard;

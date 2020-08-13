@@ -6,23 +6,25 @@ export default function(CodeMirror) {
     var mode = CodeMirror.getMode(CodeMirror.defaults, modespec);
 
     var ie = /MSIE \d/.test(navigator.userAgent);
-    var ie_lt9 = ie && (document.documentMode === null || document.documentMode < 9);
+    var ie_lt9 =
+      ie && (document.documentMode === null || document.documentMode < 9);
 
     if (callback.nodeType === 1) {
       var tabSize = (options && options.tabSize) || CodeMirror.defaults.tabSize;
-      var node = callback, col = 0;
+      var node = callback,
+        col = 0;
       node.innerHTML = "";
       callback = function(text, style) {
         if (text === "\n") {
           // Emitting LF or CRLF on IE8 or earlier results in an incorrect display.
           // Emitting a carriage return makes everything ok.
-          node.appendChild(document.createTextNode(ie_lt9 ? '\r' : text));
+          node.appendChild(document.createTextNode(ie_lt9 ? "\r" : text));
           col = 0;
           return;
         }
         var content = "";
         // replace tabs
-        for (var pos = 0;;) {
+        for (var pos = 0; ; ) {
           var idx = text.indexOf("\t", pos);
           if (idx === -1) {
             content += text.slice(pos);
@@ -31,7 +33,7 @@ export default function(CodeMirror) {
           } else {
             col += idx - pos;
             content += text.slice(pos, idx);
-            var size = tabSize - col % tabSize;
+            var size = tabSize - (col % tabSize);
             col += size;
             for (var i = 0; i < size; ++i) content += " ";
             pos = idx + 1;
@@ -48,7 +50,8 @@ export default function(CodeMirror) {
       };
     }
 
-    var lines = CodeMirror.splitLines(string), state = (options && options.state) || CodeMirror.startState(mode);
+    var lines = CodeMirror.splitLines(string),
+      state = (options && options.state) || CodeMirror.startState(mode);
 
     for (var i = 0, e = lines.length; i < e; ++i) {
       if (i) callback("\n");
@@ -61,4 +64,4 @@ export default function(CodeMirror) {
       }
     }
   };
-};
+}

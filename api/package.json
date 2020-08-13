@@ -21,9 +21,12 @@
     "apollo-server": "^2.14.2",
     "dotenv": "^7.0.0",
     "graphql-tag": "^2.10.1",
+    "jsonwebtoken": "^8.5.1",
+    "jwks-rsa": "^1.8.1",
     "neo4j-driver": "^4.0.1",
     "neo4j-graphql-js": "^2.12.1",
-    "node-fetch": "^2.6.0"
+    "node-fetch": "^2.6.0",
+    "uuid": "^8.3.0"
   },
   "devDependencies": {
     "@babel/cli": "^7.8.4",
@@ -35,6 +38,7 @@
     "jest": "^26.0.1",
     "lint-staged": "^8.2.1",
     "nodemon": "^1.19.1",
+    "prettier": "^2.0.5",
     "shx": "^0.3.2"
   },
   "husky": {

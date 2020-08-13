@@ -25,9 +25,9 @@ function GraphGists() {
   const { fetchMore, loading, data, error } = useQuery(GET_GISTS, {
     variables: {
       first: rowsPerPage,
-      offset: 0,
+      offset: 0
     },
-    onCompleted: (data) => {
+    onCompleted: data => {
       if (data && data.GraphGist) {
         setHasMore(data.GraphGist.length >= rowsPerPage);
       }
@@ -67,13 +67,13 @@ function GraphGists() {
       {loading && !error && <p>Loading...</p>}
       {error && !loading && <p>Error</p>}
       {data && !loading && !error && (
-          <Grid.Row>
-            <Card.Group itemsPerRow={3}>
-              {data.GraphGist.map(graphGist => (
-                <GraphGistCard key={graphGist.uuid} graphGist={graphGist} />
-              ))}
-            </Card.Group>
-          </Grid.Row>
+        <Grid.Row>
+          <Card.Group itemsPerRow={3}>
+            {data.GraphGist.map(graphGist => (
+              <GraphGistCard key={graphGist.uuid} graphGist={graphGist} />
+            ))}
+          </Card.Group>
+        </Grid.Row>
       )}
       {hasMore && <Button onClick={loadMore}>Load More</Button>}
     </Grid>

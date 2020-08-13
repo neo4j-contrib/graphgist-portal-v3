@@ -30,4 +30,4 @@ export default function(CodeMirror) {
       node.className += " cm-s-default";
     }
   };
-};
+}

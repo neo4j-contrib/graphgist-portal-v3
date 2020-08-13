@@ -11,8 +11,8 @@ describe("graphql endpoint", () => {
             title
           }
         }
-      `
+      `,
     });
     expect(res).toMatchSnapshot();
   });
-})
+});

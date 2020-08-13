@@ -26,9 +26,9 @@ function GraphGuides() {
   const { fetchMore, loading, data, error } = useQuery(GET_GISTS, {
     variables: {
       first: rowsPerPage,
-      offset: 0,
+      offset: 0
     },
-    onCompleted: (data) => {
+    onCompleted: data => {
       if (data && data.GraphGist) {
         setHasMore(data.GraphGist.length >= rowsPerPage);
       }

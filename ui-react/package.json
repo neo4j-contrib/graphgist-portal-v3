@@ -4,6 +4,8 @@
   "description": "GraphGists Portal v3",
   "dependencies": {
     "@apollo/react-hooks": "^3.1.2",
+    "@auth0/auth0-react": "^1.0.0",
+    "@hookstate/core": "^3.0.1",
     "apollo-boost": "^0.4.4",
     "classnames": "^2.2.6",
     "codemirror": "^5.16.0",
@@ -13,7 +15,6 @@
     "jquery": "^3.5.1",
     "moment": "^2.27.0",
     "node-sass": "^4.14.1",
-    "prettier": "^1.18.2",
     "react": "^16.9.0",
     "react-dom": "^16.9.0",
     "react-jss": "^10.3.0",
@@ -23,8 +24,7 @@
     "sanitize-html": "^1.27.0",
     "semantic-ui-css": "^2.4.1",
     "semantic-ui-react": "^0.88.2",
-    "underscore": "^1.10.2",
-    "http-proxy-middleware": "^0.20.0"
+    "underscore": "^1.10.2"
   },
   "scripts": {
     "start": "react-scripts start",
@@ -34,7 +34,9 @@
   },
   "devDependencies": {
     "husky": "^2.7.0",
-    "lint-staged": "^8.2.1"
+    "lint-staged": "^8.2.1",
+    "http-proxy-middleware": "^0.20.0",
+    "prettier": "^1.18.2"
   },
   "husky": {
     "hooks": {
