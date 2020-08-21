@@ -4,7 +4,6 @@ import ApolloClient from "apollo-boost";
 import { ApolloProvider } from "@apollo/react-hooks";
 import { BrowserRouter } from "react-router-dom";
 import { Auth0Provider } from "@auth0/auth0-react";
-import _ from "lodash";
 import App from "./App";
 import registerServiceWorker from "./registerServiceWorker";
 import "./index.css";
@@ -20,7 +19,7 @@ const client = new ApolloClient({
     operation.setContext(context => ({
       headers: {
         ...context.headers,
-        authorization: _.get(authToken.get(), "__raw")
+        authorization: authToken.get()
       }
     }));
   }

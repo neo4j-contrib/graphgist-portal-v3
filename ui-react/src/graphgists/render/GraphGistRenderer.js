@@ -2,15 +2,12 @@ import React from "react";
 import $ from "jquery";
 import GraphGist from "./GraphGist";
 
-import "codemirror/lib/codemirror.css";
-import "codemirror/theme/midnight.css";
-
 export default class extends React.Component {
   componentDidMount() {
     // window.graph_gist_portal_url = window.location.protocol + "//" + window.location.hostname;
     window.graph_gist_portal_url = "https://portal.graphgist.org";
 
-    const GraphGistRenderer = GraphGist({
+    this.GraphGistRenderer = GraphGist({
       preProcess: false
     });
 
@@ -44,7 +41,11 @@ export default class extends React.Component {
       $(element).replaceWith($("<p>" + element.innerHTML + "</p>"));
     }
 
-    GraphGistRenderer.renderContent();
+    this.GraphGistRenderer.renderContent();
+  }
+
+  componentWillUnmount() {
+    this.GraphGistRenderer.teardown();
   }
 
   render() {

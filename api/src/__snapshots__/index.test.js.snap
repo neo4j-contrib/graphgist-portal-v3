@@ -1,5 +1,20 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`graphql endpoint can preview graphgist 1`] = `
+Object {
+  "data": Object {
+    "PreviewGraphGist": "Hello World",
+  },
+  "errors": undefined,
+  "extensions": undefined,
+  "http": Object {
+    "headers": Headers {
+      Symbol(map): Object {},
+    },
+  },
+}
+`;
+
 exports[`graphql endpoint can query graphgist 1`] = `
 Object {
   "data": Object {

@@ -303,7 +303,8 @@ export default function() {
         contract: refresh,
         sizeChange: refresh
       },
-      actions: getFunctions()
+      actions: getFunctions(),
+      teardown: disableZoomHandlers,
     };
   }
 

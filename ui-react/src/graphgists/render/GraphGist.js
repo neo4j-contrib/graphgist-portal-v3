@@ -1,23 +1,16 @@
 /* eslint no-mixed-operators: 0 */
 
 import $ from "jquery";
-import CodeMirror from "codemirror";
 import _ from "underscore";
 import Gist from "./Gist";
 import Neod3Renderer from "./Neod3Renderer";
 import CypherConsole from "./console";
 import DotWrapper from "./dot";
-import CodeMirrorCypher from "./codemirror/mode/cypher";
-import CodeMirrorColorize from "./codemirror/runmode/colorize";
-import CodeMirrorRunmode from "./codemirror/runmode/runmode";
+import CodeMirror from "./CodeMirror";
 import jqueryMutate from "./jquery/mutate";
 import { renderTable as cypherRenderTable } from "./cypher.datatable";
 
 import "./jquery/jquery.dataTables";
-
-CodeMirrorRunmode(CodeMirror);
-CodeMirrorColorize(CodeMirror);
-CodeMirrorCypher(CodeMirror);
 
 jqueryMutate($);
 
@@ -117,6 +110,7 @@ const GraphGist = function(options, graphgist_cached_queries) {
   );
   $I = $("<i/>");
   neod3Renderer = new Neod3Renderer();
+  var teardown = () => {};
   $content = void 0;
   $gistId = void 0;
   consolr = void 0;
@@ -439,7 +433,11 @@ const GraphGist = function(options, graphgist_cached_queries) {
         results = [];
         for (j = 0, len1 = visualization_elements.length; j < len1; j++) {
           visualization_element = visualization_elements[j];
-          results.push(renderGraph(visualization_element, data));
+          try {
+            results.push(renderGraph(visualization_element, data));
+          } catch(e) {
+            console.error(e);
+          }
         }
         return results;
       };
@@ -604,6 +602,7 @@ const GraphGist = function(options, graphgist_cached_queries) {
       subscriptions =
         "subscriptions" in rendererHooks ? rendererHooks["subscriptions"] : {};
       actions = "actions" in rendererHooks ? rendererHooks["actions"] : {};
+      teardown = "teardown" in rendererHooks ? rendererHooks["teardown"] : () => {};
       $visualizationIcons = $VISUALIZATION_ICONS
         .clone()
         .appendTo($visContainer);
@@ -742,7 +741,8 @@ const GraphGist = function(options, graphgist_cached_queries) {
   }
   return {
     renderContent: renderContent,
-    initAndGetHeading
+    initAndGetHeading,
+    teardown: teardown,
   };
 };
 

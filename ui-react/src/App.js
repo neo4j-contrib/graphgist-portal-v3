@@ -16,6 +16,9 @@ import Home from "./Home";
 import GraphGists from "./graphgists/GraphGists";
 import GraphGuides from "./graphgists/GraphGuides";
 import GraphGistPage from "./graphgists/GraphGistPage";
+import GraphGistCandidatePage from "./graphgists/GraphGistCandidatePage";
+import GraphGistSourcePage from "./graphgists/GraphGistSourcePage";
+import GraphGistEditByOwner from "./graphgists/GraphGistEditByOwner";
 
 import AuthCallbackPage from "./auth/Callback";
 
@@ -55,7 +58,8 @@ function App() {
       try {
         const token = await getIdTokenClaims();
         if (token) {
-          authTokenState.set(token);
+          authTokenState.set(token.__raw);
+          window.localStorage.setItem('authToken', token.__raw);
           refetch({ isAuthed: true });
         }
       } catch (e) {
@@ -111,6 +115,9 @@ function App() {
           <Route exact path="/graph_gists" component={GraphGists} />
           <Route exact path="/graph_guides" component={GraphGuides} />
           <Route exact path="/graph_gists/:id" component={GraphGistPage} />
+          <Route exact path="/graph_gists/:id/source" component={GraphGistSourcePage} />
+          <Route exact path="/graph_gist_candidates/:id" component={GraphGistCandidatePage} />
+          <Route exact path="/graph_gists/:id/edit_by_owner" component={GraphGistEditByOwner} />
           <Route exact path="/authorize" component={AuthCallbackPage} />
         </Switch>
       </Container>
