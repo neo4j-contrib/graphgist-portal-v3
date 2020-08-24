@@ -309,7 +309,7 @@ div.visualization > svg {
   }
 
   .result {
-    height: 500px;
+    min-height: 500px;
     display: none;
 
     .table, .graph, .error, .loading {

@@ -2,6 +2,7 @@ import React from "react";
 import { useQuery } from "@apollo/react-hooks";
 import gql from "graphql-tag";
 import { Button, Input, Card, Grid, Divider } from "semantic-ui-react";
+import { Helmet } from "react-helmet";
 import GraphGistCard from "./GraphGistCard";
 
 const GET_GISTS = gql`
@@ -54,6 +55,7 @@ function GraphGists() {
 
   return (
     <Grid columns={1}>
+      <Helmet title="Graph Gists" />
       <Grid.Row>
         <Input
           id="search"

@@ -5,6 +5,7 @@ import gql from "graphql-tag";
 import { Button, Item, Icon, Grid, Header, Divider } from "semantic-ui-react";
 import _ from "lodash";
 import moment from "moment";
+import { Helmet } from "react-helmet";
 import SimpleFormat from "../components/SimpleFormat.js";
 import GraphGistRenderer from "./render/GraphGistRenderer.js";
 
@@ -78,6 +79,8 @@ function GraphGistPage() {
 
   return (
     <React.Fragment>
+      <Helmet title={graphGist.title} />
+
       <Header as="h1" textAlign="center" size="huge">
         {graphGist.title}
       </Header>

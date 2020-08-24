@@ -1,6 +1,6 @@
 {
-  "short_name": "React App",
-  "name": "Create React App Sample",
+  "short_name": "GraphGist Portal",
+  "name": "GraphGist Portal",
   "icons": [
     {
       "src": "favicon.ico",

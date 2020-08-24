@@ -2,6 +2,7 @@ import React from "react";
 import { useQuery } from "@apollo/react-hooks";
 import gql from "graphql-tag";
 import { Button, Card } from "semantic-ui-react";
+import { Helmet } from "react-helmet";
 import GraphGistCard from "./GraphGistCard";
 
 const GET_GISTS = gql`
@@ -55,6 +56,7 @@ function GraphGuides() {
 
   return (
     <React.Fragment>
+      <Helmet title="Graph Guides" />
       <h1>Graph Guides</h1>
       {loading && !error && <p>Loading...</p>}
       {error && !loading && <p>Error</p>}
