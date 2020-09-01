@@ -5,7 +5,6 @@ import { ApolloProvider } from "@apollo/react-hooks";
 import { BrowserRouter } from "react-router-dom";
 import { Auth0Provider } from "@auth0/auth0-react";
 import App from "./App";
-import registerServiceWorker from "./registerServiceWorker";
 import "./index.css";
 
 import { authToken } from "./auth/state";
@@ -40,4 +39,3 @@ const Main = () => (
 );
 
 ReactDOM.render(<Main />, document.getElementById("root"));
-registerServiceWorker();
