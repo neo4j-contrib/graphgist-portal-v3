@@ -25,8 +25,8 @@
     "graphql-tools": "^6.0.18",
     "jsonwebtoken": "^8.5.1",
     "jwks-rsa": "^1.8.1",
-    "neo4j-driver": "^4.0.1",
-    "neo4j-graphql-js": "^2.12.1",
+    "neo4j-driver": "^4.1.1",
+    "neo4j-graphql-js": "^2.16.1",
     "node-fetch": "^2.6.0",
     "uuid": "^8.3.0"
   },
