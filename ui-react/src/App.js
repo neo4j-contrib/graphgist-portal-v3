@@ -68,6 +68,13 @@ function App() {
     })();
   }, [getIdTokenClaims, authTokenState, refetch]);
 
+  const handleLogout = (e) => {
+    e.preventDefault();
+    authTokenState.set(null);
+    window.localStorage.removeItem('authToken');
+    logout({ returnTo: window.location.origin });
+  };
+
   return (
     <React.Fragment>
       <Helmet
@@ -103,7 +110,7 @@ function App() {
                   alt={me.name}
                 />
               </Menu.Item>
-              <Menu.Item onClick={logout}>Sign out</Menu.Item>
+              <Menu.Item onClick={handleLogout}>Sign out</Menu.Item>
             </React.Fragment>
           )}
           {!me && <Menu.Item onClick={loginWithRedirect}>Sign in</Menu.Item>}
