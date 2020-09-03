@@ -4,7 +4,9 @@ import { Select } from "semantic-ui-react";
 import _ from "lodash";
 
 function GraphQLSelect({query, onChange, name, ...props}) {
-  const { loading, data, error } = useQuery(query);
+  const { loading, data, error } = useQuery(query, {
+    fetchPolicy: "cache-and-network",
+  });
 
   const options = _.get(data, 'items', []);
 

@@ -55,6 +55,7 @@ function GraphGistPage() {
   const { id } = useParams();
 
   const { loading, data, error } = useQuery(GET_GRAPHGIST, {
+    fetchPolicy: "cache-and-network",
     variables: { id }
   });
 

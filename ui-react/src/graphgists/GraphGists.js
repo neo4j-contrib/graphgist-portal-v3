@@ -24,6 +24,7 @@ function GraphGists() {
   const [hasMore, setHasMore] = React.useState(false);
 
   const { fetchMore, loading, data, error } = useQuery(GET_GISTS, {
+    fetchPolicy: "cache-and-network",
     variables: {
       first: rowsPerPage,
       offset: 0
