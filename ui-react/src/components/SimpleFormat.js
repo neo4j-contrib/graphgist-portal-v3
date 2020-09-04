@@ -7,12 +7,12 @@ export default class SimpleFormat extends Component {
     text: PropTypes.string.isRequired,
     wrapperTag: PropTypes.oneOfType([PropTypes.string, PropTypes.object]),
     wrapperTagProps: PropTypes.object,
-    postfix: PropTypes.node
+    postfix: PropTypes.node,
   };
 
   static defaultProps = {
     wrapperTag: "div",
-    wrapperTagProps: {}
+    wrapperTagProps: {},
   };
 
   // Based on:
@@ -23,7 +23,7 @@ export default class SimpleFormat extends Component {
     return text
       .replace(/\r\n?/g, "\n")
       .split(/\n\n+/)
-      .map(t => {
+      .map((t) => {
         if (t.match(pattern)) {
           return t.replace(pattern, "$1<br />");
         } else {

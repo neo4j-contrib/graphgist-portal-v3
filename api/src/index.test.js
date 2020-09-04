@@ -20,11 +20,11 @@ describe("graphql endpoint", () => {
   test("can preview graphgist", async () => {
     const res = await mutate({
       mutation: gql`
-        mutation Preview($asciidoc: String!){
+        mutation Preview($asciidoc: String!) {
           PreviewGraphGist(asciidoc: $asciidoc)
         }
       `,
-      variables: {asciidoc: "== Testtt"}
+      variables: { asciidoc: "== Testtt" },
     });
     expect(res).toMatchSnapshot();
   });

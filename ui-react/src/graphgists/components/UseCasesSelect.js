@@ -12,7 +12,7 @@ const GET_ITEMS = gql`
 `;
 
 function UseCasesSelect(props) {
-  return <GraphQLSelect {...props} query={GET_ITEMS} multiple />
+  return <GraphQLSelect {...props} query={GET_ITEMS} multiple />;
 }
 
 export default UseCasesSelect;

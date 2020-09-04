@@ -10,14 +10,14 @@ import missingImg from "../assets/missing.png";
 const useStyles = createUseStyles({
   categoryIcon: {
     width: "1.7em",
-    height: "1.7em"
-  }
+    height: "1.7em",
+  },
 });
 
 const categoriesUrlPath = {
   UseCase: "use_cases",
   Industry: "industries",
-  Challenge: "challenges"
+  Challenge: "challenges",
 };
 
 function GraphGistCard(props) {
@@ -40,7 +40,11 @@ function GraphGistCard(props) {
 
       <Image
         width="100%"
-        src={graphGist.image.length > 0 ? graphGist.image[0].source_url : missingImg}
+        src={
+          graphGist.image.length > 0
+            ? graphGist.image[0].source_url
+            : missingImg
+        }
       />
 
       {graphGist.featured && (
@@ -125,7 +129,7 @@ GraphGistCard.fragments = {
         }
       }
     }
-  `
+  `,
 };
 
 export default GraphGistCard;

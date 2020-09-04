@@ -56,12 +56,12 @@ function GraphGistPage() {
 
   const { loading, data, error } = useQuery(GET_GRAPHGIST, {
     fetchPolicy: "cache-and-network",
-    variables: { id }
+    variables: { id },
   });
 
   const graphGist = _.get(data, "GraphGist[0]", null);
 
-  return <GraphGistUI graphGist={graphGist} loading={loading} error={error} />
+  return <GraphGistUI graphGist={graphGist} loading={loading} error={error} />;
 }
 
 export default GraphGistPage;

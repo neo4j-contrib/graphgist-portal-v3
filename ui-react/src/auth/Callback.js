@@ -25,12 +25,12 @@ function Callback({ token }) {
     },
     onError: () => {
       setHasError(true);
-    }
+    },
   });
 
   useEffect(() => {
     if (token) {
-      authenticate({ variables: { token }});
+      authenticate({ variables: { token } });
     }
   }, [authenticate, token]);
 

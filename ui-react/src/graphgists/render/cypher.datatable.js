@@ -5,7 +5,7 @@ import $ from "jquery";
 
 var convertCell, convertResult, render;
 
-convertResult = function(data) {
+convertResult = function (data) {
   var column,
     columns,
     i,
@@ -21,19 +21,19 @@ convertResult = function(data) {
     value;
   result = {
     columns: [],
-    data: []
+    data: [],
   };
   columns = data.columns;
   for (idx = i = 0, len = columns.length; i < len; idx = ++i) {
     column = columns[idx];
     result.columns[idx] = {
-      sTitle: column
+      sTitle: column,
     };
   }
   ref = data.json;
   for (row_idx = j = 0, len1 = ref.length; j < len1; row_idx = ++j) {
     row = ref[row_idx];
-    new_row = (function() {
+    new_row = (function () {
       var k, len2, results;
       results = [];
       for (idx = k = 0, len2 = columns.length; k < len2; idx = ++k) {
@@ -48,7 +48,7 @@ convertResult = function(data) {
   return result;
 };
 
-render = function(cell) {
+render = function (cell) {
   if (typeof cell === "string") {
     if (cell.match(/^https?:/)) {
       if (cell.match(/(jpg|png|gif)$/i)) {
@@ -62,7 +62,7 @@ render = function(cell) {
   return cell;
 };
 
-convertCell = function(cell) {
+convertCell = function (cell) {
   var c, i, labels, len, result;
   if (cell === null) {
     return "<null>";
@@ -110,7 +110,7 @@ convertCell = function(cell) {
   return cell;
 };
 
-export const props = function(cell) {
+export const props = function (cell) {
   var key, props;
   props = [];
   for (key in cell) {
@@ -125,7 +125,7 @@ export const props = function(cell) {
   }
 };
 
-export const renderTable = function(element, data, options) {
+export const renderTable = function (element, data, options) {
   const $TABLE = $(
     '<table class="ui table" cellpadding="0" cellspacing="0" border="0"></table>'
   );
@@ -148,16 +148,19 @@ export const renderTable = function(element, data, options) {
     bLengthChange: large,
     bPaginate: options.paging || large,
     aaData: result.data,
-    aLengthMenu: [[10, 25, 50, -1], [10, 25, 50, "All"]],
+    aLengthMenu: [
+      [10, 25, 50, -1],
+      [10, 25, 50, "All"],
+    ],
     aaSorting: [],
     bSortable: true,
     searching: options.searching != null ? options.searching : true,
     oLanguage: {
       oPaginate: {
         sNext: " >> ",
-        sPrevious: " << "
-      }
-    }
+        sPrevious: " << ",
+      },
+    },
   });
   return true;
 };

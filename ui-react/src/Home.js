@@ -5,8 +5,8 @@ import Pre from "./components/Pre";
 
 const useStyles = createUseStyles({
   root: {
-    fontSize: "1.4rem"
-  }
+    fontSize: "1.4rem",
+  },
 });
 
 function Home() {

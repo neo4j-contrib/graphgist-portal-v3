@@ -9,45 +9,50 @@ import PageLoading from "../components/PageLoading.js";
 
 import "./GraphGistPage.scss";
 
-function GraphGistPage({graphGist, loading, error, candidate}) {
+function GraphGistPage({ graphGist, loading, error, candidate }) {
   return (
     <PageLoading loading={loading} error={error} obj={graphGist}>
-      {graphGist && <React.Fragment>
-        <Helmet title={graphGist.title} />
+      {graphGist && (
+        <React.Fragment>
+          <Helmet title={graphGist.title} />
 
-        <Header as="h1" textAlign="center" size="huge">
-          {graphGist.title}
-        </Header>
+          <Header as="h1" textAlign="center" size="huge">
+            {graphGist.title}
+          </Header>
 
-        <Grid>
-          <Grid.Column width={13}>
-            {graphGist.summary && (
-              <React.Fragment>
-                <Divider horizontal>Summary</Divider>
-                <SimpleFormat text={graphGist.summary} />
-              </React.Fragment>
-            )}
-            <GraphGistRenderer>
-              <div
-                id="gist-body"
-                data-gist-id={graphGist.render_id || graphGist.uuid}
-                className={graphGist.cached && "cached"}
-                dangerouslySetInnerHTML={{ __html: graphGist.raw_html }}
-              />
-            </GraphGistRenderer>
-          </Grid.Column>
-          <Grid.Column width={3}>
+          <Grid>
+            <Grid.Column width={13}>
+              {graphGist.summary && (
+                <React.Fragment>
+                  <Divider horizontal>Summary</Divider>
+                  <SimpleFormat text={graphGist.summary} />
+                </React.Fragment>
+              )}
+              <GraphGistRenderer>
+                <div
+                  id="gist-body"
+                  data-gist-id={graphGist.render_id || graphGist.uuid}
+                  className={graphGist.cached && "cached"}
+                  dangerouslySetInnerHTML={{ __html: graphGist.raw_html }}
+                />
+              </GraphGistRenderer>
+            </Grid.Column>
+            <Grid.Column width={3}>
+              {graphGist.status === "live" && (
+                <a
+                  href={`https://neo4j.com/graphgist/${
+                    candidate ? graphGist.graphgist.slug : graphGist.slug
+                  }`}
+                >
+                  Live Version
+                </a>
+              )}
 
-            {graphGist.status === "live" && (
-              <a href={`https://neo4j.com/graphgist/${candidate ? graphGist.graphgist.slug : graphGist.slug}`}>
-                Live Version
-              </a>
-            )}
-
-            <AssetExtraButtons graphGist={graphGist} candidate={candidate} />
-          </Grid.Column>
-        </Grid>
-      </React.Fragment>}
+              <AssetExtraButtons graphGist={graphGist} candidate={candidate} />
+            </Grid.Column>
+          </Grid>
+        </React.Fragment>
+      )}
     </PageLoading>
   );
 }
@@ -56,17 +61,23 @@ function AssetExtraButtons({ graphGist, candidate }) {
   return (
     <React.Fragment>
       <a href=".">Run this gist in the Neo4j console</a>
-      {graphGist.my_perms.indexOf('edit') >= 0 && <React.Fragment><Divider /><Button
-        icon
-        labelPosition="left"
-        fluid
-        as={Link}
-        to={`/graph_gists/${candidate ? graphGist.graphgist.uuid : graphGist.uuid}/edit_by_owner`}
-      >
-        <Icon name="edit" />
-        Edit GraphGist
-        </Button>
-      </React.Fragment>}
+      {graphGist.my_perms.indexOf("edit") >= 0 && (
+        <React.Fragment>
+          <Divider />
+          <Button
+            icon
+            labelPosition="left"
+            fluid
+            as={Link}
+            to={`/graph_gists/${
+              candidate ? graphGist.graphgist.uuid : graphGist.uuid
+            }/edit_by_owner`}
+          >
+            <Icon name="edit" />
+            Edit GraphGist
+          </Button>
+        </React.Fragment>
+      )}
 
       {/*
 	- if @asset.persisted?
@@ -108,7 +119,9 @@ function AssetExtraButtons({ graphGist, candidate }) {
         labelPosition="left"
         fluid
         as={Link}
-        to={`/graph_gists/${candidate ? graphGist.graphgist.slug : graphGist.slug}/source`}
+        to={`/graph_gists/${
+          candidate ? graphGist.graphgist.slug : graphGist.slug
+        }/source`}
       >
         <Icon name="file text" />
         Show Source
@@ -126,12 +139,14 @@ function AssetExtraButtons({ graphGist, candidate }) {
             </Item.Description>
           </Item.Content>
         </Item>
-        {!candidate && <Item>
-          <Item.Content>
-            <Divider horizontal>Rating</Divider>
-            <Item.Description>{graphGist.avg_rating}</Item.Description>
-          </Item.Content>
-        </Item>}
+        {!candidate && (
+          <Item>
+            <Item.Content>
+              <Divider horizontal>Rating</Divider>
+              <Item.Description>{graphGist.avg_rating}</Item.Description>
+            </Item.Content>
+          </Item>
+        )}
         <Item>
           <Item.Content>
             <Divider horizontal>Created</Divider>

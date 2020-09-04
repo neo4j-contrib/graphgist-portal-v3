@@ -7,7 +7,7 @@ import * as d3 from "d3";
 import neo from "./neod3";
 import { props } from "./cypher.datatable";
 
-export default function() {
+export default function () {
   var styleContents = `
     node {
       diameter: 40px;
@@ -36,7 +36,7 @@ export default function() {
     "target",
     "labels",
     "type",
-    "selected"
+    "selected",
   ];
   var prio_props = ["name", "title", "tag", "username", "lastname"];
 
@@ -46,7 +46,7 @@ export default function() {
     '<a href="#" class="btn btn-success visualization-download" target="_blank"><i class="ui large download icon fi-download"></i> Download SVG</a>'
   )
     .hide()
-    .click(function() {
+    .click(function () {
       $downloadSvgLink.hide();
     });
   var downloadSvgLink = $downloadSvgLink[0];
@@ -84,7 +84,7 @@ export default function() {
         var props = (nodes[i].properties = extract_props(nodes[i]));
         var keys = Object.keys(props);
         if (label(nodes[i]) !== "" && keys.length > 0) {
-          var selected_keys = prio_props.filter(function(k) {
+          var selected_keys = prio_props.filter(function (k) {
             return keys.indexOf(k) !== -1;
           });
           selected_keys = selected_keys.concat(keys).concat(["id"]);
@@ -142,7 +142,7 @@ export default function() {
         style[selectorFor(label)] = styleFor(label, prop, {
           color: colors[0],
           "border-color": colors[1] || colors[0],
-          "text-color-internal": colors[2] || "#000000"
+          "text-color-internal": colors[2] || "#000000",
         });
       }
       return style;
@@ -221,10 +221,7 @@ export default function() {
     var nodeStyles = node_styles(nodes);
     var styleSheet = style_sheet(nodeStyles, styleContents);
 
-    var graphModel = neo
-      .graphModel()
-      .nodes(nodes)
-      .relationships(links);
+    var graphModel = neo.graphModel().nodes(nodes).relationships(links);
     var graphView = neo
       .graphView()
       .style(styleSheet)
@@ -255,9 +252,7 @@ export default function() {
     zoomHandlers.touchend = renderer.on("touchend.zoom");
     disableZoomHandlers();
 
-    d3.select("body")
-      .on("keydown", keyHandler)
-      .on("keyup", keyHandler);
+    d3.select("body").on("keydown", keyHandler).on("keyup", keyHandler);
 
     function refresh() {
       graphView.height($container.height());
@@ -274,7 +269,7 @@ export default function() {
         window.URL.revokeObjectURL(downloadSvgLink.href);
       }
       var blob = new window.Blob([xml], {
-        type: "image/svg+xml"
+        type: "image/svg+xml",
       });
       var fileName = id + ".svg";
       if (!msBlobSupport) {
@@ -291,7 +286,7 @@ export default function() {
       if (blobSupport && (URLSupport || msBlobSupport)) {
         funcs["ui large download icon fi-download"] = {
           title: "Save as SVG",
-          func: saveToSvg
+          func: saveToSvg,
         };
       }
       return funcs;
@@ -301,7 +296,7 @@ export default function() {
       subscriptions: {
         expand: refresh,
         contract: refresh,
-        sizeChange: refresh
+        sizeChange: refresh,
       },
       actions: getFunctions(),
       teardown: disableZoomHandlers,
@@ -312,11 +307,11 @@ export default function() {
     if (serializer === null) {
       if (typeof window.XMLSerializer !== "undefined") {
         var xmlSerializer = new XMLSerializer();
-        serializer = function(emnt) {
+        serializer = function (emnt) {
           return xmlSerializer.serializeToString(emnt);
         };
       } else {
-        serializer = function(emnt) {
+        serializer = function (emnt) {
           return (
             '<svg xmlns="http://www.w3.org/2000/svg">' +
             $(emnt).html() +

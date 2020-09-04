@@ -12,7 +12,7 @@ const GET_ITEMS = gql`
 `;
 
 function AuthorsSelect(props) {
-  return <GraphQLSelect {...props} query={GET_ITEMS} />
+  return <GraphQLSelect {...props} query={GET_ITEMS} />;
 }
 
 export default AuthorsSelect;

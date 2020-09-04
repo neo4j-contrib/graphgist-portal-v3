@@ -27,19 +27,19 @@ function GraphGists() {
     fetchPolicy: "cache-and-network",
     variables: {
       first: rowsPerPage,
-      offset: 0
+      offset: 0,
     },
-    onCompleted: data => {
+    onCompleted: (data) => {
       if (data && data.GraphGist) {
         setHasMore(data.GraphGist.length >= rowsPerPage);
       }
-    }
+    },
   });
 
   function loadMore() {
     fetchMore({
       variables: {
-        offset: data.GraphGist.length
+        offset: data.GraphGist.length,
       },
       updateQuery: (prev, { fetchMoreResult }) => {
         if (!fetchMoreResult) {
@@ -48,9 +48,9 @@ function GraphGists() {
         }
         setHasMore(fetchMoreResult.GraphGist.length >= rowsPerPage);
         return Object.assign({}, prev, {
-          GraphGist: [...prev.GraphGist, ...fetchMoreResult.GraphGist]
+          GraphGist: [...prev.GraphGist, ...fetchMoreResult.GraphGist],
         });
-      }
+      },
     });
   }
 
@@ -72,7 +72,7 @@ function GraphGists() {
       {data && !loading && !error && (
         <Grid.Row>
           <Card.Group itemsPerRow={3}>
-            {data.GraphGist.map(graphGist => (
+            {data.GraphGist.map((graphGist) => (
               <GraphGistCard key={graphGist.uuid} graphGist={graphGist} />
             ))}
           </Card.Group>

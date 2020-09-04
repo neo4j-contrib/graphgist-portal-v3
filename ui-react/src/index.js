@@ -14,14 +14,14 @@ const AUTH0_CLIENT_ID = process.env.REACT_APP_AUTH0_CLIENT_ID;
 
 const client = new ApolloClient({
   uri: process.env.REACT_APP_GRAPHQL_URI,
-  request: operation => {
-    operation.setContext(context => ({
+  request: (operation) => {
+    operation.setContext((context) => ({
       headers: {
         ...context.headers,
-        authorization: authToken.get()
-      }
+        authorization: authToken.get(),
+      },
     }));
-  }
+  },
 });
 
 const Main = () => (

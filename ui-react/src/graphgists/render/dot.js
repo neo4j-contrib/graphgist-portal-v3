@@ -10,7 +10,7 @@
  * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the
  * specific language governing permissions and limitations under the License.
  */
-export default function($) {
+export default function ($) {
   var vizLoaded = false;
   var loading = false;
   var queue = [];
@@ -23,7 +23,7 @@ export default function($) {
     ) {
       return;
     }
-    $('script[type="text/vnd.graphviz"]').each(function() {
+    $('script[type="text/vnd.graphviz"]').each(function () {
       var $script = $(this);
       var dot = $script.html();
       insertSvg(dot, $script);
@@ -41,12 +41,12 @@ export default function($) {
           url: "js/viz.js",
           dataType: "script",
           cache: true,
-          success: function() {
+          success: function () {
             vizLoaded = true;
-            $.each(queue, function() {
+            $.each(queue, function () {
               executeAndInsert(this.dot, this.element);
             });
-          }
+          },
         });
       }
     } else {

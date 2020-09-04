@@ -18,7 +18,7 @@ import $ from "jquery";
  * specific language governing permissions and limitations under the License.
  */
 
-export default function(config, ready) {
+export default function (config, ready) {
   var $EDIT_BUTTON,
     $IFRAME,
     $IFRAME_WRAPPER,
@@ -41,9 +41,7 @@ export default function(config, ready) {
     getUrl,
     gist_id,
     neo4j_version;
-  $IFRAME = $("<iframe/>")
-    .attr("id", "console")
-    .addClass("cypherdoc-console");
+  $IFRAME = $("<iframe/>").attr("id", "console").addClass("cypherdoc-console");
   $IFRAME_WRAPPER = $("<div/>").attr("id", "console-wrapper");
   RESIZE_OUT_ICON = "ui expand icon";
   RESIZE_IN_ICON = "ui large compress icon";
@@ -72,7 +70,7 @@ export default function(config, ready) {
   consoleUrl = config.url;
   neo4j_version = config.neo4j_version;
   $console_template = config.$console_template;
-  addConsole = function($context, gistId, ready) {
+  addConsole = function ($context, gistId, ready) {
     var $contentMoveSelector,
       $gistForm,
       $iframe,
@@ -88,7 +86,7 @@ export default function(config, ready) {
       "\n\nUse the play/edit buttons to run the queries!"
     );
     $iframe = $IFRAME.clone().attr("src", url);
-    $iframe.load(function() {
+    $iframe.load(function () {
       var consolr, iframeWindow;
       iframeWindow = $iframe[0].contentWindow;
       if (!iframeWindow) {
@@ -98,7 +96,7 @@ export default function(config, ready) {
       if (typeof ready === "function") {
         ready(consolr);
       }
-      window.setTimeout(function() {
+      window.setTimeout(function () {
         var consoleLocation, err;
         try {
           if (iframeWindow.location && iframeWindow.location.href) {
@@ -128,33 +126,33 @@ export default function(config, ready) {
     $verticalResizeButton = $RESIZE_VERTICAL_BUTTON
       .clone()
       .appendTo($iframeWrapper)
-      .mousedown(function(event) {
+      .mousedown(function (event) {
         event.preventDefault();
       });
     $iframeWrapper.resizable({
       handles: {
-        s: $verticalResizeButton
+        s: $verticalResizeButton,
       },
       alsoResize: $context,
       minHeight: 80,
-      start: function() {
+      start: function () {
         $resizeOverlay.appendTo($iframeWrapper);
       },
-      stop: function(event, ui) {
+      stop: function (event, ui) {
         $resizeOverlay.detach();
       },
-      resize: function(event, ui) {
+      resize: function (event, ui) {
         if (!$resizeIcon.hasClass(RESIZE_OUT_ICON)) {
           $contentMoveSelector.css("margin-top", ui.size.height + 11);
         }
-      }
+      },
     });
     $gistForm = $("#gist-form");
     // contextHeight = 0;
     $resizeButton = $RESIZE_BUTTON
       .clone()
       .appendTo($iframeWrapper)
-      .click(function() {
+      .click(function () {
         if ($resizeIcon.hasClass(RESIZE_OUT_ICON)) {
           // contextHeight = $context.height();
           $context.height(36);
@@ -183,7 +181,7 @@ export default function(config, ready) {
         "ui button green icon show-console-toggle-hidden-console"
       );
     }
-    $toggleConsoleShowButton.click(function() {
+    $toggleConsoleShowButton.click(function () {
       if ($context.is(":visible")) {
         if (!$resizeIcon.hasClass(RESIZE_OUT_ICON)) {
           $resizeButton.click();
@@ -198,13 +196,11 @@ export default function(config, ready) {
       }
     });
   };
-  addPlayButtons = function(consolr, element) {
+  addPlayButtons = function (consolr, element) {
     var fill_text_area;
-    fill_text_area = function(target) {
+    fill_text_area = function (target) {
       var $textarea, e, text;
-      e = $(target)
-        .parents(".content")
-        .find(".query-wrapper")[0];
+      e = $(target).parents(".content").find(".query-wrapper")[0];
       text = e.innerText || e.textContent;
       $textarea = $console_template.find("textarea");
       $textarea.val(text);
@@ -213,26 +209,23 @@ export default function(config, ready) {
     $("div.query-wrapper")
       .parent()
       .append(
-        $PLAY_BUTTON.clone().click(function(event) {
+        $PLAY_BUTTON.clone().click(function (event) {
           fill_text_area(event.target);
           $console_template.find(".run").click();
           event.preventDefault();
         })
       )
       .append(
-        $EDIT_BUTTON.clone().click(function(event) {
+        $EDIT_BUTTON.clone().click(function (event) {
           fill_text_area(event.target);
           event.preventDefault();
         })
       );
   };
-  getQueryFromButton = function(button) {
-    return $(button)
-      .prevAll("div.query-wrapper")
-      .first()
-      .data("query");
+  getQueryFromButton = function (button) {
+    return $(button).prevAll("div.query-wrapper").first().data("query");
   };
-  getUrl = function(database, command, message, session) {
+  getUrl = function (database, command, message, session) {
     var url;
     url = consoleUrl;
     if (session != null) {
@@ -253,16 +246,18 @@ export default function(config, ready) {
     }
     return url + "&no_root=true";
   };
-  gist_id = function() {
+  gist_id = function () {
     gist_id = $("#" + contentId).data("gist-id");
     if (gist_id == null || gist_id.length === 0) {
-      throw "The #" +
+      throw (
+        "The #" +
         contentId +
-        " element is supposed to have a data-gist-id attribute.  Where is it, punk?";
+        " element is supposed to have a data-gist-id attribute.  Where is it, punk?"
+      );
     }
     return gist_id;
   };
-  createConsole = function(ready, elementClass, contentId) {
+  createConsole = function (ready, elementClass, contentId) {
     var $element, consolr;
     if ($("code.language-cypher").length) {
       $element = $("p." + elementClass).first();
@@ -272,7 +267,7 @@ export default function(config, ready) {
         $element.hide();
       }
       consolr = new Consolr(gist_id(), neo4j_version);
-      $element.each(function() {
+      $element.each(function () {
         var $context;
         $context = $(this);
         return typeof ready === "function" ? ready(consolr) : void 0;
@@ -286,11 +281,11 @@ export default function(config, ready) {
 
   return {
     addConsole,
-    getQueryFromButton
+    getQueryFromButton,
   };
 }
 
-const Consolr = function(gistId, neo4j_version) {
+const Consolr = function (gistId, neo4j_version) {
   var authenticity_token,
     currently_querying,
     establishSession,
@@ -304,27 +299,27 @@ const Consolr = function(gistId, neo4j_version) {
   query_queue = [];
   currently_querying = false;
   authenticity_token = $("meta[name=csrf-token]").attr("content");
-  graph_gist_portal_url = function() {
+  graph_gist_portal_url = function () {
     if (window.graph_gist_portal_url == null) {
       throw "No window.graph_gist_portal_url defined.  That's important if you want to get your gist on...";
     }
     return window.graph_gist_portal_url;
   };
-  establishSession = function() {
+  establishSession = function () {
     return $.ajax(graph_gist_portal_url() + "/graph_gists/query_session_id", {
       method: "GET",
       data: {
-        neo4j_version: neo4j_version
+        neo4j_version: neo4j_version,
       },
       xhrFields: {
-        withCredentials: true
-      }
-    }).done(function(result) {
+        withCredentials: true,
+      },
+    }).done(function (result) {
       return (sessionId = result);
     });
   };
-  init = function(params, success, error, data) {};
-  process_query_queue = function(final_success, always) {
+  init = function (params, success, error, data) {};
+  process_query_queue = function (final_success, always) {
     var cypher, error, ref, success;
     if (currently_querying) {
       return;
@@ -341,13 +336,13 @@ const Consolr = function(gistId, neo4j_version) {
         data: {
           gist_load_session: sessionId,
           neo4j_version: neo4j_version,
-          cypher: cypher
+          cypher: cypher,
         },
         xhrFields: {
-          withCredentials: true
-        }
+          withCredentials: true,
+        },
       }
-    ).done(function(result) {
+    ).done(function (result) {
       var data;
       data = JSON.parse(result);
       (data.error ? error : success)(data);
@@ -365,17 +360,17 @@ const Consolr = function(gistId, neo4j_version) {
       }
     });
   };
-  query = function(cypher, success, error, final_success, always) {
+  query = function (cypher, success, error, final_success, always) {
     query_queue.push({
       cypher: cypher,
       success: success,
-      error: error
+      error: error,
     });
     return process_query_queue(final_success, always);
   };
   return {
     establishSession: establishSession,
     init: init,
-    query: query
+    query: query,
   };
 };

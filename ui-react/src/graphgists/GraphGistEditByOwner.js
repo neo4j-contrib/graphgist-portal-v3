@@ -2,10 +2,21 @@ import React from "react";
 import { useQuery, useMutation } from "@apollo/react-hooks";
 import { useParams, useHistory } from "react-router-dom";
 import gql from "graphql-tag";
-import { Form, Button, Grid, Header, Image, Card, Loader, Dimmer, Segment, Select } from "semantic-ui-react";
+import {
+  Form,
+  Button,
+  Grid,
+  Header,
+  Image,
+  Card,
+  Loader,
+  Dimmer,
+  Segment,
+  Select,
+} from "semantic-ui-react";
 import _ from "lodash";
 import { Helmet } from "react-helmet";
-import { Formik } from 'formik';
+import { Formik } from "formik";
 import { createUseStyles } from "react-jss";
 import CodeMirrorTextArea from "./render/TextArea";
 import AuthorsSelect from "./components/AuthorsSelect";
@@ -14,57 +25,53 @@ import UseCasesSelect from "./components/UseCasesSelect";
 import ChallengesSelect from "./components/ChallengesSelect";
 import GraphGistRenderer from "./render/GraphGistRenderer.js";
 
-
 const GET_GRAPHGIST = gql`
   query graphGistPage($id: ID!) {
-    GraphGist(uuid: $id) {
+    getGraphGistCandidate(uuid: $id) {
       uuid
-      my_perms
-      author {
+      graphgist {
         uuid
       }
-      candidate {
+      my_perms
+      render_id
+      status
+      slug
+      title
+      summary
+      asciidoc
+      cached
+      author {
         uuid
-        render_id
-        status
+        name
         slug
+      }
+      created_at {
+        formatted
+      }
+      image {
+        uuid
         title
-        summary
-        asciidoc
-        cached
-        author {
-          uuid
-          name
-          slug
-        }
-        created_at {
-          formatted
-        }
+        description
+        source_url
+      }
+      industries {
+        uuid
+        name
+      }
+      use_cases {
+        uuid
+        name
+      }
+      challenges {
+        uuid
+        name
+      }
+      author {
+        uuid
+        name
+        slug
         image {
-          uuid
-          title
-          description
           source_url
-        }
-        industries {
-          uuid
-          name
-        }
-        use_cases {
-          uuid
-          name
-        }
-        challenges {
-          uuid
-          name
-        }
-        author {
-          uuid
-          name
-          slug
-          image {
-            source_url
-          }
         }
       }
     }
@@ -78,13 +85,13 @@ const GET_GRAPHGIST = gql`
 `;
 
 const PREVIEW = gql`
-  mutation Preview($asciidoc: String!){
+  mutation Preview($asciidoc: String!) {
     PreviewGraphGist(asciidoc: $asciidoc)
   }
 `;
 
 const UPDATE_GRAPHGIST = gql`
-  mutation UpdateGraphGist($id: ID!, $graphgist: GraphGistInput!){
+  mutation UpdateGraphGist($id: ID!, $graphgist: GraphGistInput!) {
     UpdateGraphGist(uuid: $id, graphgist: $graphgist) {
       uuid
     }
@@ -119,44 +126,60 @@ function GraphGistEditByOwner() {
 
   const { loading, data, error } = useQuery(GET_GRAPHGIST, {
     fetchPolicy: "cache-and-network",
-    variables: { id }
+    variables: { id },
   });
 
-  const [previewGraphGist, { data: graphGistPreviewResult, loading: isLoadingPreview }] = useMutation(PREVIEW);
+  const [
+    previewGraphGist,
+    { data: graphGistPreviewResult, loading: isLoadingPreview },
+  ] = useMutation(PREVIEW);
 
-  const [updateGraphGist, { loading: isSaving }] = useMutation(UPDATE_GRAPHGIST, {
-    onCompleted: (data) => {
-      history.push(`/graph_gist_candidates/${data.UpdateGraphGist.uuid}`);
+  const [updateGraphGist, { loading: isSaving }] = useMutation(
+    UPDATE_GRAPHGIST,
+    {
+      onCompleted: (data) => {
+        history.push(`/graph_gist_candidates/${data.UpdateGraphGist.uuid}`);
+      },
     }
-  });
+  );
 
   const handlePreview = (e, asciidoc) => {
     e.preventDefault();
-    previewGraphGist({variables: { asciidoc }});
-  }
+    previewGraphGist({ variables: { asciidoc } });
+  };
 
-  const graphGistPreviewHTML = _.get(graphGistPreviewResult, 'PreviewGraphGist', '');
-  const graphGist = _.get(data, "GraphGist[0]", null);
-  const graphGistCandidate = _.get(data, "GraphGist[0].candidate", null);
-  const statusChoices = _.get(data, "statusChoices.enumValues", []).map(item => ({
-    value: item.name,
-    text: item.name
-  }));
+  const graphGistPreviewHTML = _.get(
+    graphGistPreviewResult,
+    "PreviewGraphGist",
+    ""
+  );
+  const graphGistCandidate = _.get(data, "getGraphGistCandidate", null);
+  const graphGist = _.get(data, "graphgist", null);
+  const statusChoices = _.get(data, "statusChoices.enumValues", []).map(
+    (item) => ({
+      value: item.name,
+      text: item.name,
+    })
+  );
 
   if (loading && !error) {
-    return <Grid>
-      <Grid.Column width={16}>
-        <p>Loading...</p>
-      </Grid.Column>
-    </Grid>;
+    return (
+      <Grid>
+        <Grid.Column width={16}>
+          <p>Loading...</p>
+        </Grid.Column>
+      </Grid>
+    );
   }
 
   if (!graphGistCandidate) {
-    return <Grid>
-      <Grid.Column width={16}>
-        <p>Not found</p>
-      </Grid.Column>
-    </Grid>;
+    return (
+      <Grid>
+        <Grid.Column width={16}>
+          <p>Not found</p>
+        </Grid.Column>
+      </Grid>
+    );
   }
 
   return (
@@ -174,100 +197,175 @@ function GraphGistEditByOwner() {
           author: graphGistCandidate.author.uuid,
           summary: graphGistCandidate.summary,
           status: graphGistCandidate.status,
-          industries: graphGistCandidate.industries.map(i => i.uuid),
-          challenges: graphGistCandidate.challenges.map(i => i.uuid),
-          use_cases: graphGistCandidate.use_cases.map(i => i.uuid),
+          industries: graphGistCandidate.industries.map((i) => i.uuid),
+          challenges: graphGistCandidate.challenges.map((i) => i.uuid),
+          use_cases: graphGistCandidate.use_cases.map((i) => i.uuid),
         }}
         onSubmit={(values, e, a) => {
-          updateGraphGist({variables: { id: graphGist.uuid, graphgist: values }});
+          updateGraphGist({
+            variables: { id: graphGist.uuid, graphgist: values },
+          });
         }}
       >
-        {({values, handleChange, handleSubmit}) => {
-
+        {({ values, handleChange, handleSubmit }) => {
           const handleChangeSelect = (e, { value, name }) => {
             e.target.name = name;
             e.target.value = value;
             handleChange(e);
-          }
+          };
 
-          return <Form className={classes.form}>
-            <div className={classes.imagesContainer}>
-              <Card.Group>
-                {graphGistCandidate.image.map((image, i) => {
-                  return <Card key={i}>
-                    <Image src={image.source_url} size="tiny" rounded ui={false} />
-                    {(image.title || image.description) && <Card.Content>
-                      {image.title && <Card.Header>{image.title}</Card.Header>}
-                      {image.description && <Card.Meta>{image.description}</Card.Meta>}
-                    </Card.Content>}
-                    <Card.Content>
-                      <Button color="green" size="large" href={image.source_url}>Full Size</Button>
-                    </Card.Content>
-                  </Card>
-                })}
-              </Card.Group>
-              <Form.Field className={classes.imageField}>
-                <label>Add Image</label>
-                <input name="image" type="file" />
+          return (
+            <Form className={classes.form}>
+              <div className={classes.imagesContainer}>
+                <Card.Group>
+                  {graphGistCandidate.image.map((image, i) => {
+                    return (
+                      <Card key={i}>
+                        <Image
+                          src={image.source_url}
+                          size="tiny"
+                          rounded
+                          ui={false}
+                        />
+                        {(image.title || image.description) && (
+                          <Card.Content>
+                            {image.title && (
+                              <Card.Header>{image.title}</Card.Header>
+                            )}
+                            {image.description && (
+                              <Card.Meta>{image.description}</Card.Meta>
+                            )}
+                          </Card.Content>
+                        )}
+                        <Card.Content>
+                          <Button
+                            color="green"
+                            size="large"
+                            href={image.source_url}
+                          >
+                            Full Size
+                          </Button>
+                        </Card.Content>
+                      </Card>
+                    );
+                  })}
+                </Card.Group>
+                <Form.Field className={classes.imageField}>
+                  <label>Add Image</label>
+                  <input name="image" type="file" />
+                </Form.Field>
+              </div>
+
+              <Form.Field>
+                <label>Title (Required)</label>
+                <input
+                  required
+                  name="title"
+                  value={values.title}
+                  onChange={handleChange}
+                />
               </Form.Field>
-            </div>
 
-            <Form.Field>
-              <label>Title (Required)</label>
-              <input required name="title"  value={values.title} onChange={handleChange} />
-            </Form.Field>
+              <CodeMirrorTextArea
+                label="AsciiDoc (Required)"
+                name="asciidoc"
+                value={values.asciidoc}
+                onChange={handleChange}
+              />
 
-            <CodeMirrorTextArea label="AsciiDoc (Required)" name="asciidoc" value={values.asciidoc} onChange={handleChange} />
+              <Form.Field>
+                <label>Summary</label>
+                <Form.TextArea
+                  name="summary"
+                  value={values.summary}
+                  onChange={handleChange}
+                />
+              </Form.Field>
 
-            <Form.Field>
-              <label>Summary</label>
-              <Form.TextArea name="summary" value={values.summary} onChange={handleChange} />
-            </Form.Field>
+              <Form.Field>
+                <label>Status</label>
+                <Select
+                  options={statusChoices}
+                  name="status"
+                  value={values.status}
+                  onChange={handleChangeSelect}
+                  fluid
+                />
+              </Form.Field>
 
-            <Form.Field>
-              <label>Status</label>
-              <Select options={statusChoices} name="status" value={values.status} onChange={handleChangeSelect} fluid />
-            </Form.Field>
+              <Form.Field>
+                <label>Author</label>
+                <AuthorsSelect
+                  name="author"
+                  value={values.author}
+                  onChange={handleChange}
+                  fluid
+                />
+              </Form.Field>
 
-            <Form.Field>
-              <label>Author</label>
-              <AuthorsSelect name="author" value={values.author} onChange={handleChange} fluid />
-            </Form.Field>
+              <Form.Field>
+                <label>Industries</label>
+                <IndustriesSelect
+                  name="industries"
+                  value={values.industries}
+                  onChange={handleChange}
+                  fluid
+                />
+              </Form.Field>
 
-            <Form.Field>
-              <label>Industries</label>
-              <IndustriesSelect name="industries" value={values.industries} onChange={handleChange} fluid />
-            </Form.Field>
+              <Form.Field>
+                <label>Use cases</label>
+                <UseCasesSelect
+                  name="use_cases"
+                  value={values.use_cases}
+                  onChange={handleChange}
+                  fluid
+                />
+              </Form.Field>
 
-            <Form.Field>
-              <label>Use cases</label>
-              <UseCasesSelect name="use_cases" value={values.use_cases} onChange={handleChange} fluid />
-            </Form.Field>
+              <Form.Field>
+                <label>Challenges</label>
+                <ChallengesSelect
+                  name="challenges"
+                  value={values.challenges}
+                  onChange={handleChange}
+                  fluid
+                />
+              </Form.Field>
 
-            <Form.Field>
-              <label>Challenges</label>
-              <ChallengesSelect name="challenges" value={values.challenges} onChange={handleChange} fluid />
-            </Form.Field>
-
-            <Button onClick={(e) => handlePreview(e, values.asciidoc)} loading={isLoadingPreview}>Preview</Button>
-            <Button onClick={handleSubmit} primary loading={isSaving}>Save and Continue</Button>
-          </Form>
+              <Button
+                onClick={(e) => handlePreview(e, values.asciidoc)}
+                loading={isLoadingPreview}
+              >
+                Preview
+              </Button>
+              <Button onClick={handleSubmit} primary loading={isSaving}>
+                Save and Continue
+              </Button>
+            </Form>
+          );
         }}
       </Formik>
 
-      {isLoadingPreview && <Segment className={classes.previewContainer}>
-        <Dimmer active>
-          <Loader />
-        </Dimmer>
-      </Segment>}
+      {isLoadingPreview && (
+        <Segment className={classes.previewContainer}>
+          <Dimmer active>
+            <Loader />
+          </Dimmer>
+        </Segment>
+      )}
 
-      {graphGistPreviewHTML && <div className={classes.previewContainer}><GraphGistRenderer>
-        <div
-          id="gist-body"
-          data-gist-id={graphGistCandidate.uuid}
-          dangerouslySetInnerHTML={{ __html: graphGistPreviewHTML }}
-        />
-      </GraphGistRenderer></div>}
+      {graphGistPreviewHTML && (
+        <div className={classes.previewContainer}>
+          <GraphGistRenderer>
+            <div
+              id="gist-body"
+              data-gist-id={graphGistCandidate.uuid}
+              dangerouslySetInnerHTML={{ __html: graphGistPreviewHTML }}
+            />
+          </GraphGistRenderer>
+        </div>
+      )}
     </React.Fragment>
   );
 }

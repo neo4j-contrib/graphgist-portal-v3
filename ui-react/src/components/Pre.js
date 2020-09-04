@@ -8,11 +8,11 @@ const useStyles = createUseStyles({
     padding: "1em",
     fontSize: "0.7em",
     display: "inline-block",
-    marginRight: "1em"
-  }
+    marginRight: "1em",
+  },
 });
 
-export default props => {
+export default (props) => {
   const classes = useStyles();
 
   return <pre className={classes.root} {...props} />;

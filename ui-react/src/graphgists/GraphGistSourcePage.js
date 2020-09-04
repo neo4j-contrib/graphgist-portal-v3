@@ -18,27 +18,30 @@ const GET_GRAPHGIST = gql`
   }
 `;
 
-
 function GraphGistSourcePage() {
   const { id } = useParams();
 
   const { loading, data, error } = useQuery(GET_GRAPHGIST, {
     fetchPolicy: "cache-and-network",
-    variables: { id }
+    variables: { id },
   });
 
   const graphGist = _.get(data, "GraphGist[0]", null);
 
-  return <PageLoading obj={graphGist} loading={loading} error={error}>
-    {graphGist && <React.Fragment>
-      <Grid.Column width={13}>
-        <Header as="h1" textAlign="center" size="huge">
-          {graphGist.title}
-        </Header>
-        <CodeMirrorTextArea value={graphGist.asciidoc} />
-      </Grid.Column>
-    </React.Fragment>}
-  </PageLoading>
+  return (
+    <PageLoading obj={graphGist} loading={loading} error={error}>
+      {graphGist && (
+        <React.Fragment>
+          <Grid.Column width={13}>
+            <Header as="h1" textAlign="center" size="huge">
+              {graphGist.title}
+            </Header>
+            <CodeMirrorTextArea value={graphGist.asciidoc} />
+          </Grid.Column>
+        </React.Fragment>
+      )}
+    </PageLoading>
+  );
 }
 
 export default GraphGistSourcePage;

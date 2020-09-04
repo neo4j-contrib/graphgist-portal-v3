@@ -58,12 +58,19 @@ function GraphGistCandidatePage() {
 
   const { loading, data, error } = useQuery(GET_GRAPHGIST, {
     fetchPolicy: "cache-and-network",
-    variables: { id: id }
+    variables: { id: id },
   });
 
   const graphGist = _.get(data, "GraphGistCandidate[0]", null);
 
-  return <GraphGistUI graphGist={graphGist} loading={loading} error={error} candidate />
+  return (
+    <GraphGistUI
+      graphGist={graphGist}
+      loading={loading}
+      error={error}
+      candidate
+    />
+  );
 }
 
 export default GraphGistCandidatePage;

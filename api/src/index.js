@@ -1,10 +1,10 @@
 import { ApolloServer, AuthenticationError } from "apollo-server-express";
 import express from "express";
-import neo4j from 'neo4j-driver';
+import neo4j from "neo4j-driver";
 import { makeAugmentedSchema, neo4jgraphql } from "neo4j-graphql-js";
-import { v4 as uuidv4 } from 'uuid';
-import Asciidoctor from 'asciidoctor';
-import { getGraphGistByUUID } from './graphgists';
+import { v4 as uuidv4 } from "uuid";
+import Asciidoctor from "asciidoctor";
+import { getGraphGistByUUID } from "./graphgists";
 
 import dotenv from "dotenv";
 dotenv.config();
@@ -40,9 +40,9 @@ const S3_BUCKET_NAME = process.env.S3_BUCKET_NAME;
 function convertAsciiDocToHtml(asciidoc) {
   const asciidoctor = Asciidoctor();
   return asciidoctor.convert(asciidoc, {
-    toc: 'macro',
-    'toc-placement': 'macro',
-    'env-graphgist': true
+    toc: "macro",
+    "toc-placement": "macro",
+    "env-graphgist": true,
   });
 }
 
@@ -56,16 +56,20 @@ export const schema = makeAugmentedSchema({
 
         try {
           const user = await auth0Verify(args.token);
-          const [provider, uid] = user.sub.split('|');
+          const [provider, uid] = user.sub.split("|");
 
-          const result = await txc.run(`MATCH (u:User) WHERE (u.provider = $provider AND u.uid = $uid) OR u.uid = '${provider}|${uid}' OR u.email = $email RETURN u`, {
-            provider,
-            uid,
-            email: user.email,
-          });
+          const result = await txc.run(
+            `MATCH (u:User) WHERE (u.provider = $provider AND u.uid = $uid) OR u.uid = '${provider}|${uid}' OR u.email = $email RETURN u`,
+            {
+              provider,
+              uid,
+              email: user.email,
+            }
+          );
 
           if (result.records.length === 0) {
-            const createUser = await txc.run(`CREATE (u:User {
+            const createUser = await txc.run(
+              `CREATE (u:User {
               uuid: $uuid,
               uid: $uid,
               password: $password,
@@ -74,28 +78,30 @@ export const schema = makeAugmentedSchema({
               name: $name,
               image: $image,
               provider: $provider
-            }) RETURN u`, {
-              uid: user.sub,
-              provider,
-              uuid: uuidv4(),
-              password: user.aud,
-              username: user.nickname,
-              email: user.email,
-              name: user.name,
-              image: user.picture,
-            });
+            }) RETURN u`,
+              {
+                uid: user.sub,
+                provider,
+                uuid: uuidv4(),
+                password: user.aud,
+                username: user.nickname,
+                email: user.email,
+                name: user.name,
+                image: user.picture,
+              }
+            );
             await txc.commit();
-            return createUser.records[0].get('u').properties;
+            return createUser.records[0].get("u").properties;
           } else {
             await txc.commit();
-            return result.records[0].get('u').properties;
+            return result.records[0].get("u").properties;
           }
         } catch (error) {
-          console.error(error)
-          await txc.rollback()
-          throw new AuthenticationError('Unable to retrieve user');
+          console.error(error);
+          await txc.rollback();
+          throw new AuthenticationError("Unable to retrieve user");
         } finally {
-          await session.close()
+          await session.close();
         }
 
         return null;
@@ -109,70 +115,97 @@ export const schema = makeAugmentedSchema({
 
         try {
           const graphGist = await getGraphGistByUUID(txc, args.uuid);
-          const {industries, use_cases, challenges, author, ...proprieties} = args.graphgist
-          const result = await txc.run(`
+          const {
+            industries,
+            use_cases,
+            challenges,
+            author,
+            ...proprieties
+          } = args.graphgist;
+          const result = await txc.run(
+            `
             MATCH (g:GraphGist {uuid: $uuid})<-[IS_VERSION]-(gc:GraphGistCandidate)
             SET gc += $graphgist
             SET g += { is_candidate_updated: TRUE, has_errors: FALSE }
             RETURN gc
-          `, {
-            uuid: args.uuid,
-            graphgist: {
-              ...proprieties,
-              raw_html: convertAsciiDocToHtml(proprieties.asciidoc),
-              has_errors: false
-            },
-          });
-          const candidate = result.records[0].get('gc').properties;
+          `,
+            {
+              uuid: args.uuid,
+              graphgist: {
+                ...proprieties,
+                raw_html: convertAsciiDocToHtml(proprieties.asciidoc),
+                has_errors: false,
+              },
+            }
+          );
+          const candidate = result.records[0].get("gc").properties;
 
-          await txc.run(`
+          await txc.run(
+            `
             MATCH (gc:GraphGistCandidate {uuid: $uuid})<-[r:WROTE]-()
             DELETE r
-          `, { uuid: candidate.uuid });
-          await txc.run(`
+          `,
+            { uuid: candidate.uuid }
+          );
+          await txc.run(
+            `
             MATCH (gc:GraphGistCandidate {uuid: $uuid}), (a:Person {uuid: $authorUuid})
             CREATE (gc)<-[r:WROTE]-(a)
             RETURN r
-          `, { uuid: candidate.uuid, authorUuid: author });
+          `,
+            { uuid: candidate.uuid, authorUuid: author }
+          );
 
-          await txc.run(`
+          await txc.run(
+            `
             MATCH (gc:GraphGistCandidate {uuid: $uuid})-[r:FOR_CHALLENGE|:FOR_USE_CASE|:FOR_INDUSTRY]->()
             DELETE r
-          `, { uuid: candidate.uuid });
+          `,
+            { uuid: candidate.uuid }
+          );
           var categoryUuid;
 
           for (categoryUuid of industries) {
-            const res = await txc.run(`
+            const res = await txc.run(
+              `
               MATCH (gc:GraphGistCandidate {uuid: $uuid}), (c:Industry {uuid: $categoryUuid})
               CREATE (gc)-[r:FOR_INDUSTRY]->(c)
               RETURN r
-            `, { uuid: candidate.uuid, categoryUuid });
-          };
+            `,
+              { uuid: candidate.uuid, categoryUuid }
+            );
+          }
 
           for (categoryUuid of use_cases) {
-            await txc.run(`
+            await txc.run(
+              `
               MATCH (gc:GraphGistCandidate {uuid: $uuid}), (c:UseCase {uuid: $categoryUuid})
               CREATE (gc)-[r:FOR_USE_CASE]->(c)
               RETURN r
-            `, { uuid: candidate.uuid, categoryUuid });
-          };
+            `,
+              { uuid: candidate.uuid, categoryUuid }
+            );
+          }
 
           for (categoryUuid of challenges) {
-            await txc.run(`
+            await txc.run(
+              `
               MATCH (gc:GraphGistCandidate {uuid: $uuid}), (c:Challenge {uuid: $categoryUuid})
               CREATE (gc)-[r:FOR_CHALLENGE]->(c)
               RETURN r
-            `, { uuid: candidate.uuid, categoryUuid });
-          };
+            `,
+              { uuid: candidate.uuid, categoryUuid }
+            );
+          }
 
           await txc.commit();
           return candidate;
         } catch (error) {
-          console.error(error)
-          await txc.rollback()
+          console.error(error);
+          await txc.rollback();
           throw error;
         } finally {
-          await session.close()
+          await session.close();
         }
 
         return null;
@@ -186,12 +219,12 @@ export const schema = makeAugmentedSchema({
             return user;
           }
         } catch (error) {
-          console.error(error)
+          console.error(error);
         }
         return null;
       },
       getGraphGistCandidate: async (obj, args, context, info) => {
-				const session = context.driver.session();
+        const session = context.driver.session();
         const txc = session.beginTransaction();
         const { uuid: graphGistUUID } = args;
 
@@ -208,70 +241,88 @@ export const schema = makeAugmentedSchema({
             throw new Error("GraphGist not found");
           }
 
-          const result = await txc.run(`
+          const result = await txc.run(
+            `
             MATCH (g:GraphGist {uuid: $uuid})<-[:IS_VERSION]-(c:GraphGistCandidate)
             RETURN c
-          `, { uuid: graphGistUUID });
-					
-					let candidateUUID;
+          `,
+            { uuid: graphGistUUID }
+          );
+
+          let candidateUUID;
           if (result.records.length > 0) {
             await txc.commit();
-						candidateUUID	= result.records[0].get('c').properties.uuid;
+            candidateUUID = result.records[0].get("c").properties.uuid;
           } else {
             candidateUUID = uuidv4();
-						const createResult = await txc.run(`
-							MATCH (g:GraphGist {uuid: $uuid})
+            const createResult = await txc.run(
+              `
+              MATCH (g:GraphGist {uuid: $uuid})
               MERGE (c:GraphGistCandidate)-[r:IS_VERSION]->(g)
-							SET c = g
+              SET c = g
               SET c.uuid = $candidateUUID
               WITH c, g
 
-              MATCH (g)<-[r:WROTE]-(p) 
+              MATCH (g)<-[r:WROTE]-(p)
               WITH collect(p) as endNodes, c, g
               FOREACH(pp in endNodes | CREATE (c)<-[:WROTE]-(pp))
               WITH c, g
 
-              MATCH (g)-[r:FOR_CHALLENGE]->(p) 
+              MATCH (g)-[r:FOR_CHALLENGE]->(p)
               WITH collect(p) as endNodes, c, g
               FOREACH(pp in endNodes | CREATE (c)-[:FOR_CHALLENGE]->(pp))
               WITH c, g
 
-              MATCH (g)-[r:FOR_INDUSTRY]->(p) 
+              MATCH (g)-[r:FOR_INDUSTRY]->(p)
               WITH collect(p) as endNodes, c, g
               FOREACH(pp in endNodes | CREATE (c)-[:FOR_INDUSTRY]->(pp))
               WITH c, g
 
-              MATCH (g)-[r:FOR_USE_CASE]->(p) 
+              MATCH (g)-[r:FOR_USE_CASE]->(p)
               WITH collect(p) as endNodes, c, g
               FOREACH(pp in endNodes | CREATE (c)-[:FOR_USE_CASE]->(pp))
               WITH c, g
 
-							RETURN c
-						`, {
-							uuid: graphGistUUID,
-              candidateUUID
-						});
+              MATCH (g)-[r:HAS_IMAGE]->(p)
+              WITH collect(p) as endNodes, c, g
+              FOREACH(pp in endNodes | CREATE (c)-[:HAS_IMAGE]->(pp))
+              WITH c, g
+
+              RETURN c
+            `,
+              {
+                uuid: graphGistUUID,
+                candidateUUID,
+              }
+            );
             await txc.commit();
           }
 
-					return neo4jgraphql(obj, { uuid: candidateUUID }, context, info);
+          return neo4jgraphql(obj, { uuid: candidateUUID }, context, info);
         } catch (error) {
-          console.error(error)
-          await txc.rollback()
+          console.error(error);
+          await txc.rollback();
         } finally {
-          await session.close()
+          await session.close();
         }
 
-				return null;
+        return null;
       },
     },
     Image: {
       source_url: (obj, args, context, info) => {
-        const {uuid, source_file_name, source_updated_at} = obj.source_url.properties;
+        const {
+          uuid,
+          source_file_name,
+          source_updated_at,
+        } = obj.source_url.properties;
         const size = "medium";
-        const partitions = uuid.match(/.{9}/g)[0].match(/.{1,3}/g).join("/");
+        const partitions = uuid
+          .match(/.{9}/g)[0]
+          .match(/.{1,3}/g)
+          .join("/");
         return `https://${S3_BUCKET_NAME}.s3.amazonaws.com/graph_starter/images/sources/${partitions}/${size}/${source_file_name}?${source_updated_at}`;
-      }
+      },
     },
     GraphGist: {
       my_perms: async (obj, args, context, info) => {
@@ -279,14 +330,14 @@ export const schema = makeAugmentedSchema({
           const user = await context.user;
 
           if (user.admin) {
-            return ['edit', 'delete'];
+            return ["edit", "delete"];
           }
 
           if (user.uuid === obj.author.uuid) {
-            return ['edit'];
+            return ["edit"];
           }
         } catch (error) {
-          console.error(error)
+          console.error(error);
         }
 
         return [];
@@ -336,22 +387,22 @@ export const schema = makeAugmentedSchema({
           const user = await context.user;
 
           if (user.admin) {
-            return ['edit', 'delete'];
+            return ["edit", "delete"];
           }
 
           if (user.uuid === obj.author.uuid) {
-            return ['edit'];
+            return ["edit"];
           }
         } catch (error) {
-          console.error(error)
+          console.error(error);
         }
 
         return [];
       },
-    }
+    },
   },
   config: {
-    mutation: false
+    mutation: false,
   },
 });
 
@@ -366,12 +417,12 @@ const server = new ApolloServer({
     const user = getUser(driver, req);
     return {
       driver,
-      user
+      user,
     };
   },
   schema: schema,
   introspection: true,
-  playground: true
+  playground: true,
 });
 
 // Specify port and path for GraphQL endpoint
@@ -379,11 +430,11 @@ const port = process.env.PORT || process.env.GRAPHQL_LISTEN_PORT || 4001;
 const path = "/graphql";
 
 /*
-* Optionally, apply Express middleware for authentication, etc
-* This also also allows us to specify a path for the GraphQL endpoint
-*/
-server.applyMiddleware({app, path});
+ * Optionally, apply Express middleware for authentication, etc
+ * This also also allows us to specify a path for the GraphQL endpoint
+ */
+server.applyMiddleware({ app, path });
 
-app.listen({port, path}, () => {
+app.listen({ port, path }, () => {
   console.log(`GraphQL server ready at http://localhost:${port}${path}`);
 });

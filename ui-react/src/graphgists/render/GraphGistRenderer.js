@@ -8,14 +8,14 @@ export default class extends React.Component {
     window.graph_gist_portal_url = "https://portal.graphgist.org";
 
     this.GraphGistRenderer = GraphGist({
-      preProcess: false
+      preProcess: false,
     });
 
     $(".sect1").addClass("ui container");
     let ref = $('code[class*="language-"]');
     for (let i = 0, len = ref.length; i < len; i++) {
       let code_element = ref[i];
-      let classes = (function() {
+      let classes = (function () {
         var j, len1, ref1, results;
         ref1 = code_element.classList;
         results = [];
@@ -29,9 +29,7 @@ export default class extends React.Component {
       })();
       for (let j = 0, len1 = classes.length; j < len1; j++) {
         let c = classes[j];
-        $(code_element)
-          .parent("pre")
-          .addClass(c);
+        $(code_element).parent("pre").addClass(c);
       }
     }
 
