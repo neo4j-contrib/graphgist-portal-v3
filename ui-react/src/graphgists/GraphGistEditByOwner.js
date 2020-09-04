@@ -154,7 +154,7 @@ function GraphGistEditByOwner() {
     ""
   );
   const graphGistCandidate = _.get(data, "getGraphGistCandidate", null);
-  const graphGist = _.get(data, "graphgist", null);
+  const graphGist = _.get(graphGistCandidate, "graphgist", null);
   const statusChoices = _.get(data, "statusChoices.enumValues", []).map(
     (item) => ({
       value: item.name,
