@@ -25,21 +25,22 @@ function GraphGuides() {
   const [hasMore, setHasMore] = React.useState(false);
 
   const { fetchMore, loading, data, error } = useQuery(GET_GISTS, {
+    fetchPolicy: "cache-and-network",
     variables: {
       first: rowsPerPage,
-      offset: 0
+      offset: 0,
     },
-    onCompleted: data => {
+    onCompleted: (data) => {
       if (data && data.GraphGist) {
         setHasMore(data.GraphGist.length >= rowsPerPage);
       }
-    }
+    },
   });
 
   function loadMore() {
     fetchMore({
       variables: {
-        offset: data.GraphGist.length
+        offset: data.GraphGist.length,
       },
       updateQuery: (prev, { fetchMoreResult }) => {
         if (!fetchMoreResult) {
@@ -48,9 +49,9 @@ function GraphGuides() {
         }
         setHasMore(fetchMoreResult.GraphGist.length >= rowsPerPage);
         return Object.assign({}, prev, {
-          GraphGist: [...prev.GraphGist, ...fetchMoreResult.GraphGist]
+          GraphGist: [...prev.GraphGist, ...fetchMoreResult.GraphGist],
         });
-      }
+      },
     });
   }
 
@@ -62,7 +63,7 @@ function GraphGuides() {
       {error && !loading && <p>Error</p>}
       {data && !loading && !error && (
         <Card.Group itemsPerRow={3}>
-          {data.GraphGist.map(graphGist => (
+          {data.GraphGist.map((graphGist) => (
             <GraphGistCard key={graphGist.uuid} graphGist={graphGist} />
           ))}
         </Card.Group>

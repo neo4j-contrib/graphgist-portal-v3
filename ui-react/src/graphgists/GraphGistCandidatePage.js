@@ -6,16 +6,14 @@ import _ from "lodash";
 import GraphGistUI from "./GraphGistUI.js";
 
 const GET_GRAPHGIST = gql`
-  query graphGistPage($id: String) {
-    GraphGist(slug: $id) {
+  query graphGistCandidatePage($id: ID!) {
+    GraphGistCandidate(uuid: $id) {
       uuid
       render_id
       status
       slug
       title
       summary
-      featured
-      avg_rating
       raw_html
       cached
       my_perms
@@ -47,21 +45,32 @@ const GET_GRAPHGIST = gql`
           source_url
         }
       }
+      graphgist {
+        uuid
+        slug
+      }
     }
   }
 `;
 
-function GraphGistPage() {
+function GraphGistCandidatePage() {
   const { id } = useParams();
 
   const { loading, data, error } = useQuery(GET_GRAPHGIST, {
     fetchPolicy: "cache-and-network",
-    variables: { id },
+    variables: { id: id },
   });
 
-  const graphGist = _.get(data, "GraphGist[0]", null);
+  const graphGist = _.get(data, "GraphGistCandidate[0]", null);
 
-  return <GraphGistUI graphGist={graphGist} loading={loading} error={error} />;
+  return (
+    <GraphGistUI
+      graphGist={graphGist}
+      loading={loading}
+      error={error}
+      candidate
+    />
+  );
 }
 
-export default GraphGistPage;
+export default GraphGistCandidatePage;

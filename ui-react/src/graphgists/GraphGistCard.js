@@ -10,14 +10,14 @@ import missingImg from "../assets/missing.png";
 const useStyles = createUseStyles({
   categoryIcon: {
     width: "1.7em",
-    height: "1.7em"
-  }
+    height: "1.7em",
+  },
 });
 
 const categoriesUrlPath = {
   UseCase: "use_cases",
   Industry: "industries",
-  Challenge: "challenges"
+  Challenge: "challenges",
 };
 
 function GraphGistCard(props) {
@@ -40,7 +40,11 @@ function GraphGistCard(props) {
 
       <Image
         width="100%"
-        src={graphGist.image ? graphGist.image.source_url : missingImg}
+        src={
+          graphGist.image.length > 0
+            ? graphGist.image[0].source_url
+            : missingImg
+        }
       />
 
       {graphGist.featured && (
@@ -69,7 +73,7 @@ function GraphGistCard(props) {
               return (
                 <List.Item key={category.uuid}>
                   <Image
-                    src={category.image.source_url}
+                    src={category.image[0].source_url}
                     alt={category.name}
                     width={16}
                     height={14}
@@ -105,7 +109,7 @@ GraphGistCard.fragments = {
       title
       featured
       avg_rating
-      image {
+      image(first: 1) {
         source_url
       }
       categories(first: 3) {
@@ -113,19 +117,19 @@ GraphGistCard.fragments = {
         uuid
         slug
         name
-        image {
+        image(first: 1) {
           source_url
         }
       }
       author {
         name
         slug
-        image {
+        image(first: 1) {
           source_url
         }
       }
     }
-  `
+  `,
 };
 
 export default GraphGistCard;

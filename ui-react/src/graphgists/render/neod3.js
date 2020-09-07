@@ -14,14 +14,14 @@ neo.models = {};
 
 neo.renderers = {
   node: [],
-  relationship: []
+  relationship: [],
 };
 
 neo.utils = {
-  copy: function(src) {
+  copy: function (src) {
     return JSON.parse(JSON.stringify(src));
   },
-  extend: function(dest, src) {
+  extend: function (dest, src) {
     var k, v;
     if (!neo.utils.isObject(dest) && neo.utils.isObject(src)) {
       return;
@@ -35,22 +35,22 @@ neo.utils = {
   },
   isArray:
     Array.isArray ||
-    function(obj) {
+    function (obj) {
       return Object.prototype.toString.call(obj) === "[object Array]";
     },
-  isObject: function(obj) {
+  isObject: function (obj) {
     return Object(obj) === obj;
-  }
+  },
 };
 
-var __bind = function(fn, me) {
-  return function() {
+var __bind = function (fn, me) {
+  return function () {
     return fn.apply(me, arguments);
   };
 };
 var __slice = [].slice;
 
-neo.models.Graph = (function() {
+neo.models.Graph = (function () {
   function Graph(cypher) {
     this.removeRelationships = __bind(this.removeRelationships, this);
     this.removeNodes = __bind(this.removeNodes, this);
@@ -66,7 +66,7 @@ neo.models.Graph = (function() {
     }
   }
 
-  Graph.prototype.nodes = function() {
+  Graph.prototype.nodes = function () {
     var key, value, _ref, _results;
     _ref = this.nodeMap;
     _results = [];
@@ -78,7 +78,7 @@ neo.models.Graph = (function() {
     return _results;
   };
 
-  Graph.prototype.relationships = function() {
+  Graph.prototype.relationships = function () {
     var key, value, _ref, _results;
     _ref = this.relationshipMap;
     _results = [];
@@ -90,7 +90,7 @@ neo.models.Graph = (function() {
     return _results;
   };
 
-  Graph.prototype.addNodes = function(item) {
+  Graph.prototype.addNodes = function (item) {
     var items, node, _base, _i, _len, _name;
     items = !neo.utils.isArray(item) ? [item] : item;
     for (_i = 0, _len = items.length; _i < _len; _i++) {
@@ -103,19 +103,19 @@ neo.models.Graph = (function() {
     return this;
   };
 
-  Graph.prototype.addRelationships = function(item) {
+  Graph.prototype.addRelationships = function (item) {
     var items, source, target, _i, _len;
     items = !neo.utils.isArray(item) ? [item] : item;
     for (_i = 0, _len = items.length; _i < _len; _i++) {
       item = items[_i];
       source =
         this.nodeMap[item.source] ||
-        (function() {
+        (function () {
           throw "Invalid source";
         })();
       target =
         this.nodeMap[item.target] ||
-        (function() {
+        (function () {
           throw "Invalid target";
         })();
       this.relationshipMap[item.id] = new neo.models.Relationship(
@@ -129,21 +129,21 @@ neo.models.Graph = (function() {
     return this;
   };
 
-  Graph.prototype.findNode = function(id) {
+  Graph.prototype.findNode = function (id) {
     return this.nodeMap[id];
   };
 
-  Graph.prototype.findRelationship = function(id) {
+  Graph.prototype.findRelationship = function (id) {
     return this.relationshipMap[id];
   };
 
-  Graph.prototype.merge = function(result) {
+  Graph.prototype.merge = function (result) {
     this.addNodes(result.nodes);
     this.addRelationships(result.relationships);
     return this;
   };
 
-  Graph.prototype.removeNodes = function() {
+  Graph.prototype.removeNodes = function () {
     var id, rId, rel, rels, remove, _i, _len;
     remove = 1 <= arguments.length ? __slice.call(arguments, 0) : [];
     if (arguments.length === 0) {
@@ -154,7 +154,7 @@ neo.models.Graph = (function() {
     remove = neo.utils.isArray(remove[0]) ? remove[0] : remove;
     for (_i = 0, _len = remove.length; _i < _len; _i++) {
       id = remove[_i];
-      rels = function() {
+      rels = function () {
         var _ref, _results;
         _ref = this.relationshipMap;
         _results = [];
@@ -173,7 +173,7 @@ neo.models.Graph = (function() {
     return this;
   };
 
-  Graph.prototype.removeRelationships = function() {
+  Graph.prototype.removeRelationships = function () {
     var id, remove, _i, _len;
     remove = 1 <= arguments.length ? __slice.call(arguments, 0) : [];
     if (arguments.length === 0) {
@@ -193,10 +193,10 @@ neo.models.Graph = (function() {
 
 var NeoD3Geometry;
 
-NeoD3Geometry = (function() {
+NeoD3Geometry = (function () {
   var addShortenedNextWord, fitCaptionIntoCircle, noEmptyLines, square;
 
-  square = function(distance) {
+  square = function (distance) {
     return distance * distance;
   };
 
@@ -204,7 +204,7 @@ NeoD3Geometry = (function() {
     this.style = style;
   }
 
-  addShortenedNextWord = function(line, word, measure) {
+  addShortenedNextWord = function (line, word, measure) {
     var _results;
     _results = [];
     while (!(word.length <= 2)) {
@@ -219,7 +219,7 @@ NeoD3Geometry = (function() {
     return _results;
   };
 
-  noEmptyLines = function(lines) {
+  noEmptyLines = function (lines) {
     var line, _i, _len;
     for (_i = 0, _len = lines.length; _i < _len; _i++) {
       line = lines[_i];
@@ -230,7 +230,7 @@ NeoD3Geometry = (function() {
     return true;
   };
 
-  NeoD3Geometry.prototype.formatNodeCaptions = function(nodes) {
+  NeoD3Geometry.prototype.formatNodeCaptions = function (nodes) {
     var captionText,
       i,
       lines,
@@ -258,7 +258,7 @@ NeoD3Geometry = (function() {
         lines.push({
           node: node,
           text: words[i],
-          baseline: (1 + i - words.length / 2) * 10
+          baseline: (1 + i - words.length / 2) * 10,
         });
       }
       _results.push((node.caption = lines));
@@ -266,7 +266,7 @@ NeoD3Geometry = (function() {
     return _results;
   };
 
-  fitCaptionIntoCircle = function(node, style) {
+  fitCaptionIntoCircle = function (node, style) {
     var candidateLines,
       candidateWords,
       captionText,
@@ -290,11 +290,11 @@ NeoD3Geometry = (function() {
     fontFamily = "sans-serif";
     fontSize = parseFloat(style.forNode(node).get("font-size"));
     lineHeight = fontSize;
-    measure = function(text) {
+    measure = function (text) {
       return neo.utils.measureText(text, fontFamily, fontSize);
     };
     words = captionText.split(" ");
-    emptyLine = function(lineCount, iLine) {
+    emptyLine = function (lineCount, iLine) {
       var baseline, constainingHeight, lineWidth;
       baseline = (1 + iLine - lineCount / 2) * lineHeight;
       constainingHeight =
@@ -305,10 +305,10 @@ NeoD3Geometry = (function() {
         node: node,
         text: "",
         baseline: baseline,
-        remainingWidth: lineWidth
+        remainingWidth: lineWidth,
       };
     };
-    fitOnFixedNumberOfLines = function(lineCount) {
+    fitOnFixedNumberOfLines = function (lineCount) {
       var iLine, iWord, line, lines, _i, _ref;
       lines = [];
       iWord = 0;
@@ -366,7 +366,7 @@ NeoD3Geometry = (function() {
   //   return _results;
   // };
 
-  NeoD3Geometry.prototype.measureRelationshipCaption = function(
+  NeoD3Geometry.prototype.measureRelationshipCaption = function (
     relationship,
     caption
   ) {
@@ -381,7 +381,7 @@ NeoD3Geometry = (function() {
     return neo.utils.measureText(caption, fontFamily, fontSize) + padding * 2;
   };
 
-  NeoD3Geometry.prototype.captionFitsInsideArrowShaftWidth = function(
+  NeoD3Geometry.prototype.captionFitsInsideArrowShaftWidth = function (
     relationship
   ) {
     return (
@@ -390,7 +390,7 @@ NeoD3Geometry = (function() {
     );
   };
 
-  NeoD3Geometry.prototype.measureRelationshipCaptions = function(
+  NeoD3Geometry.prototype.measureRelationshipCaptions = function (
     relationships
   ) {
     var relationship, _i, _len, _results;
@@ -412,7 +412,7 @@ NeoD3Geometry = (function() {
     return _results;
   };
 
-  NeoD3Geometry.prototype.shortenCaption = function(
+  NeoD3Geometry.prototype.shortenCaption = function (
     relationship,
     caption,
     targetWidth
@@ -431,7 +431,7 @@ NeoD3Geometry = (function() {
     }
   };
 
-  NeoD3Geometry.prototype.layoutRelationships = function(relationships) {
+  NeoD3Geometry.prototype.layoutRelationships = function (relationships) {
     var alongPath,
       dx,
       dy,
@@ -455,10 +455,10 @@ NeoD3Geometry = (function() {
       length = Math.sqrt(square(dx) + square(dy));
       relationship.arrowLength =
         length - relationship.source.radius - relationship.target.radius;
-      alongPath = function(from, distance) {
+      alongPath = function (from, distance) {
         return {
           x: from.x + (dx * distance) / length,
-          y: from.y + (dy * distance) / length
+          y: from.y + (dy * distance) / length,
         };
       };
       shaftRadius =
@@ -530,7 +530,7 @@ NeoD3Geometry = (function() {
             "L",
             endBreak,
             -shaftRadius,
-            "Z"
+            "Z",
           ].join(" "))
         );
       } else {
@@ -557,7 +557,7 @@ NeoD3Geometry = (function() {
             "L",
             0,
             -shaftRadius,
-            "Z"
+            "Z",
           ].join(" "))
         );
       }
@@ -565,7 +565,7 @@ NeoD3Geometry = (function() {
     return _results;
   };
 
-  NeoD3Geometry.prototype.setNodeRadii = function(nodes) {
+  NeoD3Geometry.prototype.setNodeRadii = function (nodes) {
     var node, _i, _len, _results;
     _results = [];
     for (_i = 0, _len = nodes.length; _i < _len; _i++) {
@@ -577,25 +577,25 @@ NeoD3Geometry = (function() {
     return _results;
   };
 
-  NeoD3Geometry.prototype.onGraphChange = function(graph) {
+  NeoD3Geometry.prototype.onGraphChange = function (graph) {
     this.setNodeRadii(graph.nodes());
     this.formatNodeCaptions(graph.nodes());
     return this.measureRelationshipCaptions(graph.relationships());
   };
 
-  NeoD3Geometry.prototype.onTick = function(graph) {
+  NeoD3Geometry.prototype.onTick = function (graph) {
     return this.layoutRelationships(graph.relationships());
   };
 
   return NeoD3Geometry;
 })();
 
-neo.graphModel = function() {
+neo.graphModel = function () {
   var graph, model;
   graph = new neo.models.Graph();
-  model = function() {};
+  model = function () {};
   model.callbacks = {};
-  model.trigger = function() {
+  model.trigger = function () {
     var args, callback, event, _i, _len, _ref, _results;
     (event = arguments[0]),
       (args = 2 <= arguments.length ? __slice.call(arguments, 1) : []);
@@ -610,7 +610,7 @@ neo.graphModel = function() {
       return _results;
     }
   };
-  model.nodes = function(items) {
+  model.nodes = function (items) {
     if (items == null) {
       return graph.nodes();
     }
@@ -618,7 +618,7 @@ neo.graphModel = function() {
     model.trigger("nodesAdded");
     return model;
   };
-  model.nodes.add = function(items) {
+  model.nodes.add = function (items) {
     if (items != null) {
       graph.addNodes(items);
       model.trigger("nodesAdded");
@@ -626,12 +626,12 @@ neo.graphModel = function() {
     return model;
   };
   model.nodes.find = graph.findNode;
-  model.nodes.remove = function() {
+  model.nodes.remove = function () {
     graph.removeNodes.apply(null, arguments);
     model.trigger("nodesRemoved");
     return model;
   };
-  model.relationships = function(items) {
+  model.relationships = function (items) {
     if (items == null) {
       return graph.relationships();
     }
@@ -639,7 +639,7 @@ neo.graphModel = function() {
     model.trigger("relationshipsAdded");
     return model;
   };
-  model.relationships.add = function(items) {
+  model.relationships.add = function (items) {
     if (items != null) {
       graph.addRelationships(items);
       model.trigger("relationshipsAdded");
@@ -647,12 +647,12 @@ neo.graphModel = function() {
     return model;
   };
   model.relationships.find = graph.findRelationship;
-  model.relationships.remove = function() {
+  model.relationships.remove = function () {
     graph.removeRelationships.apply(null, arguments);
     model.trigger("relationshipsRemoved");
     return model;
   };
-  model.on = function(event, callback) {
+  model.on = function (event, callback) {
     var _base;
     ((_base = model.callbacks)[event] != null
       ? _base[event]
@@ -663,13 +663,13 @@ neo.graphModel = function() {
   return model;
 };
 
-neo.graphView = function() {
+neo.graphView = function () {
   var callbacks, chart, layout, style, trigger, viz;
   layout = neo.layout.force();
   style = neo.style();
   viz = null;
   callbacks = {};
-  trigger = function() {
+  trigger = function () {
     var args, callback, event, _i, _len, _ref, _results;
     (event = arguments[0]),
       (args = 2 <= arguments.length ? __slice.call(arguments, 1) : []);
@@ -681,11 +681,11 @@ neo.graphView = function() {
     }
     return _results;
   };
-  chart = function(selection) {
-    selection.each(function(graphModel) {
+  chart = function (selection) {
+    selection.each(function (graphModel) {
       if (!viz) {
         viz = neo.viz(this, graphModel, layout, style);
-        graphModel.on("updated", function() {
+        graphModel.on("updated", function () {
           return viz.update();
         });
         viz.trigger = trigger;
@@ -693,53 +693,53 @@ neo.graphView = function() {
       return viz.update();
     });
   };
-  chart.on = function(event, callback) {
+  chart.on = function (event, callback) {
     (callbacks[event] != null
       ? callbacks[event]
       : (callbacks[event] = [])
     ).push(callback);
     return chart;
   };
-  chart.layout = function(value) {
+  chart.layout = function (value) {
     if (!arguments.length) {
       return layout;
     }
     layout = value;
     return chart;
   };
-  chart.style = function(value) {
+  chart.style = function (value) {
     if (!arguments.length) {
       return style.toSheet();
     }
     style.importGrass(value);
     return chart;
   };
-  chart.width = function(value) {
+  chart.width = function (value) {
     if (!arguments.length) {
       return viz.width;
     }
     return chart;
   };
-  chart.height = function(value) {
+  chart.height = function (value) {
     if (!arguments.length) {
       return viz.height;
     }
     return chart;
   };
-  chart.update = function() {
+  chart.update = function () {
     viz.update();
     return chart;
   };
   return chart;
 };
 
-neo.layout = (function() {
+neo.layout = (function () {
   var _layout;
   _layout = {};
-  _layout.force = function() {
+  _layout.force = function () {
     var _force;
     _force = {};
-    _force.init = function(render) {
+    _force.init = function (render) {
       var accelerateLayout, d3force, forceLayout, linkDistance;
       forceLayout = {};
       linkDistance = 60;
@@ -748,7 +748,7 @@ neo.layout = (function() {
         .linkDistance(linkDistance)
         .charge(-1000)
         .gravity(0.3);
-      accelerateLayout = function() {
+      accelerateLayout = function () {
         var d3Tick,
           maxAnimationFramesPerSecond,
           maxComputeTime,
@@ -758,15 +758,15 @@ neo.layout = (function() {
         maxAnimationFramesPerSecond = 60;
         maxComputeTime = 1000 / maxAnimationFramesPerSecond;
         now = window.performance
-          ? function() {
+          ? function () {
               return window.performance.now();
             }
-          : function() {
+          : function () {
               return Date.now();
             };
         d3Tick = d3force.tick;
-        return (d3force.tick = (function(_this) {
-          return function() {
+        return (d3force.tick = (function (_this) {
+          return function () {
             var startTick, step;
             startTick = now();
             step = maxStepsPerTick;
@@ -782,21 +782,17 @@ neo.layout = (function() {
         })(this));
       };
       accelerateLayout();
-      forceLayout.update = function(graph, size) {
+      forceLayout.update = function (graph, size) {
         var center, nodes, radius, relationships;
         nodes = graph.nodes();
         relationships = graph.relationships();
         radius = (nodes.length * linkDistance) / (Math.PI * 2);
         center = {
           x: size[0] / 2,
-          y: size[1] / 2
+          y: size[1] / 2,
         };
         neo.utils.circularLayout(nodes, center, radius);
-        return d3force
-          .nodes(nodes)
-          .links(relationships)
-          .size(size)
-          .start();
+        return d3force.nodes(nodes).links(relationships).size(size).start();
       };
       forceLayout.drag = d3force.drag;
       return forceLayout;
@@ -806,13 +802,13 @@ neo.layout = (function() {
   return _layout;
 })();
 
-neo.models.Node = (function() {
+neo.models.Node = (function () {
   function Node(id, labels, properties) {
     var key, value;
     this.id = id;
     this.labels = labels;
     this.propertyMap = properties;
-    this.propertyList = (function() {
+    this.propertyList = (function () {
       var _results;
       _results = [];
       for (key in properties) {
@@ -820,14 +816,14 @@ neo.models.Node = (function() {
         value = properties[key];
         _results.push({
           key: key,
-          value: value
+          value: value,
         });
       }
       return _results;
     })();
   }
 
-  Node.prototype.toJSON = function() {
+  Node.prototype.toJSON = function () {
     return this.propertyMap;
   };
 
@@ -838,7 +834,7 @@ neo.models.Node = (function() {
   return Node;
 })();
 
-neo.models.Relationship = (function() {
+neo.models.Relationship = (function () {
   function Relationship(id, source, target, type, properties) {
     var key, value;
     this.id = id;
@@ -846,7 +842,7 @@ neo.models.Relationship = (function() {
     this.target = target;
     this.type = type;
     this.propertyMap = properties;
-    this.propertyList = function() {
+    this.propertyList = function () {
       var _ref, _results;
       _ref = this.propertyMap;
       _results = [];
@@ -855,14 +851,14 @@ neo.models.Relationship = (function() {
         value = _ref[key];
         _results.push({
           key: key,
-          value: value
+          value: value,
         });
       }
       return _results;
     }.call(this);
   }
 
-  Relationship.prototype.toJSON = function() {
+  Relationship.prototype.toJSON = function () {
     return this.propertyMap;
   };
 
@@ -873,26 +869,26 @@ neo.models.Relationship = (function() {
   return Relationship;
 })();
 
-neo.Renderer = (function() {
+neo.Renderer = (function () {
   function Renderer(opts) {
     if (opts == null) {
       opts = {};
     }
     neo.utils.extend(this, opts);
     if (this.onGraphChange == null) {
-      this.onGraphChange = function() {};
+      this.onGraphChange = function () {};
     }
     if (this.onTick == null) {
-      this.onTick = function() {};
+      this.onTick = function () {};
     }
   }
 
   return Renderer;
 })();
 
-neo.style = (function() {
+neo.style = (function () {
   var GraphStyle, Selector, StyleElement, StyleRule, _style;
-  _style = function(storage) {
+  _style = function (storage) {
     return new GraphStyle(storage);
   };
   _style.defaults = {
@@ -901,63 +897,63 @@ neo.style = (function() {
       {
         color: "#DFE1E3",
         "border-color": "#D4D6D7",
-        "text-color-internal": "#000000"
+        "text-color-internal": "#000000",
       },
       {
         color: "#F25A29",
         "border-color": "#DC4717",
-        "text-color-internal": "#FFFFFF"
+        "text-color-internal": "#FFFFFF",
       },
       {
         color: "#AD62CE",
         "border-color": "#9453B1",
-        "text-color-internal": "#FFFFFF"
+        "text-color-internal": "#FFFFFF",
       },
       {
         color: "#30B6AF",
         "border-color": "#46A39E",
-        "text-color-internal": "#FFFFFF"
+        "text-color-internal": "#FFFFFF",
       },
       {
         color: "#FCC940",
         "border-color": "#F3BA25",
-        "text-color-internal": "#000000"
+        "text-color-internal": "#000000",
       },
       {
         color: "#4356C0",
         "border-color": "#3445A2",
-        "text-color-internal": "#FFFFFF"
+        "text-color-internal": "#FFFFFF",
       },
       {
         color: "#FF6C7C",
         "border-color": "#EB5D6C",
-        "text-color-internal": "#FFFFFF"
+        "text-color-internal": "#FFFFFF",
       },
       {
         color: "#a2cf81",
         "border-color": "#9bbd82",
-        "text-color-internal": "#000000"
+        "text-color-internal": "#000000",
       },
       {
         color: "#f79235",
         "border-color": "#e68f40",
-        "text-color-internal": "#000000"
+        "text-color-internal": "#000000",
       },
       {
         color: "#785cc7",
         "border-color": "#625096",
-        "text-color-internal": "#FFFFFF"
+        "text-color-internal": "#FFFFFF",
       },
       {
         color: "#d05e7c",
         "border-color": "#b05b72",
-        "text-color-internal": "#FFFFFF"
+        "text-color-internal": "#FFFFFF",
       },
       {
         color: "#3986b7",
         "border-color": "#3a7499",
-        "text-color-internal": "#FFFFFF"
-      }
+        "text-color-internal": "#FFFFFF",
+      },
     ],
     style: {
       node: {
@@ -967,7 +963,7 @@ neo.style = (function() {
         "border-width": "2px",
         "text-color-internal": "#000000",
         caption: "{id}",
-        "font-size": "10px"
+        "font-size": "10px",
       },
       relationship: {
         color: "#D4D6D7",
@@ -975,54 +971,54 @@ neo.style = (function() {
         "font-size": "8px",
         padding: "3px",
         "text-color-external": "#000000",
-        "text-color-internal": "#FFFFFF"
-      }
+        "text-color-internal": "#FFFFFF",
+      },
     },
     sizes: [
       {
-        diameter: "10px"
+        diameter: "10px",
       },
       {
-        diameter: "20px"
+        diameter: "20px",
       },
       {
-        diameter: "30px"
+        diameter: "30px",
       },
       {
-        diameter: "50px"
+        diameter: "50px",
       },
       {
-        diameter: "80px"
-      }
+        diameter: "80px",
+      },
     ],
     arrayWidths: [
       {
-        "shaft-width": "1px"
+        "shaft-width": "1px",
       },
       {
-        "shaft-width": "2px"
+        "shaft-width": "2px",
       },
       {
-        "shaft-width": "3px"
+        "shaft-width": "3px",
       },
       {
-        "shaft-width": "5px"
+        "shaft-width": "5px",
       },
       {
-        "shaft-width": "8px"
+        "shaft-width": "8px",
       },
       {
-        "shaft-width": "13px"
+        "shaft-width": "13px",
       },
       {
-        "shaft-width": "25px"
+        "shaft-width": "25px",
       },
       {
-        "shaft-width": "38px"
-      }
-    ]
+        "shaft-width": "38px",
+      },
+    ],
   };
-  Selector = (function() {
+  Selector = (function () {
     function Selector(selector) {
       var _ref;
       (_ref =
@@ -1031,7 +1027,7 @@ neo.style = (function() {
         (this.klass = _ref[1]);
     }
 
-    Selector.prototype.toString = function() {
+    Selector.prototype.toString = function () {
       var str;
       str = this.tag;
       if (this.klass != null) {
@@ -1042,13 +1038,13 @@ neo.style = (function() {
 
     return Selector;
   })();
-  StyleRule = (function() {
+  StyleRule = (function () {
     function StyleRule(selector, props) {
       this.selector = selector;
       this.props = props;
     }
 
-    StyleRule.prototype.matches = function(selector) {
+    StyleRule.prototype.matches = function (selector) {
       if (this.selector.tag === selector.tag) {
         if (this.selector.klass === selector.klass || !this.selector.klass) {
           return true;
@@ -1057,7 +1053,7 @@ neo.style = (function() {
       return false;
     };
 
-    StyleRule.prototype.matchesExact = function(selector) {
+    StyleRule.prototype.matchesExact = function (selector) {
       return (
         this.selector.tag === selector.tag &&
         this.selector.klass === selector.klass
@@ -1066,14 +1062,14 @@ neo.style = (function() {
 
     return StyleRule;
   })();
-  StyleElement = (function() {
+  StyleElement = (function () {
     function StyleElement(selector, data) {
       this.data = data;
       this.selector = selector;
       this.props = {};
     }
 
-    StyleElement.prototype.applyRules = function(rules) {
+    StyleElement.prototype.applyRules = function (rules) {
       var rule, _i, _j, _len, _len1;
       for (_i = 0, _len = rules.length; _i < _len; _i++) {
         rule = rules[_i];
@@ -1094,20 +1090,20 @@ neo.style = (function() {
       return this;
     };
 
-    StyleElement.prototype.get = function(attr) {
+    StyleElement.prototype.get = function (attr) {
       return this.props[attr] || "";
     };
 
     return StyleElement;
   })();
-  GraphStyle = (function() {
+  GraphStyle = (function () {
     function GraphStyle(storage) {
       this.storage = storage;
       this.rules = [];
       this.loadRules();
     }
 
-    GraphStyle.prototype.selector = function(item) {
+    GraphStyle.prototype.selector = function (item) {
       if (item.isNode) {
         return this.nodeSelector(item);
       } else if (item.isRelationship) {
@@ -1115,15 +1111,15 @@ neo.style = (function() {
       }
     };
 
-    GraphStyle.prototype.calculateStyle = function(selector, data) {
+    GraphStyle.prototype.calculateStyle = function (selector, data) {
       return new StyleElement(selector, data).applyRules(this.rules);
     };
 
-    GraphStyle.prototype.forEntity = function(item) {
+    GraphStyle.prototype.forEntity = function (item) {
       return this.calculateStyle(this.selector(item), item);
     };
 
-    GraphStyle.prototype.forNode = function(node) {
+    GraphStyle.prototype.forNode = function (node) {
       var selector, _ref;
       if (node == null) {
         node = {};
@@ -1135,11 +1131,11 @@ neo.style = (function() {
       return this.calculateStyle(selector, node);
     };
 
-    GraphStyle.prototype.forRelationship = function(rel) {
+    GraphStyle.prototype.forRelationship = function (rel) {
       return this.calculateStyle(this.relationshipSelector(rel), rel);
     };
 
-    GraphStyle.prototype.findAvailableDefaultColor = function() {
+    GraphStyle.prototype.findAvailableDefaultColor = function () {
       var defaultColor, rule, usedColors, _i, _j, _len, _len1, _ref, _ref1;
       usedColors = {};
       _ref = this.rules;
@@ -1159,7 +1155,7 @@ neo.style = (function() {
       return neo.utils.copy(_style.defaults.colors[0]);
     };
 
-    GraphStyle.prototype.setDefaultStyling = function(selector) {
+    GraphStyle.prototype.setDefaultStyling = function (selector) {
       var rule;
       rule = this.findRule(selector);
       if (_style.defaults.autoColor && rule == null) {
@@ -1169,7 +1165,7 @@ neo.style = (function() {
       }
     };
 
-    GraphStyle.prototype.change = function(item, props) {
+    GraphStyle.prototype.change = function (item, props) {
       var rule, selector;
       selector = this.selector(item);
       rule = this.findRule(selector);
@@ -1182,7 +1178,7 @@ neo.style = (function() {
       return rule;
     };
 
-    GraphStyle.prototype.destroyRule = function(rule) {
+    GraphStyle.prototype.destroyRule = function (rule) {
       var idx;
       idx = this.rules.indexOf(rule);
       if (idx != null) {
@@ -1191,7 +1187,7 @@ neo.style = (function() {
       return this.persist();
     };
 
-    GraphStyle.prototype.findRule = function(selector) {
+    GraphStyle.prototype.findRule = function (selector) {
       var r, rule, _i, _len, _ref;
       _ref = this.rules;
       for (_i = 0, _len = _ref.length; _i < _len; _i++) {
@@ -1203,7 +1199,7 @@ neo.style = (function() {
       return rule;
     };
 
-    GraphStyle.prototype.nodeSelector = function(node) {
+    GraphStyle.prototype.nodeSelector = function (node) {
       var selector, _ref;
       if (node == null) {
         node = {};
@@ -1215,7 +1211,7 @@ neo.style = (function() {
       return new Selector(selector);
     };
 
-    GraphStyle.prototype.relationshipSelector = function(rel) {
+    GraphStyle.prototype.relationshipSelector = function (rel) {
       var selector;
       if (rel == null) {
         rel = {};
@@ -1227,7 +1223,7 @@ neo.style = (function() {
       return new Selector(selector);
     };
 
-    GraphStyle.prototype.importGrass = function(string) {
+    GraphStyle.prototype.importGrass = function (string) {
       var e, rules;
       try {
         rules = this.parse(string);
@@ -1238,7 +1234,7 @@ neo.style = (function() {
       }
     };
 
-    GraphStyle.prototype.loadRules = function(data) {
+    GraphStyle.prototype.loadRules = function (data) {
       var props, rule;
       if (!neo.utils.isObject(data)) {
         data = _style.defaults.style;
@@ -1253,7 +1249,7 @@ neo.style = (function() {
       return this;
     };
 
-    GraphStyle.prototype.parse = function(string) {
+    GraphStyle.prototype.parse = function (string) {
       var c,
         chars,
         insideProps,
@@ -1335,19 +1331,19 @@ neo.style = (function() {
       return rules;
     };
 
-    GraphStyle.prototype.persist = function() {
+    GraphStyle.prototype.persist = function () {
       var _ref;
       return (_ref = this.storage) != null
         ? _ref.add("grass", JSON.stringify(this.toSheet()))
         : void 0;
     };
 
-    GraphStyle.prototype.resetToDefault = function() {
+    GraphStyle.prototype.resetToDefault = function () {
       this.loadRules();
       return this.persist();
     };
 
-    GraphStyle.prototype.toSheet = function() {
+    GraphStyle.prototype.toSheet = function () {
       var rule, sheet, _i, _len, _ref;
       sheet = {};
       _ref = this.rules;
@@ -1358,7 +1354,7 @@ neo.style = (function() {
       return sheet;
     };
 
-    GraphStyle.prototype.toString = function() {
+    GraphStyle.prototype.toString = function () {
       var k, r, str, v, _i, _len, _ref, _ref1;
       str = "";
       _ref = this.rules;
@@ -1380,12 +1376,12 @@ neo.style = (function() {
 
     GraphStyle.prototype.nextDefaultColor = 0;
 
-    GraphStyle.prototype.defaultColors = function() {
+    GraphStyle.prototype.defaultColors = function () {
       return neo.utils.copy(_style.defaults.colors);
     };
 
-    GraphStyle.prototype.interpolate = function(str, id, properties) {
-      return str.replace(/\{([^{}]*)\}/g, function(a, b) {
+    GraphStyle.prototype.interpolate = function (str, id, properties) {
+      return str.replace(/\{([^{}]*)\}/g, function (a, b) {
         var r;
         r = properties[b] || id;
         if (typeof r === "string" || typeof r === "number") {
@@ -1401,7 +1397,7 @@ neo.style = (function() {
   return _style;
 })();
 
-neo.viz = function(el, graph, layout, style) {
+neo.viz = function (el, graph, layout, style) {
   var clickHandler,
     force,
     geometry,
@@ -1411,31 +1407,31 @@ neo.viz = function(el, graph, layout, style) {
     render,
     viz;
   viz = {
-    style: style
+    style: style,
   };
   el = d3.select(el);
   geometry = new NeoD3Geometry(style);
-  viz.trigger = function() {
+  viz.trigger = function () {
     var args, event;
     (event = arguments[0]),
       (args = 2 <= arguments.length ? __slice.call(arguments, 1) : []);
   };
-  onNodeClick = (function(_this) {
-    return function(node) {
+  onNodeClick = (function (_this) {
+    return function (node) {
       return viz.trigger("nodeClicked", node);
     };
   })(this);
-  onNodeDblClick = (function(_this) {
-    return function(node) {
+  onNodeDblClick = (function (_this) {
+    return function (node) {
       return viz.trigger("nodeDblClicked", node);
     };
   })(this);
-  onRelationshipClick = (function(_this) {
-    return function(relationship) {
+  onRelationshipClick = (function (_this) {
+    return function (relationship) {
       return viz.trigger("relationshipClicked", relationship);
     };
   })(this);
-  render = function() {
+  render = function () {
     var nodeGroups,
       relationshipGroups,
       renderer,
@@ -1447,7 +1443,7 @@ neo.viz = function(el, graph, layout, style) {
       _ref1,
       _results;
     geometry.onTick(graph);
-    nodeGroups = el.selectAll("g.node").attr("transform", function(node) {
+    nodeGroups = el.selectAll("g.node").attr("transform", function (node) {
       return "translate(" + node.x + "," + node.y + ")";
     });
     _ref = neo.renderers.node;
@@ -1465,7 +1461,7 @@ neo.viz = function(el, graph, layout, style) {
     return _results;
   };
   force = layout.init(render);
-  viz.update = function() {
+  viz.update = function () {
     var height,
       layers,
       nodeGroups,
@@ -1483,12 +1479,12 @@ neo.viz = function(el, graph, layout, style) {
     if (!graph) {
       return;
     }
-    height = (function() {
+    height = (function () {
       try {
         return parseInt(el.style("height").replace("px", ""));
       } catch (_error) {}
     })();
-    width = (function() {
+    width = (function () {
       try {
         return parseInt(el.style("width").replace("px", ""));
       } catch (_error) {}
@@ -1497,7 +1493,7 @@ neo.viz = function(el, graph, layout, style) {
     layers
       .enter()
       .append("g")
-      .attr("class", function(d) {
+      .attr("class", function (d) {
         return "layer " + d;
       });
     nodes = graph.nodes();
@@ -1505,7 +1501,7 @@ neo.viz = function(el, graph, layout, style) {
     relationshipGroups = el
       .select("g.layer.relationships")
       .selectAll("g.relationship")
-      .data(relationships, function(d) {
+      .data(relationships, function (d) {
         return d.id;
       });
     relationshipGroups
@@ -1523,7 +1519,7 @@ neo.viz = function(el, graph, layout, style) {
     nodeGroups = el
       .select("g.layer.nodes")
       .selectAll("g.node")
-      .data(nodes, function(d) {
+      .data(nodes, function (d) {
         return d.id;
       });
     nodeGroups
@@ -1546,9 +1542,9 @@ neo.viz = function(el, graph, layout, style) {
   return viz;
 };
 
-neo.utils.circularLayout = function(nodes, center, radius) {
+neo.utils.circularLayout = function (nodes, center, radius) {
   var i, n, unlocatedNodes, _i, _len, _results;
-  unlocatedNodes = nodes.filter(function(node) {
+  unlocatedNodes = nodes.filter(function (node) {
     return !(node.x != null && node.y != null);
   });
   _results = [];
@@ -1564,7 +1560,7 @@ neo.utils.circularLayout = function(nodes, center, radius) {
   return _results;
 };
 
-neo.utils.distributeCircular = function(arrowAngles, minSeparation) {
+neo.utils.distributeCircular = function (arrowAngles, minSeparation) {
   var angle,
     center,
     expand,
@@ -1594,33 +1590,33 @@ neo.utils.distributeCircular = function(arrowAngles, minSeparation) {
     angle = _ref[key];
     list.push({
       key: key,
-      angle: angle
+      angle: angle,
     });
   }
-  list.sort(function(a, b) {
+  list.sort(function (a, b) {
     return a.angle - b.angle;
   });
   runsOfTooDenseArrows = [];
-  length = function(startIndex, endIndex) {
+  length = function (startIndex, endIndex) {
     if (startIndex < endIndex) {
       return endIndex - startIndex + 1;
     } else {
       return endIndex + list.length - startIndex + 1;
     }
   };
-  angle = function(startIndex, endIndex) {
+  angle = function (startIndex, endIndex) {
     if (startIndex < endIndex) {
       return list[endIndex].angle - list[startIndex].angle;
     } else {
       return 360 - (list[startIndex].angle - list[endIndex].angle);
     }
   };
-  tooDense = function(startIndex, endIndex) {
+  tooDense = function (startIndex, endIndex) {
     return (
       angle(startIndex, endIndex) < length(startIndex, endIndex) * minSeparation
     );
   };
-  wrapIndex = function(index) {
+  wrapIndex = function (index) {
     if (index === -1) {
       return list.length - 1;
     } else if (index >= list.length) {
@@ -1629,14 +1625,14 @@ neo.utils.distributeCircular = function(arrowAngles, minSeparation) {
       return index;
     }
   };
-  wrapAngle = function(angle) {
+  wrapAngle = function (angle) {
     if (angle >= 360) {
       return angle - 360;
     } else {
       return angle;
     }
   };
-  expand = function(startIndex, endIndex) {
+  expand = function (startIndex, endIndex) {
     if (length(startIndex, endIndex) < list.length) {
       if (tooDense(startIndex, wrapIndex(endIndex + 1))) {
         return expand(startIndex, wrapIndex(endIndex + 1));
@@ -1647,7 +1643,7 @@ neo.utils.distributeCircular = function(arrowAngles, minSeparation) {
     }
     return runsOfTooDenseArrows.push({
       start: startIndex,
-      end: endIndex
+      end: endIndex,
     });
   };
   for (
@@ -1683,23 +1679,23 @@ neo.utils.distributeCircular = function(arrowAngles, minSeparation) {
   return result;
 };
 
-neo.utils.clickHandler = function() {
+neo.utils.clickHandler = function () {
   var cc, event;
-  cc = function(selection) {
+  cc = function (selection) {
     var dist, down, last, tolerance, wait;
-    dist = function(a, b) {
+    dist = function (a, b) {
       return Math.sqrt(Math.pow(a[0] - b[0], 2), Math.pow(a[1] - b[1], 2));
     };
     down = void 0;
     tolerance = 5;
     last = void 0;
     wait = null;
-    selection.on("mousedown", function() {
+    selection.on("mousedown", function () {
       d3.event.target.__data__.fixed = true;
       down = d3.mouse(document.body);
       return (last = +new Date());
     });
-    return selection.on("mouseup", function() {
+    return selection.on("mouseup", function () {
       if (dist(down, d3.mouse(document.body)) > tolerance) {
       } else {
         if (wait) {
@@ -1708,8 +1704,8 @@ neo.utils.clickHandler = function() {
           return event.dblclick(d3.event.target.__data__);
         } else {
           return (wait = window.setTimeout(
-            (function(e) {
-              return function() {
+            (function (e) {
+              return function () {
                 event.click(e.target.__data__);
                 return (wait = null);
               };
@@ -1724,9 +1720,9 @@ neo.utils.clickHandler = function() {
   return d3.rebind(cc, event, "on");
 };
 
-neo.utils.measureText = (function() {
+neo.utils.measureText = (function () {
   var cache, measureUsingCanvas;
-  measureUsingCanvas = function(text, font) {
+  measureUsingCanvas = function (text, font) {
     var canvas, canvasSelection, context;
     canvasSelection = d3.select("canvas#textMeasurementCanvas").data([this]);
     canvasSelection
@@ -1739,12 +1735,12 @@ neo.utils.measureText = (function() {
     context.font = font;
     return context.measureText(text).width;
   };
-  cache = (function() {
+  cache = (function () {
     var cacheSize, list, map;
     cacheSize = 10000;
     map = {};
     list = [];
-    return function(key, calc) {
+    return function (key, calc) {
       var cached, result;
       cached = map[key];
       if (cached) {
@@ -1759,16 +1755,16 @@ neo.utils.measureText = (function() {
       }
     };
   })();
-  return function(text, fontFamily, fontSize) {
+  return function (text, fontFamily, fontSize) {
     var font;
     font = "normal normal normal " + fontSize + "px/normal " + fontFamily;
-    return cache(text + font, function() {
+    return cache(text + font, function () {
       return measureUsingCanvas(text, font);
     });
   };
 })();
 
-(function() {
+(function () {
   var arrowPath,
     nodeCaption,
     nodeOutline,
@@ -1776,78 +1772,71 @@ neo.utils.measureText = (function() {
     noop,
     relationshipOverlay,
     relationshipType;
-  noop = function() {};
+  noop = function () {};
   nodeOutline = new neo.Renderer({
-    onGraphChange: function(selection, viz) {
+    onGraphChange: function (selection, viz) {
       var circles;
-      circles = selection.selectAll("circle.outline").data(function(node) {
+      circles = selection.selectAll("circle.outline").data(function (node) {
         return [node];
       });
-      circles
-        .enter()
-        .append("circle")
-        .classed("outline", true)
-        .attr({
-          cx: 0,
-          cy: 0
-        });
+      circles.enter().append("circle").classed("outline", true).attr({
+        cx: 0,
+        cy: 0,
+      });
       circles.attr({
-        r: function(node) {
+        r: function (node) {
           return node.radius;
         },
-        fill: function(node) {
+        fill: function (node) {
           return viz.style.forNode(node).get("color");
         },
-        stroke: function(node) {
+        stroke: function (node) {
           return viz.style.forNode(node).get("border-color");
         },
-        "stroke-width": function(node) {
+        "stroke-width": function (node) {
           return viz.style.forNode(node).get("border-width");
-        }
+        },
       });
       return circles.exit().remove();
     },
-    onTick: noop
+    onTick: noop,
   });
   nodeCaption = new neo.Renderer({
-    onGraphChange: function(selection, viz) {
+    onGraphChange: function (selection, viz) {
       var text;
-      text = selection.selectAll("text").data(function(node) {
+      text = selection.selectAll("text").data(function (node) {
         return node.caption;
       });
+      text.enter().append("text").attr({
+        "text-anchor": "middle",
+        "font-weight": "bold",
+        stroke: "#FFFFFF",
+        "stroke-width": "0",
+      });
       text
-        .enter()
-        .append("text")
-        .attr({
-          "text-anchor": "middle",
-          "font-weight": "bold",
-          stroke: "#FFFFFF",
-          "stroke-width": "0"
-        });
-      text
-        .text(function(line) {
+        .text(function (line) {
           return line.text;
         })
-        .attr("y", function(line) {
+        .attr("y", function (line) {
           return line.baseline;
         })
-        .attr("font-size", function(line) {
+        .attr("font-size", function (line) {
           return viz.style.forNode(line.node).get("font-size");
         })
-        .attr("stroke", function(line) {
+        .attr("stroke", function (line) {
           return viz.style.forNode(line.node).get("color");
         })
-        .attr("fill", function(line) {
+        .attr("fill", function (line) {
           return viz.style.forNode(line.node).get("text-color-internal");
         });
       return text.exit().remove();
     },
-    onTick: noop
+    onTick: noop,
   });
   nodeOverlay = new neo.Renderer({
-    onGraphChange: function(selection) {
+    onGraphChange: function (selection) {
       var circles;
-      circles = selection.selectAll("circle.overlay").data(function(node) {
+      circles = selection.selectAll("circle.overlay").data(function (node) {
         if (node.selected) {
           return [node];
         } else {
@@ -1864,38 +1853,38 @@ neo.utils.measureText = (function() {
           cy: 0,
           fill: "#f5F6F6",
           stroke: "rgba(151, 151, 151, 0.2)",
-          "stroke-width": "3px"
+          "stroke-width": "3px",
         });
       circles.attr({
-        r: function(node) {
+        r: function (node) {
           return node.radius + 6;
-        }
+        },
       });
       return circles.exit().remove();
     },
-    onTick: noop
+    onTick: noop,
   });
   arrowPath = new neo.Renderer({
-    onGraphChange: function(selection, viz) {
+    onGraphChange: function (selection, viz) {
       var paths;
-      paths = selection.selectAll("path").data(function(rel) {
+      paths = selection.selectAll("path").data(function (rel) {
         return [rel];
       });
       paths.enter().append("path");
       paths
-        .attr("fill", function(rel) {
+        .attr("fill", function (rel) {
           return viz.style.forRelationship(rel).get("color");
         })
         .attr("stroke", "none");
       return paths.exit().remove();
     },
-    onTick: function(selection) {
+    onTick: function (selection) {
       return selection
         .selectAll("path")
-        .attr("d", function(d) {
+        .attr("d", function (d) {
           return d.arrowOutline;
         })
-        .attr("transform", function(d) {
+        .attr("transform", function (d) {
           return isNaN(d.startPoint.x) || isNaN(d.startPoint.y)
             ? null
             : "translate(" +
@@ -1906,38 +1895,35 @@ neo.utils.measureText = (function() {
                 d.angle +
                 ")";
         });
-    }
+    },
   });
   relationshipType = new neo.Renderer({
-    onGraphChange: function(selection, viz) {
+    onGraphChange: function (selection, viz) {
       var texts;
-      texts = selection.selectAll("text").data(function(rel) {
+      texts = selection.selectAll("text").data(function (rel) {
         return [rel];
       });
+      texts.enter().append("text").attr({
+        "text-anchor": "middle",
+      });
       texts
-        .enter()
-        .append("text")
-        .attr({
-          "text-anchor": "middle"
-        });
-      texts
-        .attr("font-size", function(rel) {
+        .attr("font-size", function (rel) {
           return viz.style.forRelationship(rel).get("font-size");
         })
-        .attr("fill", function(rel) {
+        .attr("fill", function (rel) {
           return viz.style
             .forRelationship(rel)
             .get("text-color-" + rel.captionLayout);
         });
       return texts.exit().remove();
     },
-    onTick: function(selection, viz) {
+    onTick: function (selection, viz) {
       return selection
         .selectAll("text")
-        .attr("x", function(rel) {
+        .attr("x", function (rel) {
           return isNaN(rel.midShaftPoint.x) ? null : rel.midShaftPoint.x;
         })
-        .attr("y", function(rel) {
+        .attr("y", function (rel) {
           return isNaN(rel.midShaftPoint.y)
             ? null
             : rel.midShaftPoint.y +
@@ -1945,7 +1931,7 @@ neo.utils.measureText = (function() {
                   2 -
                 1;
         })
-        .attr("transform", function(rel) {
+        .attr("transform", function (rel) {
           return isNaN(rel.midShaftPoint.x) || isNaN(rel.midShaftPoint.y)
             ? null
             : "rotate(" +
@@ -1956,15 +1942,15 @@ neo.utils.measureText = (function() {
                 rel.midShaftPoint.y +
                 ")";
         })
-        .text(function(rel) {
+        .text(function (rel) {
           return rel.shortCaption;
         });
-    }
+    },
   });
   relationshipOverlay = new neo.Renderer({
-    onGraphChange: function(selection) {
+    onGraphChange: function (selection) {
       var band, rects;
-      rects = selection.selectAll("rect").data(function(rel) {
+      rects = selection.selectAll("rect").data(function (rel) {
         return [rel];
       });
       band = 20;
@@ -1976,7 +1962,7 @@ neo.utils.measureText = (function() {
         .attr("x", 0)
         .attr("y", -band / 2)
         .attr("height", band);
-      rects.attr("opacity", function(rel) {
+      rects.attr("opacity", function (rel) {
         if (rel.selected) {
           return 0.3;
         } else {
@@ -1985,17 +1971,17 @@ neo.utils.measureText = (function() {
       });
       return rects.exit().remove();
     },
-    onTick: function(selection) {
+    onTick: function (selection) {
       return selection
         .selectAll("rect")
-        .attr("width", function(d) {
+        .attr("width", function (d) {
           if (d.arrowLength > 0) {
             return d.arrowLength;
           } else {
             return 0;
           }
         })
-        .attr("transform", function(d) {
+        .attr("transform", function (d) {
           return isNaN(d.startPoint.x) || isNaN(d.startPoint.y)
             ? null
             : "translate(" +
@@ -2006,7 +1992,7 @@ neo.utils.measureText = (function() {
                 d.angle +
                 ")";
         });
-    }
+    },
   });
   neo.renderers.node.push(nodeOutline);
   neo.renderers.node.push(nodeCaption);

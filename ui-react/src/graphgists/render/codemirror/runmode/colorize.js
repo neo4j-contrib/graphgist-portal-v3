@@ -1,7 +1,7 @@
 // CodeMirror, copyright (c) by Marijn Haverbeke and others
 // Distributed under an MIT license: http://codemirror.net/LICENSE
 
-export default function(CodeMirror) {
+export default function (CodeMirror) {
   var isBlock = /^(p|li|div|h\\d|pre|blockquote|td)$/;
 
   function textContent(node, out) {
@@ -12,7 +12,7 @@ export default function(CodeMirror) {
     }
   }
 
-  CodeMirror.colorize = function(collection, defaultMode) {
+  CodeMirror.colorize = function (collection, defaultMode) {
     if (!collection) collection = document.body.getElementsByTagName("pre");
 
     for (var i = 0; i < collection.length; ++i) {

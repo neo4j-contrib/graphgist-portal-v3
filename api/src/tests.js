@@ -4,15 +4,9 @@ import neo4j from "neo4j-driver";
 import { makeAugmentedSchema } from "neo4j-graphql-js";
 import dotenv from "dotenv";
 import { typeDefs } from "./graphql-schema";
+import { schema } from "../";
 
 dotenv.config();
-
-const schema = makeAugmentedSchema({
-  typeDefs,
-  config: {
-    mutation: false,
-  },
-});
 
 const driver = neo4j.driver(
   process.env.NEO4J_URI || "bolt://localhost:7687",

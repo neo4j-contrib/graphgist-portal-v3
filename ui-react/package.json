@@ -10,8 +10,10 @@
     "classnames": "^2.2.6",
     "codemirror": "^5.16.0",
     "d3": "^3.5.12",
+    "formik": "^2.1.5",
     "graphql": "^14.5.8",
     "graphql-tag": "^2.10.1",
+    "http-proxy-middleware": "^0.20.0",
     "jquery": "^3.5.1",
     "moment": "^2.27.0",
     "node-sass": "^4.14.1",
@@ -31,13 +33,13 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test --env=jsdom",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "prettier": "prettier --write"
   },
   "devDependencies": {
     "husky": "^2.7.0",
     "lint-staged": "^8.2.1",
-    "http-proxy-middleware": "^0.20.0",
-    "prettier": "^1.18.2"
+    "prettier": "^2.0.5"
   },
   "husky": {
     "hooks": {

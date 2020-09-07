@@ -4,9 +4,7 @@ import ApolloClient from "apollo-boost";
 import { ApolloProvider } from "@apollo/react-hooks";
 import { BrowserRouter } from "react-router-dom";
 import { Auth0Provider } from "@auth0/auth0-react";
-import _ from "lodash";
 import App from "./App";
-import registerServiceWorker from "./registerServiceWorker";
 import "./index.css";
 
 import { authToken } from "./auth/state";
@@ -16,14 +14,14 @@ const AUTH0_CLIENT_ID = process.env.REACT_APP_AUTH0_CLIENT_ID;
 
 const client = new ApolloClient({
   uri: process.env.REACT_APP_GRAPHQL_URI,
-  request: operation => {
-    operation.setContext(context => ({
+  request: (operation) => {
+    operation.setContext((context) => ({
       headers: {
         ...context.headers,
-        authorization: _.get(authToken.get(), "__raw")
-      }
+        authorization: authToken.get(),
+      },
     }));
-  }
+  },
 });
 
 const Main = () => (
@@ -41,4 +39,3 @@ const Main = () => (
 );
 
 ReactDOM.render(<Main />, document.getElementById("root"));
-registerServiceWorker();

@@ -25,15 +25,13 @@ function Callback({ token }) {
     },
     onError: () => {
       setHasError(true);
-    }
+    },
   });
 
   useEffect(() => {
-    authenticate({
-      variables: {
-        token
-      }
-    });
+    if (token) {
+      authenticate({ variables: { token } });
+    }
   }, [authenticate, token]);
 
   if (hasError) {
@@ -53,7 +51,7 @@ export default () => {
   return (
     <React.Fragment>
       {!authTokenState.value && <Loader active />}
-      {authTokenState.value && <Callback token={authTokenState.value.__raw} />}
+      {authTokenState.value && <Callback token={authTokenState.value} />}
     </React.Fragment>
   );
 };

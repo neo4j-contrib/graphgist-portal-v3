@@ -1,8 +1,8 @@
 // CodeMirror, copyright (c) by Marijn Haverbeke and others
 // Distributed under an MIT license: http://codemirror.net/LICENSE
 
-export default function(CodeMirror) {
-  CodeMirror.runMode = function(string, modespec, callback, options) {
+export default function (CodeMirror) {
+  CodeMirror.runMode = function (string, modespec, callback, options) {
     var mode = CodeMirror.getMode(CodeMirror.defaults, modespec);
 
     var ie = /MSIE \d/.test(navigator.userAgent);
@@ -14,7 +14,7 @@ export default function(CodeMirror) {
       var node = callback,
         col = 0;
       node.innerHTML = "";
-      callback = function(text, style) {
+      callback = function (text, style) {
         if (text === "\n") {
           // Emitting LF or CRLF on IE8 or earlier results in an incorrect display.
           // Emitting a carriage return makes everything ok.

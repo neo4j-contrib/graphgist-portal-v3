@@ -7,13 +7,13 @@
 // By the Neo4j Team and contributors.
 // https://github.com/neo4j-contrib/CodeMirror
 
-export default function(CodeMirror) {
-  var wordRegexp = function(words) {
+export default function (CodeMirror) {
+  var wordRegexp = function (words) {
     return new RegExp("^(?:" + words.join("|") + ")$", "i");
   };
 
-  CodeMirror.defineMode("cypher", function(config) {
-    var tokenBase = function(stream /*, state*/) {
+  CodeMirror.defineMode("cypher", function (config) {
+    var tokenBase = function (stream /*, state*/) {
       var ch = stream.next();
       if (ch === '"' || ch === "'") {
         stream.match(/.+?["']/);
@@ -41,15 +41,15 @@ export default function(CodeMirror) {
         return "variable";
       }
     };
-    var pushContext = function(state, type, col) {
+    var pushContext = function (state, type, col) {
       return (state.context = {
         prev: state.context,
         indent: state.indent,
         col: col,
-        type: type
+        type: type,
       });
     };
-    var popContext = function(state) {
+    var popContext = function (state) {
       state.indent = state.context.indent;
       return (state.context = state.context.prev);
     };
@@ -127,7 +127,7 @@ export default function(CodeMirror) {
       "toString",
       "trim",
       "type",
-      "upper"
+      "upper",
     ]);
     var preds = wordRegexp([
       "all",
@@ -141,7 +141,7 @@ export default function(CodeMirror) {
       "not",
       "or",
       "single",
-      "xor"
+      "xor",
     ]);
     var keywords = wordRegexp([
       "as",
@@ -199,20 +199,20 @@ export default function(CodeMirror) {
       "using",
       "when",
       "where",
-      "with"
+      "with",
     ]);
     var operatorChars = /[*+\-<>=&|~%^]/;
 
     return {
-      startState: function(/*base*/) {
+      startState: function (/*base*/) {
         return {
           tokenize: tokenBase,
           context: null,
           indent: 0,
-          col: 0
+          col: 0,
         };
       },
-      token: function(stream, state) {
+      token: function (stream, state) {
         if (stream.sol()) {
           if (state.context && state.context.align == null) {
             state.context.align = false;
@@ -260,7 +260,7 @@ export default function(CodeMirror) {
         }
         return style;
       },
-      indent: function(state, textAfter) {
+      indent: function (state, textAfter) {
         var firstChar = textAfter && textAfter.charAt(0);
         var context = state.context;
         if (/[\]\}]/.test(firstChar)) {
@@ -274,21 +274,21 @@ export default function(CodeMirror) {
           return CodeMirror.commands.newlineAndIndent;
         if (context.align) return context.col + (closing ? 0 : 1);
         return context.indent + (closing ? 0 : indentUnit);
-      }
+      },
     };
   });
 
   CodeMirror.modeExtensions = {}; // HACK FROM BRIAN UNDERWOOD
 
   CodeMirror.modeExtensions["cypher"] = {
-    autoFormatLineBreaks: function(text) {
+    autoFormatLineBreaks: function (text) {
       var i, lines, reProcessedPortion;
       var lines = text.split("\n");
       var reProcessedPortion = /\s+\b(return|where|order by|match|with|skip|limit|create|delete|set)\b\s/g;
       for (var i = 0; i < lines.length; i++)
         lines[i] = lines[i].replace(reProcessedPortion, " \n$1 ").trim();
       return lines.join("\n");
-    }
+    },
   };
 
   CodeMirror.defineMIME("application/x-cypher-query", "cypher");

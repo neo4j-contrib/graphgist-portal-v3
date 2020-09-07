@@ -23,11 +23,14 @@ type Query {
       RETURN asset
       """
     )
+  getGraphGistCandidate(uuid: ID!): GraphGistCandidate
   me: User
 }
 
 type Mutation {
   Authenticate(token: String): User
+  PreviewGraphGist(asciidoc: String): String
+  UpdateGraphGist(uuid: ID!, graphgist: GraphGistInput!): GraphGistCandidate
 }
 
 type User {
@@ -40,7 +43,7 @@ type User {
 
 interface Asset {
   uuid: ID!
-  image: Image @relation(name: "HAS_IMAGE", direction: "OUT")
+  image: [Image] @relation(name: "HAS_IMAGE", direction: "OUT")
   name: String
   slug: String
   summary: String
@@ -48,7 +51,7 @@ interface Asset {
 
 type Person implements Asset {
   uuid: ID!
-  image: Image @relation(name: "HAS_IMAGE", direction: "OUT")
+  image: [Image] @relation(name: "HAS_IMAGE", direction: "OUT")
   name: String
   slug: String
   summary: String
@@ -88,7 +91,7 @@ type Image {
 
 type Industry implements Asset {
   uuid: ID!
-  image: Image @relation(name: "HAS_IMAGE", direction: "OUT")
+  image: [Image] @relation(name: "HAS_IMAGE", direction: "OUT")
   name: String
   slug: String
   summary: String
@@ -99,7 +102,7 @@ type Industry implements Asset {
 
 type UseCase implements Asset {
   uuid: ID!
-  image: Image @relation(name: "HAS_IMAGE", direction: "OUT")
+  image: [Image] @relation(name: "HAS_IMAGE", direction: "OUT")
   name: String
   slug: String
   summary: String
@@ -110,7 +113,7 @@ type UseCase implements Asset {
 
 type Challenge implements Asset {
   uuid: ID!
-  image: Image @relation(name: "HAS_IMAGE", direction: "OUT")
+  image: [Image] @relation(name: "HAS_IMAGE", direction: "OUT")
   name: String
   slug: String
   summary: String
@@ -130,7 +133,7 @@ enum GraphGistStatus {
 
 interface GraphGistInterface {
   uuid: ID!
-  image: Image @relation(name: "HAS_IMAGE", direction: "OUT")
+  image: [Image] @relation(name: "HAS_IMAGE", direction: "OUT")
   name: String
   slug: String
   summary: String
@@ -172,7 +175,7 @@ interface GraphGistInterface {
 
 type GraphGist implements GraphGistInterface & Asset {
   uuid: ID!
-  image: Image @relation(name: "HAS_IMAGE", direction: "OUT")
+  image: [Image] @relation(name: "HAS_IMAGE", direction: "OUT")
   name: String
   slug: String
   summary: String
@@ -235,11 +238,13 @@ type GraphGist implements GraphGistInterface & Asset {
       END
       """
     )
+  my_perms: [String]
+  candidate: GraphGistCandidate @relation(name: "IS_VERSION", direction: "IN")
 }
 
 type GraphGistCandidate implements GraphGistInterface & Asset {
   uuid: ID!
-  image: Image @relation(name: "HAS_IMAGE", direction: "OUT")
+  image: [Image] @relation(name: "HAS_IMAGE", direction: "OUT")
   name: String
   slug: String
   summary: String
@@ -281,4 +286,36 @@ type GraphGistCandidate implements GraphGistInterface & Asset {
   industries: [Industry] @relation(name: "FOR_INDUSTRY", direction: "OUT")
   use_cases: [UseCase] @relation(name: "FOR_USE_CASE", direction: "OUT")
   challenges: [Challenge] @relation(name: "FOR_CHALLENGE", direction: "OUT")
+  categories: [Asset]
+    @cypher(
+      statement: """
+      MATCH (this)-[:FOR_CHALLENGE|:FOR_USE_CASE|:FOR_INDUSTRY]->(category)
+      RETURN category
+      """
+    )
+  my_perms: [String]
+}
+
+input GraphGistInput {
+  image: [String]
+  slug: String
+  summary: String
+
+  title: String!
+
+  is_guide: Boolean
+
+  url: String
+
+  author: ID!
+
+  asciidoc: String!
+  neo4j_version: String
+
+  industries: [ID]
+  use_cases: [ID]
+  challenges: [ID]
+
+  status: GraphGistStatus
+  featured: Boolean
 }

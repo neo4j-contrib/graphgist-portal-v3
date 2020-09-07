@@ -16,6 +16,9 @@ import Home from "./Home";
 import GraphGists from "./graphgists/GraphGists";
 import GraphGuides from "./graphgists/GraphGuides";
 import GraphGistPage from "./graphgists/GraphGistPage";
+import GraphGistCandidatePage from "./graphgists/GraphGistCandidatePage";
+import GraphGistSourcePage from "./graphgists/GraphGistSourcePage";
+import GraphGistEditByOwner from "./graphgists/GraphGistEditByOwner";
 
 import AuthCallbackPage from "./auth/Callback";
 
@@ -25,8 +28,8 @@ import "semantic-ui-css/semantic.min.css";
 
 const useStyles = createUseStyles({
   container: {
-    marginTop: 60
-  }
+    marginTop: 60,
+  },
 });
 
 const GET_ME = gql`
@@ -45,8 +48,8 @@ function App() {
   const authTokenState = hookUseState(authToken);
   const { data, refetch } = useQuery(GET_ME, {
     variables: {
-      isAuthed: false
-    }
+      isAuthed: false,
+    },
   });
   const me = _.get(data, "me");
 
@@ -55,7 +58,8 @@ function App() {
       try {
         const token = await getIdTokenClaims();
         if (token) {
-          authTokenState.set(token);
+          authTokenState.set(token.__raw);
+          window.localStorage.setItem("authToken", token.__raw);
           refetch({ isAuthed: true });
         }
       } catch (e) {
@@ -63,6 +67,13 @@ function App() {
       }
     })();
   }, [getIdTokenClaims, authTokenState, refetch]);
+
+  const handleLogout = (e) => {
+    e.preventDefault();
+    authTokenState.set(null);
+    window.localStorage.removeItem("authToken");
+    logout({ returnTo: window.location.origin });
+  };
 
   return (
     <React.Fragment>
@@ -94,12 +105,12 @@ function App() {
                     position: "absolute",
                     top: 5,
                     right: 10,
-                    width: 30
+                    width: 30,
                   }}
                   alt={me.name}
                 />
               </Menu.Item>
-              <Menu.Item onClick={logout}>Sign out</Menu.Item>
+              <Menu.Item onClick={handleLogout}>Sign out</Menu.Item>
             </React.Fragment>
           )}
           {!me && <Menu.Item onClick={loginWithRedirect}>Sign in</Menu.Item>}
@@ -111,6 +122,21 @@ function App() {
           <Route exact path="/graph_gists" component={GraphGists} />
           <Route exact path="/graph_guides" component={GraphGuides} />
           <Route exact path="/graph_gists/:id" component={GraphGistPage} />
+          <Route
+            exact
+            path="/graph_gists/:id/source"
+            component={GraphGistSourcePage}
+          />
+          <Route
+            exact
+            path="/graph_gist_candidates/:id"
+            component={GraphGistCandidatePage}
+          />
+          <Route
+            exact
+            path="/graph_gists/:id/edit_by_owner"
+            component={GraphGistEditByOwner}
+          />
           <Route exact path="/authorize" component={AuthCallbackPage} />
         </Switch>
       </Container>

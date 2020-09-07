@@ -14,7 +14,7 @@ const Base64 = {
   _keyStr: "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=",
 
   // public method for encoding
-  encode: function(input) {
+  encode: function (input) {
     var output = "";
     var chr1, chr2, chr3, enc1, enc2, enc3, enc4;
     var i = 0;
@@ -49,7 +49,7 @@ const Base64 = {
   },
 
   // public method for decoding
-  decode: function(input) {
+  decode: function (input) {
     var output = "";
     var chr1, chr2, chr3;
     var enc1, enc2, enc3, enc4;
@@ -83,7 +83,7 @@ const Base64 = {
   },
 
   // private method for UTF-8 encoding
-  _utf8_encode: function(string) {
+  _utf8_encode: function (string) {
     string = string.replace(/\r\n/g, "\n");
     var utftext = "";
 
@@ -106,7 +106,7 @@ const Base64 = {
   },
 
   // private method for UTF-8 decoding
-  _utf8_decode: function(utftext) {
+  _utf8_decode: function (utftext) {
     var string = "";
     var i = 0;
     var c = 0,
@@ -135,7 +135,7 @@ const Base64 = {
     }
 
     return string;
-  }
+  },
 };
 
 export default Base64;

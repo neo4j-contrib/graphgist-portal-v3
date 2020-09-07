@@ -2,23 +2,20 @@ import React from "react";
 import $ from "jquery";
 import GraphGist from "./GraphGist";
 
-import "codemirror/lib/codemirror.css";
-import "codemirror/theme/midnight.css";
-
 export default class extends React.Component {
   componentDidMount() {
     // window.graph_gist_portal_url = window.location.protocol + "//" + window.location.hostname;
     window.graph_gist_portal_url = "https://portal.graphgist.org";
 
-    const GraphGistRenderer = GraphGist({
-      preProcess: false
+    this.GraphGistRenderer = GraphGist({
+      preProcess: false,
     });
 
     $(".sect1").addClass("ui container");
     let ref = $('code[class*="language-"]');
     for (let i = 0, len = ref.length; i < len; i++) {
       let code_element = ref[i];
-      let classes = (function() {
+      let classes = (function () {
         var j, len1, ref1, results;
         ref1 = code_element.classList;
         results = [];
@@ -32,9 +29,7 @@ export default class extends React.Component {
       })();
       for (let j = 0, len1 = classes.length; j < len1; j++) {
         let c = classes[j];
-        $(code_element)
-          .parent("pre")
-          .addClass(c);
+        $(code_element).parent("pre").addClass(c);
       }
     }
 
@@ -44,7 +39,11 @@ export default class extends React.Component {
       $(element).replaceWith($("<p>" + element.innerHTML + "</p>"));
     }
 
-    GraphGistRenderer.renderContent();
+    this.GraphGistRenderer.renderContent();
+  }
+
+  componentWillUnmount() {
+    this.GraphGistRenderer.teardown();
   }
 
   render() {

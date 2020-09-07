@@ -3,7 +3,7 @@
 
 window.CodeMirror = {};
 
-(function() {
+(function () {
   "use strict";
 
   function splitLines(string) {
@@ -16,19 +16,19 @@ window.CodeMirror = {};
     this.lineStart = 0;
   }
   StringStream.prototype = {
-    eol: function() {
+    eol: function () {
       return this.pos >= this.string.length;
     },
-    sol: function() {
+    sol: function () {
       return this.pos == 0;
     },
-    peek: function() {
+    peek: function () {
       return this.string.charAt(this.pos) || null;
     },
-    next: function() {
+    next: function () {
       if (this.pos < this.string.length) return this.string.charAt(this.pos++);
     },
-    eat: function(match) {
+    eat: function (match) {
       var ch = this.string.charAt(this.pos);
       if (typeof match == "string") var ok = ch == match;
       else var ok = ch && (match.test ? match.test(ch) : match(ch));
@@ -37,38 +37,38 @@ window.CodeMirror = {};
         return ch;
       }
     },
-    eatWhile: function(match) {
+    eatWhile: function (match) {
       var start = this.pos;
       while (this.eat(match)) {}
       return this.pos > start;
     },
-    eatSpace: function() {
+    eatSpace: function () {
       var start = this.pos;
       while (/[\s\u00a0]/.test(this.string.charAt(this.pos))) ++this.pos;
       return this.pos > start;
     },
-    skipToEnd: function() {
+    skipToEnd: function () {
       this.pos = this.string.length;
     },
-    skipTo: function(ch) {
+    skipTo: function (ch) {
       var found = this.string.indexOf(ch, this.pos);
       if (found > -1) {
         this.pos = found;
         return true;
       }
     },
-    backUp: function(n) {
+    backUp: function (n) {
       this.pos -= n;
     },
-    column: function() {
+    column: function () {
       return this.start - this.lineStart;
     },
-    indentation: function() {
+    indentation: function () {
       return 0;
     },
-    match: function(pattern, consume, caseInsensitive) {
+    match: function (pattern, consume, caseInsensitive) {
       if (typeof pattern == "string") {
-        var cased = function(str) {
+        var cased = function (str) {
           return caseInsensitive ? str.toLowerCase() : str;
         };
         var substr = this.string.substr(this.pos, pattern.length);
@@ -83,35 +83,35 @@ window.CodeMirror = {};
         return match;
       }
     },
-    current: function() {
+    current: function () {
       return this.string.slice(this.start, this.pos);
     },
-    hideFirstChars: function(n, inner) {
+    hideFirstChars: function (n, inner) {
       this.lineStart += n;
       try {
         return inner();
       } finally {
         this.lineStart -= n;
       }
-    }
+    },
   };
   CodeMirror.StringStream = StringStream;
 
-  CodeMirror.startState = function(mode, a1, a2) {
+  CodeMirror.startState = function (mode, a1, a2) {
     return mode.startState ? mode.startState(a1, a2) : true;
   };
 
   var modes = (CodeMirror.modes = {}),
     mimeModes = (CodeMirror.mimeModes = {});
-  CodeMirror.defineMode = function(name, mode) {
+  CodeMirror.defineMode = function (name, mode) {
     if (arguments.length > 2)
       mode.dependencies = Array.prototype.slice.call(arguments, 2);
     modes[name] = mode;
   };
-  CodeMirror.defineMIME = function(mime, spec) {
+  CodeMirror.defineMIME = function (mime, spec) {
     mimeModes[mime] = spec;
   };
-  CodeMirror.resolveMode = function(spec) {
+  CodeMirror.resolveMode = function (spec) {
     if (typeof spec == "string" && mimeModes.hasOwnProperty(spec)) {
       spec = mimeModes[spec];
     } else if (
@@ -124,23 +124,23 @@ window.CodeMirror = {};
     if (typeof spec == "string") return { name: spec };
     else return spec || { name: "null" };
   };
-  CodeMirror.getMode = function(options, spec) {
+  CodeMirror.getMode = function (options, spec) {
     spec = CodeMirror.resolveMode(spec);
     var mfactory = modes[spec.name];
     if (!mfactory) throw new Error("Unknown mode: " + spec);
     return mfactory(options, spec);
   };
   CodeMirror.registerHelper = CodeMirror.registerGlobalHelper = Math.min;
-  CodeMirror.defineMode("null", function() {
+  CodeMirror.defineMode("null", function () {
     return {
-      token: function(stream) {
+      token: function (stream) {
         stream.skipToEnd();
-      }
+      },
     };
   });
   CodeMirror.defineMIME("text/plain", "null");
 
-  CodeMirror.runMode = function(string, modespec, callback, options) {
+  CodeMirror.runMode = function (string, modespec, callback, options) {
     var mode = CodeMirror.getMode({ indentUnit: 2 }, modespec);
 
     if (callback.nodeType == 1) {
@@ -148,7 +148,7 @@ window.CodeMirror = {};
       var node = callback,
         col = 0;
       node.innerHTML = "";
-      callback = function(text, style) {
+      callback = function (text, style) {
         if (text == "\n") {
           node.appendChild(document.createElement("br"));
           col = 0;
