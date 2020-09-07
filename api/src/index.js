@@ -78,10 +78,21 @@ export const schema = makeAugmentedSchema({
               name: $name,
               image: $image,
               provider: $provider
-            }) RETURN u`,
+            })
+            CREATE (p:Person {
+              uuid: $uuidPerson,
+              uid: $uuidPerson,
+              slug: $username,
+              email: $email,
+              name: $name,
+              image: $image,
+            })
+            CREATE (u)-[r:IS_PERSON]->(p)
+            RETURN u, r, p`,
               {
                 uid: user.sub,
                 provider,
+                uuidPerson: uuidv4(),
                 uuid: uuidv4(),
                 password: user.aud,
                 username: user.nickname,

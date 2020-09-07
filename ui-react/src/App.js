@@ -19,6 +19,8 @@ import GraphGistPage from "./graphgists/GraphGistPage";
 import GraphGistCandidatePage from "./graphgists/GraphGistCandidatePage";
 import GraphGistSourcePage from "./graphgists/GraphGistSourcePage";
 import GraphGistEditByOwner from "./graphgists/GraphGistEditByOwner";
+import MyGraphGists from "./graphgists/MyGraphGists";
+import PersonGraphGists from "./people/PersonGraphGists";
 
 import AuthCallbackPage from "./auth/Callback";
 
@@ -89,6 +91,11 @@ function App() {
         <Menu.Item as={NavLink} to="/graph_gists">
           GraphGists
         </Menu.Item>
+        {me && (
+          <Menu.Item as={NavLink} to="/my_graphgists">
+            My GraphGists
+          </Menu.Item>
+        )}
         <Menu.Item as={NavLink} to="/graph_guides">
           Graph Guides
         </Menu.Item>
@@ -119,6 +126,8 @@ function App() {
       <Container className={classes.container} id="main">
         <Switch>
           <Route exact path="/" component={Home} />
+          <Route exact path="/people/:slug" component={PersonGraphGists} />
+          <Route exact path="/my_graphgists" component={MyGraphGists} />
           <Route exact path="/graph_gists" component={GraphGists} />
           <Route exact path="/graph_guides" component={GraphGuides} />
           <Route exact path="/graph_gists/:id" component={GraphGistPage} />
