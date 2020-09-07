@@ -45,6 +45,7 @@ type Mutation {
   Authenticate(token: String): User
   PreviewGraphGist(asciidoc: String): String
   UpdateGraphGist(uuid: ID!, graphgist: GraphGistInput!): GraphGistCandidate
+  UpdateUser(user: UserInput!): User
 }
 
 type User {
@@ -53,6 +54,7 @@ type User {
   email: String
   name: String
   image: String
+  twitter_username: String
   person: Person @relation(name: "IS_PERSON", direction: "OUT")
 }
 
@@ -333,4 +335,12 @@ input GraphGistInput {
 
   status: GraphGistStatus
   featured: Boolean
+}
+
+input UserInput {
+  email: String!
+  name: String!
+  twitter_username: String
+  tshirt_size: String
+  tshirt_size_other: String
 }
