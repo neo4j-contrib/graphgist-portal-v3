@@ -23,6 +23,20 @@ type Query {
       RETURN asset
       """
     )
+  graphGistsByAuthorUser(uuid: ID!): [GraphGist]
+    @cypher(
+      statement: """
+      MATCH (asset:GraphGist {status:'live'})<-[:WROTE]-(p:Person)<-[:IS_PERSON]-(u:User {uuid: $uuid})
+      RETURN asset
+      """
+    )
+  graphGistsByAuthorPerson(uuid: ID!): [GraphGist]
+    @cypher(
+      statement: """
+      MATCH (asset:GraphGist {status:'live'})<-[:WROTE]-(p:Person {uuid: $uuid})
+      RETURN asset
+      """
+    )
   getGraphGistCandidate(uuid: ID!): GraphGistCandidate
   me: User
 }
@@ -39,6 +53,7 @@ type User {
   email: String
   name: String
   image: String
+  person: Person @relation(name: "IS_PERSON", direction: "OUT")
 }
 
 interface Asset {
