@@ -21,6 +21,8 @@ import GraphGistEditByOwner from "./graphgists/GraphGistEditByOwner";
 import MyGraphGists from "./graphgists/MyGraphGists";
 import PersonGraphGists from "./people/PersonGraphGists";
 
+import Candidates from "./candidates/Candidates";
+
 import EditProfile from "./people/EditProfile";
 
 import AuthCallbackPage from "./auth/Callback";
@@ -153,6 +155,7 @@ function App() {
             path="/graph_gists/:id/edit_by_owner"
             component={GraphGistEditByOwner}
           />
+          <Route exact path="/candidates/waiting_review" component={Candidates} />
           <Route exact path="/users/edit" component={EditProfile} />
           <Route exact path="/authorize" component={AuthCallbackPage} />
         </Switch>

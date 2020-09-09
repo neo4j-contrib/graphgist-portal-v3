@@ -1,7 +1,7 @@
 import React from "react";
 import gql from "graphql-tag";
 import { useHistory } from "react-router";
-import { Card, Image, Icon, List } from "semantic-ui-react";
+import { Card, Image, List } from "semantic-ui-react";
 import { Link } from "react-router-dom";
 import { createUseStyles } from "react-jss";
 
@@ -20,11 +20,11 @@ const categoriesUrlPath = {
   Challenge: "challenges",
 };
 
-function GraphGistCard(props) {
+function GraphGistCandidateCard(props) {
   const classes = useStyles();
   const history = useHistory();
   const { graphGist } = props;
-  const graphGistUrl = `/graph_gists/${graphGist.slug}`;
+  const graphGistUrl = `/graph_gist_candidates/${graphGist.uuid}`;
 
   function onCardClick() {
     history.push(graphGistUrl);
@@ -46,13 +46,6 @@ function GraphGistCard(props) {
             : missingImg
         }
       />
-
-      {graphGist.featured && (
-        <Card.Content>
-          <Icon name="thumbs up" size="large" style={{ paddingRight: 0 }} />
-          Featured by Neo Team
-        </Card.Content>
-      )}
 
       <Card.Content>
         <Card.Description>
@@ -101,21 +94,19 @@ function GraphGistCard(props) {
   );
 }
 
-GraphGistCard.fragments = {
-  graphGist: gql`
-    fragment GraphGistCard on GraphGist {
+GraphGistCandidateCard.fragments = {
+  graphGistCandidate: gql`
+    fragment CandidateCard on GraphGistCandidate {
       uuid
       slug
       title
-      featured
-      avg_rating
-      is_candidate_updated
       status
+      graphgist {
+        uuid
+        status
+      }
       image(first: 1) {
         source_url
-      }
-      candidate {
-        uuid
       }
       categories(first: 3) {
         __typename
@@ -137,4 +128,4 @@ GraphGistCard.fragments = {
   `,
 };
 
-export default GraphGistCard;
+export default GraphGistCandidateCard;

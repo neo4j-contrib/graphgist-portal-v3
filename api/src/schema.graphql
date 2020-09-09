@@ -46,6 +46,8 @@ type Mutation {
   PreviewGraphGist(asciidoc: String): String
   UpdateGraphGist(uuid: ID!, graphgist: GraphGistInput!): GraphGistCandidate
   UpdateUser(user: UserInput!): User
+  PublishGraphGistCandidate(uuid: ID!): GraphGist
+  DisableGraphGist(uuid: ID!): GraphGist
 }
 
 type User {

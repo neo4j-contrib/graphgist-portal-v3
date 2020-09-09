@@ -48,6 +48,7 @@ const GET_GRAPHGIST = gql`
       graphgist {
         uuid
         slug
+        status
       }
     }
   }
@@ -56,7 +57,7 @@ const GET_GRAPHGIST = gql`
 function GraphGistCandidatePage() {
   const { id } = useParams();
 
-  const { loading, data, error } = useQuery(GET_GRAPHGIST, {
+  const { loading, data, error, refetch } = useQuery(GET_GRAPHGIST, {
     fetchPolicy: "cache-and-network",
     variables: { id: id },
   });
@@ -68,6 +69,7 @@ function GraphGistCandidatePage() {
       graphGist={graphGist}
       loading={loading}
       error={error}
+      refetch={refetch}
       candidate
     />
   );

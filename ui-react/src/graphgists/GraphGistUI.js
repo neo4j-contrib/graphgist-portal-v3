@@ -1,15 +1,37 @@
 import React from "react";
-import { Link } from "react-router-dom";
-import { Button, Item, Icon, Grid, Header, Divider } from "semantic-ui-react";
+import { Link, useHistory } from "react-router-dom";
+import { Button, Item, Icon, Grid, Header, Divider, Label } from "semantic-ui-react";
 import moment from "moment";
 import { Helmet } from "react-helmet";
+import _ from "lodash";
+import { useMutation } from "@apollo/react-hooks";
+import gql from "graphql-tag";
 import SimpleFormat from "../components/SimpleFormat.js";
 import GraphGistRenderer from "./render/GraphGistRenderer.js";
 import PageLoading from "../components/PageLoading.js";
 
 import "./GraphGistPage.scss";
 
-function GraphGistPage({ graphGist, loading, error, candidate }) {
+const PUBLISH_GRAPHGIST = gql`
+  mutation publishGraphGistCandidateMutation($uuid: ID!) {
+    PublishGraphGistCandidate(uuid: $uuid) {
+      uuid
+      status
+    }
+  }
+`;
+
+const DISABLE_GRAPHGIST = gql`
+  mutation disableGraphGistMutation($uuid: ID!) {
+    DisableGraphGist(uuid: $uuid) {
+      uuid
+      status
+    }
+  }
+`;
+
+function GraphGistPage({ graphGist, loading, error, candidate, refetch }) {
+  const slug = candidate ? _.get(graphGist, 'graphgist.slug') : _.get(graphGist, 'slug');
   return (
     <PageLoading loading={loading} error={error} obj={graphGist}>
       {graphGist && (
@@ -38,17 +60,35 @@ function GraphGistPage({ graphGist, loading, error, candidate }) {
               </GraphGistRenderer>
             </Grid.Column>
             <Grid.Column width={3}>
-              {graphGist.status === "live" && (
+              {(!candidate && graphGist.status === "live" && slug ) && (<>
                 <a
-                  href={`https://neo4j.com/graphgist/${
-                    candidate ? graphGist.graphgist.slug : graphGist.slug
-                  }`}
+                  href={`https://neo4j.com/graphgist/${slug}`}
                 >
                   Live Version
                 </a>
+                <Divider />
+              </>)}
+
+              {graphGist.my_perms.indexOf("edit") >= 0 && (
+                <>
+                {(candidate && _.get(graphGist, 'graphgist.status') === 'live') && <p><Label as={Link} color="red" to={`/graph_gists/${graphGist.graphgist.slug}`}>
+                    Go to live version.
+                  </Label></p>}
+                  
+                {(!candidate && graphGist.is_candidate_updated) && <p><Label as={Link} color="red" to={`/graph_gist_candidates/${graphGist.candidate.uuid}`}>
+                    This version is outdated.<br />
+                    Go to candidate version.
+                  </Label></p>}
+
+                  <Label color={_.get({candidate: 'orange', live: 'teal', disabled: 'red'}, graphGist.status, undefined)}>
+                    {graphGist.status}
+                  </Label>
+
+                  <Divider />
+                </>
               )}
 
-              <AssetExtraButtons graphGist={graphGist} candidate={candidate} />
+              <AssetExtraButtons graphGist={graphGist} candidate={candidate} slug={slug} refetch={refetch} />
             </Grid.Column>
           </Grid>
         </React.Fragment>
@@ -57,11 +97,49 @@ function GraphGistPage({ graphGist, loading, error, candidate }) {
   );
 }
 
-function AssetExtraButtons({ graphGist, candidate }) {
+function AssetExtraButtons({ graphGist, candidate, slug, refetch }) {
+  const history = useHistory();
+
+  const uuid = candidate ? _.get(graphGist, 'graphgist.uuid') : graphGist.uuid
+
+  const [publishGraphGistCandidateMutation, { loading: isPublishing }] = useMutation(PUBLISH_GRAPHGIST, {
+    onCompleted: () => {
+      history.push(`/graph_gists/${slug}`);
+    }
+  });
+
+  const handlePublish = () => {
+    publishGraphGistCandidateMutation({ variables: { uuid }});
+  };
+
+  const [disableGraphGistMutation, { loading: isDisabling }] = useMutation(DISABLE_GRAPHGIST, {
+    onCompleted: refetch
+  });
+
+  const handleDisable = () => {
+    disableGraphGistMutation({ variables: { uuid }});
+  };
+
   return (
     <React.Fragment>
+      {graphGist.my_perms.indexOf("admin") >= 0 && (
+        <React.Fragment>
+          <Button icon labelPosition="left" color="teal" loading={isPublishing} onClick={handlePublish}>
+            <Icon name="checkmark" />
+            Approve
+          </Button>
+          <Divider />
+          <Button icon labelPosition="left" loading={isDisabling} onClick={handleDisable}>
+            <Icon name="remove" />
+            Disable
+          </Button>
+          <Divider />
+        </React.Fragment>
+      )}
+
       <a href=".">Run this gist in the Neo4j console</a>
-      {graphGist.my_perms.indexOf("edit") >= 0 && (
+
+      {(graphGist.my_perms.indexOf("edit") >= 0 && uuid) && (
         <React.Fragment>
           <Divider />
           <Button
@@ -69,9 +147,7 @@ function AssetExtraButtons({ graphGist, candidate }) {
             labelPosition="left"
             fluid
             as={Link}
-            to={`/graph_gists/${
-              candidate ? graphGist.graphgist.uuid : graphGist.uuid
-            }/edit_by_owner`}
+            to={`/graph_gists/${uuid}/edit_by_owner`}
           >
             <Icon name="edit" />
             Edit GraphGist
@@ -113,19 +189,19 @@ function AssetExtraButtons({ graphGist, candidate }) {
         | If approved, your graphgist will appear on the Neo4j.com/graphgists. You can make edits at any time, and when you are ready for the edits to appear on the Neo4j.com/graphgists you can submit again
 */}
 
-      <Divider />
-      <Button
-        icon
-        labelPosition="left"
-        fluid
-        as={Link}
-        to={`/graph_gists/${
-          candidate ? graphGist.graphgist.slug : graphGist.slug
-        }/source`}
-      >
-        <Icon name="file text" />
-        Show Source
-      </Button>
+      {slug && <>
+        <Divider />
+        <Button
+          icon
+          labelPosition="left"
+          fluid
+          as={Link}
+          to={`/graph_gists/${slug}/source`}
+        >
+          <Icon name="file text" />
+          Show Source
+        </Button>
+      </>}
 
       <Item.Group>
         <Item>

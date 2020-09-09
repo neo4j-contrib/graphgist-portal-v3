@@ -19,6 +19,7 @@ const GET_GRAPHGIST = gql`
       raw_html
       cached
       my_perms
+      is_candidate_updated
       author {
         uuid
         name
@@ -47,6 +48,9 @@ const GET_GRAPHGIST = gql`
           source_url
         }
       }
+      candidate {
+        uuid
+      }
     }
   }
 `;
@@ -54,14 +58,14 @@ const GET_GRAPHGIST = gql`
 function GraphGistPage() {
   const { id } = useParams();
 
-  const { loading, data, error } = useQuery(GET_GRAPHGIST, {
+  const { loading, data, error, refetch } = useQuery(GET_GRAPHGIST, {
     fetchPolicy: "cache-and-network",
     variables: { id },
   });
 
   const graphGist = _.get(data, "GraphGist[0]", null);
 
-  return <GraphGistUI graphGist={graphGist} loading={loading} error={error} />;
+  return <GraphGistUI graphGist={graphGist} loading={loading} error={error} refetch={refetch} />;
 }
 
 export default GraphGistPage;
