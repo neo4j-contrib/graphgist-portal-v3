@@ -50,6 +50,45 @@ export const schema = makeAugmentedSchema({
   typeDefs,
   resolvers: {
     Mutation: {
+      UpdateUser: async (obj, args, context, info) => {
+        const session = context.driver.session();
+        const txc = session.beginTransaction();
+        try {
+          const profile = args.user;
+          const user = await context.user;
+
+          const result = await txc.run(
+            `
+            MATCH (u:User {uuid: $uuid})
+            MERGE (u)-[:IS_PERSON]->(p:Person)
+            SET u += $user
+            SET p += $person
+            RETURN u, p
+          `,
+            {
+              uuid: user.uuid,
+              user: {
+                name: profile.name,
+                twitter_username: profile.twitter_username,
+                email: profile.email,
+              },
+              person: {
+                name: profile.name,
+                twitter_username: profile.twitter_username,
+                email: profile.email,
+                tshirt_size: profile.tshirt_size,
+                tshirt_size_other: profile.tshirt_size_other,
+              },
+            }
+          );
+          await txc.commit();
+          return neo4jgraphql(obj, { uuid: user.uuid }, context, info);
+        } catch (error) {
+          console.error(error);
+        }
+
+        return null;
+      },
       Authenticate: async (root, args, context, info) => {
         const session = context.driver.session();
         const txc = session.beginTransaction();
@@ -61,11 +100,14 @@ export const schema = makeAugmentedSchema({
           const result = await txc.run(
             `MATCH (u:User) WHERE (u.provider = $provider AND u.uid = $uid) OR u.uid = '${provider}|${uid}' OR u.email = $email RETURN u`,
             {
-              provider,
-              uid,
+              provider: provider,
+              uid: uid,
               email: user.email,
             }
           );
+
+          const uuid = uuidv4();
+          const uniq = uuid.split('-')[0];
 
           if (result.records.length === 0) {
             const createUser = await txc.run(
@@ -85,7 +127,7 @@ export const schema = makeAugmentedSchema({
               slug: $username,
               email: $email,
               name: $name,
-              image: $image,
+              image: $image
             })
             CREATE (u)-[r:IS_PERSON]->(p)
             RETURN u, r, p`,
@@ -93,9 +135,9 @@ export const schema = makeAugmentedSchema({
                 uid: user.sub,
                 provider,
                 uuidPerson: uuidv4(),
-                uuid: uuidv4(),
+                uuid: uuid,
                 password: user.aud,
-                username: user.nickname,
+                username: `${user.nickname}-${uniq}`,
                 email: user.email,
                 name: user.name,
                 image: user.picture,
@@ -135,7 +177,7 @@ export const schema = makeAugmentedSchema({
           } = args.graphgist;
           const result = await txc.run(
             `
-            MATCH (g:GraphGist {uuid: $uuid})<-[IS_VERSION]-(gc:GraphGistCandidate)
+            MATCH (g:GraphGist {uuid: $uuid})<-[:IS_VERSION]-(gc:GraphGistCandidate)
             SET gc += $graphgist
             SET g += { is_candidate_updated: TRUE, has_errors: FALSE }
             RETURN gc
@@ -227,7 +269,7 @@ export const schema = makeAugmentedSchema({
         try {
           const user = await context.user;
           if (user) {
-            return user;
+            return neo4jgraphql(obj, { uuid: user.uuid }, context, info);
           }
         } catch (error) {
           console.error(error);
@@ -238,13 +280,6 @@ export const schema = makeAugmentedSchema({
         const session = context.driver.session();
         const txc = session.beginTransaction();
         const { uuid: graphGistUUID } = args;
-
-        // var gc = {
-        //   render_id: uuid,
-        //   summary: '',
-        //   cached: null,
-        //   author
-        // };
 
         try {
           const graphGist = await getGraphGistByUUID(txc, graphGistUUID);
@@ -353,44 +388,6 @@ export const schema = makeAugmentedSchema({
 
         return [];
       },
-      // candidate: async (obj, args, context, info) => {
-      //   const session = context.driver.session();
-      //   const txc = session.beginTransaction();
-      //   cansole.log(obj);
-      //   try {
-      //     const result = await txc.run(`
-      //       MATCH (g:GraphGist {uuid: $uuid})<-[IS_VERSION]-(c:GraphGistCandidate)
-      //       RETURN c
-      //     `, {
-      //       uuid: obj.uuid,
-      //     });
-      //     if (result.records.length > 0) {
-      //       await txc.commit();
-      //       return result.records[0].get('c').properties;
-      //     } else {
-      //       const graphGist = await getGraphGistByUUID(txc, args.uuid);
-      //       const createResult = await txc.run(`
-      //         CREATE (c:GraphGistCandidate $graphgist)
-      //         CREATE (g:GraphGist {uuid: $uuid})<-[IS_VERSION]-(c)
-      //         RETURN c
-      //       `, {
-      //         uuid: graphGist.uuid,
-      //         graphgist: {
-      //           ...graphgist,
-      //           uuid: uuidv4(),
-      //         },
-      //       });
-      //       await txc.commit();
-      //       return createResult.records[0].get('c').properties;
-      //     }
-      //   } catch (error) {
-      //     console.error(error)
-      //     await txc.rollback()
-      //   } finally {
-      //     await session.close()
-      //   }
-      //   return null;
-      // }
     },
     GraphGistCandidate: {
       my_perms: async (obj, args, context, info) => {

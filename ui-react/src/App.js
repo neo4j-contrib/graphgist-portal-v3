@@ -1,12 +1,11 @@
 import React, { useEffect } from "react";
 import gql from "graphql-tag";
 import { useQuery } from "@apollo/react-hooks";
-import { Switch, Route, NavLink } from "react-router-dom";
-import { Menu, Container } from "semantic-ui-react";
+import { Switch, Route, NavLink, Link, useLocation } from "react-router-dom";
+import { Menu, Container, Message } from "semantic-ui-react";
 import { createUseStyles } from "react-jss";
 import { useAuth0 } from "@auth0/auth0-react";
 import { useState as hookUseState } from "@hookstate/core";
-import { Link } from "react-router-dom";
 import _ from "lodash";
 import { Helmet } from "react-helmet";
 
@@ -21,6 +20,8 @@ import GraphGistSourcePage from "./graphgists/GraphGistSourcePage";
 import GraphGistEditByOwner from "./graphgists/GraphGistEditByOwner";
 import MyGraphGists from "./graphgists/MyGraphGists";
 import PersonGraphGists from "./people/PersonGraphGists";
+
+import EditProfile from "./people/EditProfile";
 
 import AuthCallbackPage from "./auth/Callback";
 
@@ -45,6 +46,7 @@ const GET_ME = gql`
 `;
 
 function App() {
+  const location = useLocation();
   const classes = useStyles();
   const { loginWithRedirect, logout, getIdTokenClaims } = useAuth0();
   const authTokenState = hookUseState(authToken);
@@ -76,6 +78,8 @@ function App() {
     window.localStorage.removeItem("authToken");
     logout({ returnTo: window.location.origin });
   };
+
+  const messages = _.get(location.state, "messages", []);
 
   return (
     <React.Fragment>
@@ -124,6 +128,9 @@ function App() {
         </Menu.Menu>
       </Menu>
       <Container className={classes.container} id="main">
+        {messages.map((message, i) => (
+          <Message key={i} {...{ [message.type]: true }}>{message.body}</Message>
+        ))}
         <Switch>
           <Route exact path="/" component={Home} />
           <Route exact path="/people/:slug" component={PersonGraphGists} />
@@ -146,6 +153,7 @@ function App() {
             path="/graph_gists/:id/edit_by_owner"
             component={GraphGistEditByOwner}
           />
+          <Route exact path="/users/edit" component={EditProfile} />
           <Route exact path="/authorize" component={AuthCallbackPage} />
         </Switch>
       </Container>
