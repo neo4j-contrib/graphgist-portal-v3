@@ -113,7 +113,10 @@ function AssetExtraButtons({ graphGist, candidate, slug, refetch }) {
   };
 
   const [disableGraphGistMutation, { loading: isDisabling }] = useMutation(DISABLE_GRAPHGIST, {
-    onCompleted: refetch
+    onCompleted: () => {
+      refetch();
+      history.push(`/graph_gists/${slug}`);
+    }
   });
 
   const handleDisable = () => {
@@ -124,11 +127,13 @@ function AssetExtraButtons({ graphGist, candidate, slug, refetch }) {
     <React.Fragment>
       {graphGist.my_perms.indexOf("admin") >= 0 && (
         <React.Fragment>
-          <Button icon labelPosition="left" color="teal" loading={isPublishing} onClick={handlePublish}>
-            <Icon name="checkmark" />
-            Approve
-          </Button>
-          <Divider />
+          {candidate && <>
+            <Button icon labelPosition="left" color="teal" loading={isPublishing} onClick={handlePublish}>
+              <Icon name="checkmark" />
+              Approve
+            </Button>
+            <Divider />
+          </>}
           <Button icon labelPosition="left" loading={isDisabling} onClick={handleDisable}>
             <Icon name="remove" />
             Disable

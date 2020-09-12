@@ -6,8 +6,8 @@ import _ from "lodash";
 import GraphGistUI from "./GraphGistUI.js";
 
 const GET_GRAPHGIST = gql`
-  query graphGistPage($id: String) {
-    GraphGist(slug: $id) {
+  query graphGistPage($id: ID, $slug: String) {
+    GraphGist(filter: {OR: [{uuid: $id}, {slug: $slug}]}) {
       uuid
       render_id
       status
@@ -60,7 +60,7 @@ function GraphGistPage() {
 
   const { loading, data, error, refetch } = useQuery(GET_GRAPHGIST, {
     fetchPolicy: "cache-and-network",
-    variables: { id },
+    variables: { id: id, slug: id },
   });
 
   const graphGist = _.get(data, "GraphGist[0]", null);
