@@ -5,3 +5,8 @@ deploy:
 	git branch -D heroku-api
 	git subtree split --prefix api -b heroku-api
 	git push heroku-api heroku-api:master --force
+
+deploy-api:
+	git branch -D heroku-api
+	git subtree split --prefix api -b heroku-api
+	git push heroku-api heroku-api:master --force
