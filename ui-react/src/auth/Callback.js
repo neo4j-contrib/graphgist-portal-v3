@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useHistory } from "react-router-dom";
 import { Message, Loader } from "semantic-ui-react";
 import gql from "graphql-tag";
-import { useMutation } from "@apollo/react-hooks";
+import { useMutation } from "@apollo/client";
 import { useState as hookUseState } from "@hookstate/core";
 
 import { authToken } from "./state";

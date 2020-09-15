@@ -1,12 +1,10 @@
 import React from "react";
 import { useQuery, useMutation } from "@apollo/client";
-import { useParams, useHistory } from "react-router-dom";
+import { Link, useHistory } from "react-router-dom";
 import gql from "graphql-tag";
 import {
   Form,
   Button,
-  Grid,
-  Header,
   Image,
   Card,
   Loader,
@@ -19,63 +17,13 @@ import { Helmet } from "react-helmet";
 import { Formik, FieldArray } from "formik";
 import { createUseStyles } from "react-jss";
 import CodeMirrorTextArea from "./render/TextArea";
-import AuthorsSelect from "./components/AuthorsSelect";
 import IndustriesSelect from "./components/IndustriesSelect";
 import UseCasesSelect from "./components/UseCasesSelect";
 import ChallengesSelect from "./components/ChallengesSelect";
 import GraphGistRenderer from "./render/GraphGistRenderer.js";
 
-const GET_GRAPHGIST = gql`
-  query graphGistPage($id: ID!) {
-    getGraphGistCandidate(uuid: $id) {
-      uuid
-      graphgist {
-        uuid
-      }
-      my_perms
-      render_id
-      status
-      slug
-      title
-      summary
-      asciidoc
-      cached
-      author {
-        uuid
-        name
-        slug
-      }
-      created_at {
-        formatted
-      }
-      images: image {
-        uuid
-        title
-        description
-        source_url
-      }
-      industries {
-        uuid
-        name
-      }
-      use_cases {
-        uuid
-        name
-      }
-      challenges {
-        uuid
-        name
-      }
-      author {
-        uuid
-        name
-        slug
-        image {
-          source_url
-        }
-      }
-    }
-
+const GET_SELECT_DATA = gql`
+  query graphGistChoices {
     statusChoices: __type(name: "GraphGistStatus") {
       enumValues {
         name
@@ -91,8 +39,8 @@ const PREVIEW = gql`
 `;
 
 const UPDATE_GRAPHGIST = gql`
-  mutation UpdateGraphGist($id: ID!, $graphgist: GraphGistInput!) {
-    UpdateGraphGist(uuid: $id, graphgist: $graphgist) {
+  mutation CreateGraphGist($graphgist: GraphGistInput!) {
+    CreateGraphGist(graphgist: $graphgist) {
       uuid
     }
   }
@@ -119,46 +67,28 @@ const useStyles = createUseStyles({
   },
 });
 
-function GraphGistEditByOwner() {
+function GraphGistCreate() {
   const classes = useStyles();
   const history = useHistory();
-  const { id } = useParams();
 
-  const { loading, data, error } = useQuery(GET_GRAPHGIST, {
+  const { data } = useQuery(GET_SELECT_DATA, {
     fetchPolicy: "cache-and-network",
-    variables: { id },
   });
 
   const [
     previewGraphGist,
     { data: graphGistPreviewResult, loading: isLoadingPreview },
-  ] = useMutation(PREVIEW, {
-    onError: (data) => {
-      showApiError(data);
-    },
-  });
+  ] = useMutation(PREVIEW);
 
   const [updateGraphGist, { loading: isSaving }] = useMutation(
     UPDATE_GRAPHGIST,
     {
       onCompleted: (data) => {
-        history.push(`/graph_gist_candidates/${data.UpdateGraphGist.uuid}`);
-      },
-      onError: (data, e) => {
-        showApiError(data);
+        history.push(`/graph_gist_candidates/${data.CreateGraphGist.uuid}`);
       },
     }
   );
-  const showApiError = (data) => {
-    history.push(`/graph_gists/${id}/edit_by_owner`, {
-      messages: data.graphQLErrors.map(error => (
-        {
-          body: error.message,
-          type: "negative",
-        }
-      )),
-    });
-  };
+
   const handlePreview = (e, asciidoc) => {
     e.preventDefault();
     previewGraphGist({ variables: { asciidoc } });
@@ -169,8 +99,7 @@ function GraphGistEditByOwner() {
     "PreviewGraphGist",
     ""
   );
-  const graphGistCandidate = _.get(data, "getGraphGistCandidate", null);
-  const graphGist = _.get(graphGistCandidate, "graphgist", null);
+
   const statusChoices = _.get(data, "statusChoices.enumValues", []).map(
     (item) => ({
       value: item.name,
@@ -178,49 +107,29 @@ function GraphGistEditByOwner() {
     })
   );
 
-  if (loading && !error) {
-    return (
-      <Grid>
-        <Grid.Column width={16}>
-          <p>Loading...</p>
-        </Grid.Column>
-      </Grid>
-    );
-  }
-
-  if (!graphGistCandidate) {
-    return (
-      <Grid>
-        <Grid.Column width={16}>
-          <p>Not found</p>
-        </Grid.Column>
-      </Grid>
-    );
-  }
-
   return (
     <React.Fragment>
-      <Helmet title={graphGistCandidate.title} />
+      <Helmet title="Submit a GraphGist" />
 
-      <Header as="h1" size="huge">
-        {graphGistCandidate.title}
-      </Header>
+      <p>Enter the URL or AsciiDoc of your GraphGist and click "Preview". If it looks good you can click on the "Submit GraphGist" button to submit it for publication on this site!</p>
+      <p>If you don't know what a GraphGist is or need help creating one you can consult <Link to={`/`}>this guide</Link></p>
+      <p>If you still need help you can find us on <a href="http://neo4j.com/blog/public-neo4j-users-slack-group/">Slack</a></p>
 
       <Formik
         initialValues={{
-          title: graphGistCandidate.title,
-          asciidoc: graphGistCandidate.asciidoc,
-          author: graphGistCandidate.author.uuid,
-          summary: graphGistCandidate.summary,
-          status: graphGistCandidate.status,
-          images: graphGistCandidate.images || [],
-          industries: graphGistCandidate.industries.map((i) => i.uuid),
-          challenges: graphGistCandidate.challenges.map((i) => i.uuid),
-          use_cases: graphGistCandidate.use_cases.map((i) => i.uuid),
+          title: '',
+          asciidoc: '',
+          author: '',
+          summary: '',
+          status: 'candidate',
+          industries: [],
+          challenges: [],
+          use_cases: [],
+          images: [],
         }}
         onSubmit={(values, e, a) => {
           updateGraphGist({
-            variables: { id: graphGist.uuid, graphgist: {
+            variables: { graphgist: {
               ...values,
               images: values.images.map(image => (image.file))
             }},
@@ -235,7 +144,7 @@ function GraphGistEditByOwner() {
           };
 
           return (
-            <Form className={classes.form}>
+            <Form className={classes.form} onSubmit={handleSubmit}>
               <div className={classes.imagesContainer}>
                 <FieldArray
                   name="images"
@@ -253,6 +162,7 @@ function GraphGistEditByOwner() {
                         };
                         fileReader.readAsDataURL(file);
                       }
+                      e.target.value = null;
                     }
 
                     return <Card.Group>
@@ -304,7 +214,7 @@ function GraphGistEditByOwner() {
                 />
               </div>
 
-              <Form.Field>
+              <Form.Field required>
                 <label>Title (Required)</label>
                 <input
                   required
@@ -319,6 +229,7 @@ function GraphGistEditByOwner() {
                 name="asciidoc"
                 value={values.asciidoc}
                 onChange={handleChange}
+                required
               />
 
               <Form.Field>
@@ -330,7 +241,7 @@ function GraphGistEditByOwner() {
                 />
               </Form.Field>
 
-              <Form.Field>
+              <Form.Field required>
                 <label>Status</label>
                 <Select
                   options={statusChoices}
@@ -338,16 +249,6 @@ function GraphGistEditByOwner() {
                   value={values.status}
                   onChange={handleChangeSelect}
                   required
-                  fluid
-                />
-              </Form.Field>
-
-              <Form.Field>
-                <label>Author</label>
-                <AuthorsSelect
-                  name="author"
-                  value={values.author}
-                  onChange={handleChange}
                   fluid
                 />
               </Form.Field>
@@ -388,7 +289,7 @@ function GraphGistEditByOwner() {
               >
                 Preview
               </Button>
-              <Button onClick={handleSubmit} primary loading={isSaving}>
+              <Button type="submit" primary loading={isSaving}>
                 Save and Continue
               </Button>
             </Form>
@@ -409,7 +310,7 @@ function GraphGistEditByOwner() {
           <GraphGistRenderer>
             <div
               id="gist-body"
-              data-gist-id={graphGistCandidate.uuid}
+              data-gist-id="preview-submit-graphgist"
               dangerouslySetInnerHTML={{ __html: graphGistPreviewHTML }}
             />
           </GraphGistRenderer>
@@ -419,4 +320,4 @@ function GraphGistEditByOwner() {
   );
 }
 
-export default GraphGistEditByOwner;
+export default GraphGistCreate;
