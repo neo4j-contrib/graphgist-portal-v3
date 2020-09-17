@@ -140,6 +140,16 @@ function GraphGistEditByOwner() {
       onCompleted: (data) => {
         history.push(`/graph_gist_candidates/${data.UpdateGraphGist.uuid}`);
       },
+      onError: (data) => {
+        history.push(`/graph_gists/${id}/edit_by_owner`, {
+          messages: [
+            {
+              body: data.message,
+              type: "negative",
+            },
+          ],
+        });
+      },
     }
   );
 

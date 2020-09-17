@@ -19,6 +19,7 @@ export const UpdateGraphGist = async (root, args, context, info) => {
       author,
       ...proprieties
     } = args.graphgist;
+    const rawHtml=convertAsciiDocToHtml(proprieties.asciidoc);
     const result = await txc.run(
       `
       MATCH (g:GraphGist {uuid: $uuid})<-[:IS_VERSION]-(gc:GraphGistCandidate)
@@ -31,7 +32,7 @@ export const UpdateGraphGist = async (root, args, context, info) => {
         graphgist: {
           ...proprieties,
           status: "candidate",
-          raw_html: convertAsciiDocToHtml(proprieties.asciidoc),
+          raw_html: rawHtml,
           has_errors: false,
         },
       }
