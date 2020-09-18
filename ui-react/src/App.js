@@ -131,7 +131,9 @@ function App() {
       </Menu>
       <Container className={classes.container} id="main">
         {messages.map((message, i) => (
-          <Message key={i} {...{ [message.type]: true }}>{message.body}</Message>
+          <Message key={i} {...{ [message.type]: true }}>
+            {message.body}
+          </Message>
         ))}
         <Switch>
           <Route exact path="/" component={Home} />
@@ -155,7 +157,11 @@ function App() {
             path="/graph_gists/:id/edit_by_owner"
             component={GraphGistEditByOwner}
           />
-          <Route exact path="/candidates/waiting_review" component={Candidates} />
+          <Route
+            exact
+            path="/candidates/waiting_review"
+            component={Candidates}
+          />
           <Route exact path="/users/edit" component={EditProfile} />
           <Route exact path="/authorize" component={AuthCallbackPage} />
         </Switch>

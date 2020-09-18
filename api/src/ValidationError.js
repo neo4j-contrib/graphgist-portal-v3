@@ -1,8 +1,12 @@
-import { GraphQLError } from 'graphql';
+import { GraphQLError } from "graphql";
 
 class ValidationError extends GraphQLError {
-  constructor(errors) {
-    super('The request is invalid.');
+  constructor(errors, message = null) {
+    if (message !== null) {
+      super(message);
+    } else {
+      super("The request is invalid.");
+    }
     this.state = errors.reduce((result, error) => {
       if (Object.prototype.hasOwnProperty.call(result, error.key)) {
         result[error.key].push(error.message);

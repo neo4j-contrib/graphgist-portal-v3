@@ -48,7 +48,10 @@ function GraphGistCandidates() {
         }
         setHasMore(fetchMoreResult.GraphGistCandidate.length >= rowsPerPage);
         return Object.assign({}, prev, {
-          GraphGistCandidate: [...prev.GraphGistCandidate, ...fetchMoreResult.GraphGistCandidate],
+          GraphGistCandidate: [
+            ...prev.GraphGistCandidate,
+            ...fetchMoreResult.GraphGistCandidate,
+          ],
         });
       },
     });

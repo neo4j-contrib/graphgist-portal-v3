@@ -7,7 +7,7 @@ import GraphGistUI from "./GraphGistUI.js";
 
 const GET_GRAPHGIST = gql`
   query graphGistPage($id: ID, $slug: String) {
-    GraphGist(filter: {OR: [{uuid: $id}, {slug: $slug}]}) {
+    GraphGist(filter: { OR: [{ uuid: $id }, { slug: $slug }] }) {
       uuid
       render_id
       status
@@ -65,7 +65,14 @@ function GraphGistPage() {
 
   const graphGist = _.get(data, "GraphGist[0]", null);
 
-  return <GraphGistUI graphGist={graphGist} loading={loading} error={error} refetch={refetch} />;
+  return (
+    <GraphGistUI
+      graphGist={graphGist}
+      loading={loading}
+      error={error}
+      refetch={refetch}
+    />
+  );
 }
 
 export default GraphGistPage;

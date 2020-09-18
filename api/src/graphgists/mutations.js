@@ -1,6 +1,7 @@
 import { AuthenticationError } from "apollo-server-express";
 import { convertAsciiDocToHtml, getGraphGistByUUID } from "./utils";
-
+import { GraphQLError } from "graphql";
+import ValidationError from "../ValidationError";
 
 export const PreviewGraphGist = (root, args, context, info) => {
   return convertAsciiDocToHtml(args.asciidoc);
@@ -17,9 +18,13 @@ export const UpdateGraphGist = async (root, args, context, info) => {
       use_cases,
       challenges,
       author,
-      ...proprieties
+      ...properties
     } = args.graphgist;
-    const rawHtml=convertAsciiDocToHtml(proprieties.asciidoc);
+    const rawHtml = await convertAsciiDocToHtml(properties.asciidoc);
+    console.log(typeof rawHtml);
+    if (typeof rawHtml === "object") {
+      throw rawHtml;
+    }
     const result = await txc.run(
       `
       MATCH (g:GraphGist {uuid: $uuid})<-[:IS_VERSION]-(gc:GraphGistCandidate)
@@ -30,7 +35,7 @@ export const UpdateGraphGist = async (root, args, context, info) => {
       {
         uuid: args.uuid,
         graphgist: {
-          ...proprieties,
+          ...properties,
           status: "candidate",
           raw_html: rawHtml,
           has_errors: false,
@@ -109,7 +114,6 @@ export const UpdateGraphGist = async (root, args, context, info) => {
 
   return null;
 };
-
 
 export const PublishGraphGistCandidate = async (root, args, context, info) => {
   const session = context.driver.session();
@@ -193,7 +197,6 @@ export const PublishGraphGistCandidate = async (root, args, context, info) => {
 
   return null;
 };
-
 
 export const DisableGraphGist = async (root, args, context, info) => {
   const session = context.driver.session();

@@ -43,7 +43,6 @@ export const UpdateUser = async (obj, args, context, info) => {
   return null;
 };
 
-
 export const Authenticate = async (root, args, context, info) => {
   const session = context.driver.session();
   const txc = session.beginTransaction();
@@ -62,7 +61,7 @@ export const Authenticate = async (root, args, context, info) => {
     );
 
     const uuid = uuidv4();
-    const uniq = uuid.split('-')[0];
+    const uniq = uuid.split("-")[0];
 
     if (result.records.length === 0) {
       const createUser = await txc.run(
