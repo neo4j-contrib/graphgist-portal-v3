@@ -77,6 +77,12 @@ const server = new ApolloServer({
   schema: schema,
   introspection: true,
   playground: true,
+  formatError: error => ({
+    message: error.message,
+    state: error.originalError && error.originalError.state,
+    locations: error.locations,
+    path: error.path,
+  })
 });
 
 // Specify port and path for GraphQL endpoint

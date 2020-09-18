@@ -1,5 +1,5 @@
 import Asciidoctor from "asciidoctor";
-import {GraphQLError} from "graphql";
+import ValidationError from "../ValidationError";
 
 const fetch = require('node-fetch');
 
@@ -14,7 +14,7 @@ export async function getGraphGistByUUID(txc, uuid) {
     }
 }
 
-export function convertAsciiDocToHtml(asciidoc) {
+export async function convertAsciiDocToHtml(asciidoc) {
     const asciidoctor = Asciidoctor();
     const rawHtml = asciidoctor.convert(asciidoc, {
         toc: "macro",
@@ -22,7 +22,7 @@ export function convertAsciiDocToHtml(asciidoc) {
         "env-graphgist": true,
     });
     if (rawHtml === '') {
-        throw new GraphQLError("AsciiDoc is empty, it is required.");
+        return new ValidationError([{ key: "asciidoc", message: "AsciiDoc is empty, it is required." }]);
     }
     const matches = rawHtml.match(/(?:href|src)=["'](https?:\/\/[^"']+)["']/im);
     if (matches.length === 0) {
@@ -31,9 +31,14 @@ export function convertAsciiDocToHtml(asciidoc) {
         for (let index = 0; index < matches.length; index++) {
             const match = matches[index]
             if (!match.includes("href") && !match.includes("src")) {
-                const response = await fetch(match);
-                if (!response.ok) {
-                    throw new GraphQLError("We could not verify that " + match + " is a correct url");
+                console.log('checking for', match);
+                try {
+                  const response = await fetch(match)
+                  if (!response.ok) {
+                    return new ValidationError([{ key: "asciidoc", message: "We could not verify that " + match + " is a correct url" }]);
+                  }
+                } catch(error) {
+                  return new ValidationError([{ key: "asciidoc", message: "We could not verify that " + match + " is a correct url" }]);
                 }
             }
         }
