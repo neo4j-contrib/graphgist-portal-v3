@@ -1,7 +1,4 @@
-import { AuthenticationError } from "apollo-server-express";
 import { convertAsciiDocToHtml, getGraphGistByUUID } from "./utils";
-import { GraphQLError } from "graphql";
-import ValidationError from "../ValidationError";
 
 export const PreviewGraphGist = (root, args, context, info) => {
   return convertAsciiDocToHtml(args.asciidoc);
