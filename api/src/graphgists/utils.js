@@ -14,7 +14,7 @@ export async function getGraphGistByUUID(txc, uuid) {
     }
 }
 
-export async function convertAsciiDocToHtml(asciidoc) {
+export function convertAsciiDocToHtml(asciidoc) {
     const asciidoctor = Asciidoctor();
     const rawHtml = asciidoctor.convert(asciidoc, {
         toc: "macro",
@@ -29,10 +29,10 @@ export async function convertAsciiDocToHtml(asciidoc) {
         return rawHtml;
     } else {
         for (let index = 0; index < matches.length; index++) {
-            const match = matches[index];
+            const match = matches[index]
             if (!match.includes("href") && !match.includes("src")) {
                 const response = await fetch(match);
-                if (response.ok) {
+                if (!response.ok) {
                     throw new GraphQLError("We could not verify that " + match + " is a correct url");
                 }
             }
