@@ -144,19 +144,19 @@ function GraphGistEditByOwner() {
       onCompleted: (data) => {
         history.push(`/graph_gist_candidates/${data.UpdateGraphGist.uuid}`);
       },
-      onError: (data) => {
+      onError: (data, e) => {
         showApiError(data);
       },
     }
   );
   const showApiError = (data) => {
     history.push(`/graph_gists/${id}/edit_by_owner`, {
-      messages: [
+      messages: data.graphQLErrors.map(error => (
         {
-          body: data.message,
+          body: error.message,
           type: "negative",
-        },
-      ],
+        }
+      )),
     });
   };
   const handlePreview = (e, asciidoc) => {
