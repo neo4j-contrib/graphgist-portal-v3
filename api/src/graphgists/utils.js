@@ -35,15 +35,11 @@ export async function convertAsciiDocToHtml(asciidoc) {
     return rawHtml;
   } else {
     for (const localMatch of matches) {
-      console.log(localMatch);
       for (let index = 0; index < localMatch.length; index++) {
         const match = localMatch[index];
         if (!match.includes("href") && !match.includes("src")) {
-          console.log("checking for", match);
           try {
-            const response = await fetch(match).catch((error) => {
-              console.log(error);
-            });
+            const response = await fetch(match);
             if (!response.ok) {
               return new ValidationError(
                 [

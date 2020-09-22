@@ -18,7 +18,6 @@ export const UpdateGraphGist = async (root, args, context, info) => {
       ...properties
     } = args.graphgist;
     const rawHtml = await convertAsciiDocToHtml(properties.asciidoc);
-    console.log(typeof rawHtml);
     if (typeof rawHtml === "object") {
       throw rawHtml;
     }
