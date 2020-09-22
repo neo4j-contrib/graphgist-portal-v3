@@ -132,7 +132,11 @@ function GraphGistEditByOwner() {
   const [
     previewGraphGist,
     { data: graphGistPreviewResult, loading: isLoadingPreview },
-  ] = useMutation(PREVIEW);
+  ] = useMutation(PREVIEW, {
+    onError: (data) => {
+      showApiError(data);
+    },
+  });
 
   const [updateGraphGist, { loading: isSaving }] = useMutation(
     UPDATE_GRAPHGIST,
@@ -141,18 +145,20 @@ function GraphGistEditByOwner() {
         history.push(`/graph_gist_candidates/${data.UpdateGraphGist.uuid}`);
       },
       onError: (data) => {
-        history.push(`/graph_gists/${id}/edit_by_owner`, {
-          messages: [
-            {
-              body: data.message,
-              type: "negative",
-            },
-          ],
-        });
+        showApiError(data);
       },
     }
   );
-
+  const showApiError = (data) => {
+    history.push(`/graph_gists/${id}/edit_by_owner`, {
+      messages: [
+        {
+          body: data.message,
+          type: "negative",
+        },
+      ],
+    });
+  };
   const handlePreview = (e, asciidoc) => {
     e.preventDefault();
     previewGraphGist({ variables: { asciidoc } });
