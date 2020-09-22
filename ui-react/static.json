@@ -1,11 +1,11 @@
 {
-    "root": "build/",
-    "routes": {
-        "/**": "index.html"
-    },
-    "proxies": {
-        "/graphql": {
-            "origin": "${PROXY}"
-        }
+  "root": "build/",
+  "routes": {
+    "/**": "index.html"
+  },
+  "proxies": {
+    "/graphql": {
+      "origin": "${PROXY}"
     }
+  }
 }

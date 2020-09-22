@@ -7,7 +7,7 @@ import GraphGistUI from "./GraphGistUI.js";
 
 const GET_GRAPHGIST = gql`
   query graphGistCandidatePage($id: ID, $slug: String) {
-    GraphGistCandidate(filter: {OR: [{uuid: $id}, {slug: $slug}]}) {
+    GraphGistCandidate(filter: { OR: [{ uuid: $id }, { slug: $slug }] }) {
       uuid
       render_id
       status

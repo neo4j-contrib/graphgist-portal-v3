@@ -28,7 +28,7 @@
     "jwks-rsa": "^1.8.1",
     "neo4j-driver": "^4.1.1",
     "neo4j-graphql-js": "^2.16.1",
-    "node-fetch": "^2.6.0",
+    "node-fetch": "^2.6.1",
     "uuid": "^8.3.0"
   },
   "devDependencies": {

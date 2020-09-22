@@ -24,7 +24,7 @@ This will start the GraphQL service (by default on localhost:4000) where you can
 
 Set your Neo4j connection string and credentials in `.env`. For example:
 
-*.env*
+_.env_
 
 ```
 NEO4J_URI=bolt://localhost:7687

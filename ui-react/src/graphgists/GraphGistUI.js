@@ -1,6 +1,14 @@
 import React from "react";
 import { Link, useHistory } from "react-router-dom";
-import { Button, Item, Icon, Grid, Header, Divider, Label } from "semantic-ui-react";
+import {
+  Button,
+  Item,
+  Icon,
+  Grid,
+  Header,
+  Divider,
+  Label,
+} from "semantic-ui-react";
 import moment from "moment";
 import { Helmet } from "react-helmet";
 import _ from "lodash";
@@ -31,7 +39,9 @@ const DISABLE_GRAPHGIST = gql`
 `;
 
 function GraphGistPage({ graphGist, loading, error, candidate, refetch }) {
-  const slug = candidate ? _.get(graphGist, 'graphgist.slug') : _.get(graphGist, 'slug');
+  const slug = candidate
+    ? _.get(graphGist, "graphgist.slug")
+    : _.get(graphGist, "slug");
   return (
     <PageLoading loading={loading} error={error} obj={graphGist}>
       {graphGist && (
@@ -60,27 +70,51 @@ function GraphGistPage({ graphGist, loading, error, candidate, refetch }) {
               </GraphGistRenderer>
             </Grid.Column>
             <Grid.Column width={3}>
-              {(!candidate && graphGist.status === "live" && slug ) && (<>
-                <a
-                  href={`https://neo4j.com/graphgist/${slug}`}
-                >
-                  Live Version
-                </a>
-                <Divider />
-              </>)}
+              {!candidate && graphGist.status === "live" && slug && (
+                <>
+                  <a href={`https://neo4j.com/graphgist/${slug}`}>
+                    Live Version
+                  </a>
+                  <Divider />
+                </>
+              )}
 
               {graphGist.my_perms.indexOf("edit") >= 0 && (
                 <>
-                {(candidate && _.get(graphGist, 'graphgist.status') === 'live') && <p><Label as={Link} color="red" to={`/graph_gists/${graphGist.graphgist.slug}`}>
-                    Go to live version.
-                  </Label></p>}
-                  
-                {(!candidate && graphGist.is_candidate_updated) && <p><Label as={Link} color="red" to={`/graph_gist_candidates/${graphGist.candidate.uuid}`}>
-                    This version is outdated.<br />
-                    Go to candidate version.
-                  </Label></p>}
+                  {candidate &&
+                    _.get(graphGist, "graphgist.status") === "live" && (
+                      <p>
+                        <Label
+                          as={Link}
+                          color="red"
+                          to={`/graph_gists/${graphGist.graphgist.slug}`}
+                        >
+                          Go to live version.
+                        </Label>
+                      </p>
+                    )}
 
-                  <Label color={_.get({candidate: 'orange', live: 'teal', disabled: 'red'}, graphGist.status, undefined)}>
+                  {!candidate && graphGist.is_candidate_updated && (
+                    <p>
+                      <Label
+                        as={Link}
+                        color="red"
+                        to={`/graph_gist_candidates/${graphGist.candidate.uuid}`}
+                      >
+                        This version is outdated.
+                        <br />
+                        Go to candidate version.
+                      </Label>
+                    </p>
+                  )}
+
+                  <Label
+                    color={_.get(
+                      { candidate: "orange", live: "teal", disabled: "red" },
+                      graphGist.status,
+                      undefined
+                    )}
+                  >
                     {graphGist.status}
                   </Label>
 
@@ -88,7 +122,12 @@ function GraphGistPage({ graphGist, loading, error, candidate, refetch }) {
                 </>
               )}
 
-              <AssetExtraButtons graphGist={graphGist} candidate={candidate} slug={slug} refetch={refetch} />
+              <AssetExtraButtons
+                graphGist={graphGist}
+                candidate={candidate}
+                slug={slug}
+                refetch={refetch}
+              />
             </Grid.Column>
           </Grid>
         </React.Fragment>
@@ -100,41 +139,60 @@ function GraphGistPage({ graphGist, loading, error, candidate, refetch }) {
 function AssetExtraButtons({ graphGist, candidate, slug, refetch }) {
   const history = useHistory();
 
-  const uuid = candidate ? _.get(graphGist, 'graphgist.uuid') : graphGist.uuid
+  const uuid = candidate ? _.get(graphGist, "graphgist.uuid") : graphGist.uuid;
 
-  const [publishGraphGistCandidateMutation, { loading: isPublishing }] = useMutation(PUBLISH_GRAPHGIST, {
+  const [
+    publishGraphGistCandidateMutation,
+    { loading: isPublishing },
+  ] = useMutation(PUBLISH_GRAPHGIST, {
     onCompleted: () => {
       history.push(`/graph_gists/${slug}`);
-    }
+    },
   });
 
   const handlePublish = () => {
-    publishGraphGistCandidateMutation({ variables: { uuid }});
+    publishGraphGistCandidateMutation({ variables: { uuid } });
   };
 
-  const [disableGraphGistMutation, { loading: isDisabling }] = useMutation(DISABLE_GRAPHGIST, {
-    onCompleted: () => {
-      refetch();
-      history.push(`/graph_gists/${slug}`);
+  const [disableGraphGistMutation, { loading: isDisabling }] = useMutation(
+    DISABLE_GRAPHGIST,
+    {
+      onCompleted: () => {
+        refetch();
+        history.push(`/graph_gists/${slug}`);
+      },
     }
-  });
+  );
 
   const handleDisable = () => {
-    disableGraphGistMutation({ variables: { uuid }});
+    disableGraphGistMutation({ variables: { uuid } });
   };
 
   return (
     <React.Fragment>
       {graphGist.my_perms.indexOf("admin") >= 0 && (
         <React.Fragment>
-          {candidate && <>
-            <Button icon labelPosition="left" color="teal" loading={isPublishing} onClick={handlePublish}>
-              <Icon name="checkmark" />
-              Approve
-            </Button>
-            <Divider />
-          </>}
-          <Button icon labelPosition="left" loading={isDisabling} onClick={handleDisable}>
+          {candidate && (
+            <>
+              <Button
+                icon
+                labelPosition="left"
+                color="teal"
+                loading={isPublishing}
+                onClick={handlePublish}
+              >
+                <Icon name="checkmark" />
+                Approve
+              </Button>
+              <Divider />
+            </>
+          )}
+          <Button
+            icon
+            labelPosition="left"
+            loading={isDisabling}
+            onClick={handleDisable}
+          >
             <Icon name="remove" />
             Disable
           </Button>
@@ -144,7 +202,7 @@ function AssetExtraButtons({ graphGist, candidate, slug, refetch }) {
 
       <a href=".">Run this gist in the Neo4j console</a>
 
-      {(graphGist.my_perms.indexOf("edit") >= 0 && uuid) && (
+      {graphGist.my_perms.indexOf("edit") >= 0 && uuid && (
         <React.Fragment>
           <Divider />
           <Button
@@ -194,19 +252,21 @@ function AssetExtraButtons({ graphGist, candidate, slug, refetch }) {
         | If approved, your graphgist will appear on the Neo4j.com/graphgists. You can make edits at any time, and when you are ready for the edits to appear on the Neo4j.com/graphgists you can submit again
 */}
 
-      {slug && <>
-        <Divider />
-        <Button
-          icon
-          labelPosition="left"
-          fluid
-          as={Link}
-          to={`/graph_gists/${slug}/source`}
-        >
-          <Icon name="file text" />
-          Show Source
-        </Button>
-      </>}
+      {slug && (
+        <>
+          <Divider />
+          <Button
+            icon
+            labelPosition="left"
+            fluid
+            as={Link}
+            to={`/graph_gists/${slug}/source`}
+          >
+            <Icon name="file text" />
+            Show Source
+          </Button>
+        </>
+      )}
 
       <Item.Group>
         <Item>
