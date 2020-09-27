@@ -22,6 +22,7 @@
     "apollo-server": "^2.14.2",
     "asciidoctor": "^2.2.0",
     "aws-sdk": "^2.757.0",
+    "cors": "^2.8.5",
     "dotenv": "^7.0.0",
     "graphql-tag": "^2.10.1",
     "graphql-tools": "^6.0.18",

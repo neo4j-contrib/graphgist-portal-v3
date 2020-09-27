@@ -4,9 +4,6 @@ import GraphGist from "./GraphGist";
 
 export default class extends React.Component {
   componentDidMount() {
-    // window.graph_gist_portal_url = window.location.protocol + "//" + window.location.hostname;
-    window.graph_gist_portal_url = "https://portal.graphgist.org";
-
     this.GraphGistRenderer = GraphGist({
       preProcess: false,
     });

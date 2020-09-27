@@ -1,6 +1,9 @@
 import { getGraphGistByUUID } from "./utils";
 import { neo4jgraphql } from "neo4j-graphql-js";
 
+import fetch from 'node-fetch';
+import { v4 as uuidv4 } from "uuid";
+
 export const getGraphGistCandidate = async (obj, args, context, info) => {
   const session = context.driver.session();
   const txc = session.beginTransaction();
@@ -78,4 +81,43 @@ export const getGraphGistCandidate = async (obj, args, context, info) => {
   }
 
   return null;
+};
+
+const host_for_version = {
+  '1.9': 'neo4j-console-19.herokuapp.com',
+  '2.0': 'neo4j-console-20.herokuapp.com',
+  '2.1': 'neo4j-console-21.herokuapp.com',
+  '2.2': 'neo4j-console-22.herokuapp.com',
+  '2.3': 'neo4j-console-23.herokuapp.com',
+  '3.0': 'neo4j-console-30.herokuapp.com',
+  '3.1': 'neo4j-console-31.herokuapp.com',
+  '3.2': 'neo4j-console-32.herokuapp.com',
+  '3.3': 'neo4j-console-33.herokuapp.com',
+  '3.4': 'neo4j-console-34.herokuapp.com',
+  '3.5': 'neo4j-console-35.herokuapp.com' // default
+};
+
+const default_version = host_for_version['3.5'];
+
+const console_request = async (type, neo4j_version, cypher, session_id) => {
+  const console_version_url = host_for_version[neo4j_version] || default_version;
+  const url = `http://${console_version_url}/console/${type}`;
+  return await fetch(url, {
+    method: 'post',
+    body: cypher,
+    headers: {
+      'X-Session': session_id,
+    }
+  });
+};
+
+export const getConsoleSessionId = async (obj, args, context, info) => {
+  const session_id = uuidv4();
+  const result = await console_request('init', args.neo4j_version, '{"init":"none"}', session_id);
+  return session_id;
+};
+
+export const queryConsole = async (obj, args, context, info) => {
+  const result = await console_request('cypher', args.neo4j_version, args.cypher, args.session_id);
+  return await result.text();
 };

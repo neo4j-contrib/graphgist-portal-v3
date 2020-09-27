@@ -1,5 +1,6 @@
 import { ApolloServer } from "apollo-server-express";
 import express from "express";
+import cors from "cors";
 import neo4j from "neo4j-driver";
 import { makeAugmentedSchema } from "neo4j-graphql-js";
 import { GraphQLUpload } from "graphql-upload";
@@ -33,6 +34,9 @@ export const driver = neo4j.driver(
 );
 
 const app = express();
+app.use(express.json({limit: '50mb'}));
+app.use(express.urlencoded({limit: '50mb', extended: true}));
+app.use(cors());
 
 /*
  * Create an executable GraphQL schema object from GraphQL type definitions
