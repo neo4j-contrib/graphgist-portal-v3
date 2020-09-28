@@ -1,0 +1,43 @@
+<%#encoding:UTF-8%>
+
+<% nowrap = !(@document.attr? :prewrap) || (option? :nowrap) %>
+
+<div id="<%= @id if @id %>" class="<%= ['listingblock', role].compact.join(' ') %>">
+  <% if title? %>
+    <div class="title"><%= captioned_title %></div>
+  <% end %>
+  <div class="content">
+    <% if @style == 'source' %>
+      <%
+        language = attr :language
+        code_class = language ? [language, "language-#{language}"] : []
+        pre_class = ['highlight']
+        pre_lang = nil
+        case attr 'source-highlighter'
+        when 'coderay'
+          pre_class = ['CodeRay']
+        when 'pygments'
+          pre_class << 'pygments'
+        when 'prettify'
+          pre_class = ['prettyprint']
+          pre_class << 'linenums' if attr? :linenums
+          pre_class << language if language
+          pre_class << %(language-#{language}) if language
+          code_class = []
+        when 'html-pipeline'
+          pre_lang = language
+          pre_class = code_class = []
+          nowrap = false
+        end
+        pre_class += %w(pre-scrollable code runnable standalone-example ng-binding)
+        pre_class << 'nowrap' if nowrap
+      %>
+
+      <pre mode="cypher" class="<%= pre_class.join(' ') %>" lang="<%= pre_lang %>">
+        <code class="<%= code_class.join(' ') %>"><%= content %></code>
+      </pre>
+    <% else %>
+      <pre class="<%= 'nowrap' if nowrap %>"><%= content %></pre>
+    <% end %>
+  </div>
+</div>

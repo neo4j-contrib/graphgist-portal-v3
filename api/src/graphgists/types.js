@@ -20,7 +20,7 @@ export const GraphGist = {
   },
   raw_html: (obj, args, context, info) => {
     return renderMathJax(obj.raw_html);
-  }
+  },
 };
 
 export const GraphGistCandidate = {
@@ -43,5 +43,5 @@ export const GraphGistCandidate = {
   },
   raw_html: (obj, args, context, info) => {
     return renderMathJax(obj.raw_html);
-  }
+  },
 };

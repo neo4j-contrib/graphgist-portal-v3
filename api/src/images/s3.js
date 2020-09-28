@@ -1,7 +1,7 @@
 import AWS from "aws-sdk";
 import Sharp from "sharp";
 import { createWriteStream } from "fs";
-import { v4 as uuidv4 } from 'uuid';
+import { v4 as uuidv4 } from "uuid";
 import mkdirp from "mkdirp";
 
 const UPLOAD_DIR = `./uploads`;
@@ -13,9 +13,9 @@ const storeUpload = async (upload) => {
   const { createReadStream, filename, mimetype } = await upload;
   const stream = createReadStream();
   const id = uuidv4();
-	const ext = filename.split('.').pop();
+  const ext = filename.split(".").pop();
   const path = `${UPLOAD_DIR}/${id}.${ext}`;
-	let content = Buffer.from([]);
+  let content = Buffer.from([]);
 
   // Store the file in the filesystem.
   await new Promise((resolve, reject) => {
@@ -23,11 +23,11 @@ const storeUpload = async (upload) => {
     const writeStream = createWriteStream(path);
 
     // When the upload is fully written, resolve the promise.
-    writeStream.on('finish', resolve);
+    writeStream.on("finish", resolve);
 
     // If there's an error writing the file, remove the partially written file
     // and reject the promise.
-    writeStream.on('error', (error) => {
+    writeStream.on("error", (error) => {
       unlink(path, () => {
         reject(error);
       });
@@ -36,16 +36,16 @@ const storeUpload = async (upload) => {
     // In Node.js <= v13, errors are not automatically propagated between piped
     // streams. If there is an error receiving the upload, destroy the write
     // stream with the corresponding error.
-    stream.on('error', (error) => writeStream.destroy(error));
-		stream.on('data', buf => {
-			content = Buffer.concat([content, buf]);
-		});
+    stream.on("error", (error) => writeStream.destroy(error));
+    stream.on("data", (buf) => {
+      content = Buffer.concat([content, buf]);
+    });
 
     // Pipe the upload into the write stream.
     stream.pipe(writeStream);
   });
 
-	const file = { id, filename, mimetype, path, content, ext };
+  const file = { id, filename, mimetype, path, content, ext };
 
   return file;
 };
@@ -58,7 +58,7 @@ class S3 {
       apiVersion: "2006-03-01",
       accessKeyId: process.env.AWS_S3_ACCESS_KEY_ID,
       secretAccessKey: process.env.AWS_S3_SECRET_ACCESS_KEY,
-      region: process.env.AWS_S3_REGION
+      region: process.env.AWS_S3_REGION,
     };
 
     this.s3 = new AWS.S3(this.config);
@@ -66,23 +66,28 @@ class S3 {
 
   upload(uploaded_filled) {
     return new Promise(async (resolve, reject) => {
-			const { id, content, filename, ext, mimetype } = await storeUpload(uploaded_filled);
+      const { id, content, filename, ext, mimetype } = await storeUpload(
+        uploaded_filled
+      );
 
-			const keyBase = `graph_starter/images/sources/${id.substring(0, 3)}/${id.substring(3, 6)}/${id.substring(6, 9)}`
-			
+      const keyBase = `graph_starter/images/sources/${id.substring(
+        0,
+        3
+      )}/${id.substring(3, 6)}/${id.substring(6, 9)}`;
+
       // upload file
       let params = {
         Body: content,
         Bucket: process.env.AWS_S3_BUCKET_NAME,
         Key: `${keyBase}/original/${id}.${ext}`,
-				ACL: 'public-read',
+        ACL: "public-read",
         ContentType: mimetype,
       };
 
-			let sizes = {
-				medium: {width: 300, height: 300},
-				thumb: {width: 50, height: 50},
-			};
+      let sizes = {
+        medium: { width: 300, height: 300 },
+        thumb: { width: 50, height: 50 },
+      };
 
       this.s3.putObject(params, (e, d) => {
         if (e) {
@@ -90,7 +95,7 @@ class S3 {
         }
 
         // check if we should create resized copy of uploaded file
-				Object.keys(sizes).forEach(size => {
+        Object.keys(sizes).forEach((size) => {
           let width = sizes[size].width;
           let height = sizes[size].height;
 
@@ -99,7 +104,7 @@ class S3 {
           Sharp(content)
             .resize(width, height)
             .toBuffer()
-            .then(buffer => {
+            .then((buffer) => {
               params.Body = buffer;
               params.Key = `${keyBase}/${size}/${id}.${ext}`;
 
@@ -109,7 +114,7 @@ class S3 {
                 }
               });
             })
-            .catch(e => reject(e));
+            .catch((e) => reject(e));
         });
 
         resolve({
@@ -118,7 +123,7 @@ class S3 {
           source_file_name: `${id}.${ext}`,
           uuid: String(id),
           source_file_ext: ext,
-          source_updated_at: String(new Date())
+          source_updated_at: String(new Date()),
         });
       });
     });

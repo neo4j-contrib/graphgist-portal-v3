@@ -21,13 +21,29 @@ export async function getGraphGistByUUID(txc, uuid) {
   }
 }
 
+export async function getGraphGistBySlug(txc, slug) {
+  const result = await txc.run(
+    `MATCH (g:GraphGist) WHERE g.slug = $slug RETURN g`,
+    { slug }
+  );
+
+  if (result.records.length >= 1) {
+    return result.records[0].get("g").properties;
+  }
+}
+
 export function renderMathJax(raw_html) {
-  const adaptor = liteAdaptor({fontSize: "1em"});
+  const adaptor = liteAdaptor({ fontSize: "1em" });
   RegisterHTMLHandler(adaptor);
 
-  const tex = new TeX({ inlineMath: [['$','$'],['\\(','\\)']] }); // packages: argv.packages.split(/\s*,\s*/)
-  const chtml = new SVG({fontCache: 'none'}); // {fontURL: argv.fontURL, exFactor: argv.ex / argv.em}
-  const html = mathjax.document(raw_html, {InputJax: tex, OutputJax: chtml});
+  const tex = new TeX({
+    inlineMath: [
+      ["$", "$"],
+      ["\\(", "\\)"],
+    ],
+  }); // packages: argv.packages.split(/\s*,\s*/)
+  const chtml = new SVG({ fontCache: "none" }); // {fontURL: argv.fontURL, exFactor: argv.ex / argv.em}
+  const html = mathjax.document(raw_html, { InputJax: tex, OutputJax: chtml });
 
   html.render();
 

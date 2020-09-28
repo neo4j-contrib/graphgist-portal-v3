@@ -1,0 +1,16 @@
+<% slevel = @level.zero? && @special ? 1 : @level %>
+<% puts "#{slevel.inspect} #{title}" %>
+<% if parent.is_a?(Asciidoctor::Document) %>
+  <% puts 'first block!' %>
+  <slide class="row-fluid">
+    <div class="col-sm-12">
+      <h3><%=title %></h3>
+      <br/>
+      <div><%= content %></div>
+    </div>
+  </slide>
+<% else %>
+  <% puts 'second block!' %>
+  <h4><%= title %></h4>
+  <%= content %>
+<% end %>

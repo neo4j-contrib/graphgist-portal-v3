@@ -3,7 +3,7 @@ import ReactDOM from "react-dom";
 import { ApolloClient, ApolloProvider, InMemoryCache } from "@apollo/client";
 import { BrowserRouter } from "react-router-dom";
 import { Auth0Provider } from "@auth0/auth0-react";
-import { createUploadLink } from 'apollo-upload-client';
+import { createUploadLink } from "apollo-upload-client";
 import App from "./App";
 import "./index.css";
 
@@ -26,7 +26,7 @@ const client = new ApolloClient({
     uri: process.env.REACT_APP_GRAPHQL_URI,
     headers: {
       authorization: authToken.get(),
-    }
+    },
   }),
 });
 

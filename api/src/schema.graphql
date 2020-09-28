@@ -41,7 +41,11 @@ type Query {
     )
   getGraphGistCandidate(uuid: ID!): GraphGistCandidate
   getConsoleSessionId(neo4j_version: String): String
-  queryConsole(cypher: String!, neo4j_version: String, session_id: String!): String
+  queryConsole(
+    cypher: String!
+    neo4j_version: String
+    session_id: String!
+  ): String
   me: User
 }
 

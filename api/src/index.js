@@ -4,8 +4,10 @@ import cors from "cors";
 import neo4j from "neo4j-driver";
 import { makeAugmentedSchema } from "neo4j-graphql-js";
 import { GraphQLUpload } from "graphql-upload";
+import Asciidoctor from "asciidoctor";
 
 import dotenv from "dotenv";
+
 dotenv.config();
 
 import { getUser } from "./auth";
@@ -19,6 +21,7 @@ import * as graphgistsQueries from "./graphgists/queries";
 import * as graphgistsTypes from "./graphgists/types";
 
 import * as imagesTypes from "./images/types";
+import { getGraphGistBySlug, getGraphGistByUUID } from "./graphgists/utils";
 
 /*
  * Create a Neo4j driver instance to connect to the database
@@ -34,9 +37,10 @@ export const driver = neo4j.driver(
 );
 
 const app = express();
-app.use(express.json({limit: '50mb'}));
-app.use(express.urlencoded({limit: '50mb', extended: true}));
+app.use(express.json({ limit: "50mb" }));
+app.use(express.urlencoded({ limit: "50mb", extended: true }));
 app.use(cors());
+app.set("view engine", "ejs");
 
 /*
  * Create an executable GraphQL schema object from GraphQL type definitions
@@ -59,7 +63,7 @@ export const schema = makeAugmentedSchema({
     },
     ...graphgistsTypes,
     ...imagesTypes,
-    Upload: GraphQLUpload
+    Upload: GraphQLUpload,
   },
   config: {
     mutation: false,
@@ -101,6 +105,29 @@ const path = "/graphql";
  */
 server.applyMiddleware({ app, path });
 
+app.get("/graph_gists/:slug/graph_guide", function (req, res) {
+  const session = driver.session();
+  const txc = session.beginTransaction();
+  getGraph(req.params.slug, txc).then((graph) => {
+    //const adocText =graph.asciidoc.replaceAll(/^=+ /, '== ')
+    const adoc = Asciidoctor();
+    res.render("index", {
+      title: graph.title,
+      html: adoc.convert(graph.asciidoc, {
+        header_footer: true,
+        safe: 0,
+        //if views are used asccidoctor structure is not returning correct structures expected on ERB files
+        //template_dir: 'views',
+        template_cache: false,
+      }),
+    });
+  });
+});
 app.listen({ port, path }, () => {
   console.log(`GraphQL server ready at http://localhost:${port}${path}`);
 });
+
+async function getGraph(slug, txc) {
+  const graphGist = await getGraphGistBySlug(txc, slug);
+  return graphGist;
+}
