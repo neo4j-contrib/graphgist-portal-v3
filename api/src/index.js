@@ -2,6 +2,7 @@ import { ApolloServer } from "apollo-server-express";
 import express from "express";
 import neo4j from "neo4j-driver";
 import { makeAugmentedSchema } from "neo4j-graphql-js";
+import { GraphQLUpload } from "graphql-upload";
 
 import dotenv from "dotenv";
 dotenv.config();
@@ -53,7 +54,8 @@ export const schema = makeAugmentedSchema({
       ...graphgistsQueries,
     },
     ...graphgistsTypes,
-    ...imagesTypes
+    ...imagesTypes,
+    Upload: GraphQLUpload
   },
   config: {
     mutation: false,

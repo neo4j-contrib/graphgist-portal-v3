@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import gql from "graphql-tag";
-import { useQuery } from "@apollo/react-hooks";
+import { useQuery } from "@apollo/client";
 import { Switch, Route, NavLink, Link, useLocation } from "react-router-dom";
 import { Menu, Container, Message } from "semantic-ui-react";
 import { createUseStyles } from "react-jss";
@@ -18,6 +18,7 @@ import GraphGistPage from "./graphgists/GraphGistPage";
 import GraphGistCandidatePage from "./graphgists/GraphGistCandidatePage";
 import GraphGistSourcePage from "./graphgists/GraphGistSourcePage";
 import GraphGistEditByOwner from "./graphgists/GraphGistEditByOwner";
+import GraphGistCreate from "./graphgists/GraphGistCreate";
 import MyGraphGists from "./graphgists/MyGraphGists";
 import PersonGraphGists from "./people/PersonGraphGists";
 
@@ -97,11 +98,14 @@ function App() {
         <Menu.Item as={NavLink} to="/graph_gists">
           GraphGists
         </Menu.Item>
-        {me && (
+        {me && (<>
+          <Menu.Item as={NavLink} to="/submit_graphgist">
+            Create a GraphGist
+          </Menu.Item>
           <Menu.Item as={NavLink} to="/my_graphgists">
             My GraphGists
           </Menu.Item>
-        )}
+        </>)}
         <Menu.Item as={NavLink} to="/graph_guides">
           Graph Guides
         </Menu.Item>
@@ -141,6 +145,7 @@ function App() {
           <Route exact path="/my_graphgists" component={MyGraphGists} />
           <Route exact path="/graph_gists" component={GraphGists} />
           <Route exact path="/graph_guides" component={GraphGuides} />
+          <Route exact path="/submit_graphgist" component={GraphGistCreate} />
           <Route exact path="/graph_gists/:id" component={GraphGistPage} />
           <Route
             exact

@@ -12,8 +12,9 @@ import {
 import moment from "moment";
 import { Helmet } from "react-helmet";
 import _ from "lodash";
-import { useMutation } from "@apollo/react-hooks";
+import { useMutation } from "@apollo/client";
 import gql from "graphql-tag";
+import { createUseStyles } from "react-jss";
 import SimpleFormat from "../components/SimpleFormat.js";
 import GraphGistRenderer from "./render/GraphGistRenderer.js";
 import PageLoading from "../components/PageLoading.js";
@@ -37,6 +38,12 @@ const DISABLE_GRAPHGIST = gql`
     }
   }
 `;
+
+const useStyles = createUseStyles({
+  sidebarImg: {
+    maxWidth: "100%",
+  }
+});
 
 function GraphGistPage({ graphGist, loading, error, candidate, refetch }) {
   const slug = candidate
@@ -81,15 +88,14 @@ function GraphGistPage({ graphGist, loading, error, candidate, refetch }) {
 
               {graphGist.my_perms.indexOf("edit") >= 0 && (
                 <>
-                  {candidate &&
-                    _.get(graphGist, "graphgist.status") === "live" && (
+                  {candidate && (
                       <p>
                         <Label
                           as={Link}
                           color="red"
                           to={`/graph_gists/${graphGist.graphgist.slug}`}
                         >
-                          Go to live version.
+                          Go to master version.
                         </Label>
                       </p>
                     )}
@@ -138,6 +144,7 @@ function GraphGistPage({ graphGist, loading, error, candidate, refetch }) {
 
 function AssetExtraButtons({ graphGist, candidate, slug, refetch }) {
   const history = useHistory();
+  const classes = useStyles();
 
   const uuid = candidate ? _.get(graphGist, "graphgist.uuid") : graphGist.uuid;
 
@@ -269,6 +276,18 @@ function AssetExtraButtons({ graphGist, candidate, slug, refetch }) {
       )}
 
       <Item.Group>
+        {graphGist.image.length > 0 && <Item>
+          <Item.Content>
+            <Divider horizontal>Image</Divider>
+            <Item.Description>
+              {graphGist.image.map((image, i) => {
+                return <a href={image.source_url} key={i} target="_blank" rel="noopener noreferrer">
+                  <img src={image.source_url} alt={graphGist.title} className={classes.sidebarImg} />
+                </a>
+              })}
+            </Item.Description>
+          </Item.Content>
+        </Item>}
         <Item>
           <Item.Content>
             <Divider horizontal>Author</Divider>

@@ -1,5 +1,5 @@
 import React from "react";
-import { useQuery, useMutation } from "@apollo/react-hooks";
+import { useQuery, useMutation } from "@apollo/client";
 import { useHistory } from "react-router-dom";
 import gql from "graphql-tag";
 import { Form, Button, Header, Select } from "semantic-ui-react";

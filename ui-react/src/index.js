@@ -1,9 +1,9 @@
 import React from "react";
 import ReactDOM from "react-dom";
-import ApolloClient from "apollo-boost";
-import { ApolloProvider } from "@apollo/react-hooks";
+import { ApolloClient, ApolloProvider, InMemoryCache } from "@apollo/client";
 import { BrowserRouter } from "react-router-dom";
 import { Auth0Provider } from "@auth0/auth0-react";
+import { createUploadLink } from 'apollo-upload-client';
 import App from "./App";
 import "./index.css";
 
@@ -13,7 +13,6 @@ const AUTH0_DOMAIN = process.env.REACT_APP_AUTH0_DOMAIN;
 const AUTH0_CLIENT_ID = process.env.REACT_APP_AUTH0_CLIENT_ID;
 
 const client = new ApolloClient({
-  uri: process.env.REACT_APP_GRAPHQL_URI,
   request: (operation) => {
     operation.setContext((context) => ({
       headers: {
@@ -22,6 +21,13 @@ const client = new ApolloClient({
       },
     }));
   },
+  cache: new InMemoryCache(),
+  link: createUploadLink({
+    uri: process.env.REACT_APP_GRAPHQL_URI,
+    headers: {
+      authorization: authToken.get(),
+    }
+  }),
 });
 
 const Main = () => (

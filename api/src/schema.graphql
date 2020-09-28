@@ -1,3 +1,5 @@
+scalar Upload
+
 type Query {
   graphGistSearch(searchString: String): [GraphGist]
     @cypher(
@@ -44,6 +46,7 @@ type Query {
 type Mutation {
   Authenticate(token: String): User
   PreviewGraphGist(asciidoc: String): String
+  CreateGraphGist(graphgist: GraphGistInput!): GraphGistCandidate
   UpdateGraphGist(uuid: ID!, graphgist: GraphGistInput!): GraphGistCandidate
   UpdateUser(user: UserInput!): User
   PublishGraphGistCandidate(uuid: ID!): GraphGist
@@ -316,7 +319,6 @@ type GraphGistCandidate implements GraphGistInterface & Asset {
 }
 
 input GraphGistInput {
-  image: [String]
   slug: String
   summary: String
 
@@ -334,6 +336,8 @@ input GraphGistInput {
   industries: [ID]
   use_cases: [ID]
   challenges: [ID]
+
+  images: [Upload]
 
   status: GraphGistStatus
   featured: Boolean
