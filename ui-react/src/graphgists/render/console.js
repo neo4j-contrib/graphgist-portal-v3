@@ -289,7 +289,6 @@ const Consolr = function (gistId, neo4j_version) {
   var authenticity_token,
     currently_querying,
     establishSession,
-    graph_gist_portal_url,
     init,
     process_query_queue,
     query,
@@ -299,23 +298,21 @@ const Consolr = function (gistId, neo4j_version) {
   query_queue = [];
   currently_querying = false;
   authenticity_token = $("meta[name=csrf-token]").attr("content");
-  graph_gist_portal_url = function () {
-    if (window.graph_gist_portal_url == null) {
-      throw "No window.graph_gist_portal_url defined.  That's important if you want to get your gist on...";
-    }
-    return window.graph_gist_portal_url;
-  };
   establishSession = function () {
-    return $.ajax(graph_gist_portal_url() + "/graph_gists/query_session_id", {
-      method: "GET",
-      data: {
-        neo4j_version: neo4j_version,
-      },
-      xhrFields: {
-        withCredentials: true,
-      },
+    return $.ajax(process.env.REACT_APP_GRAPHQL_URI, {
+      method: "POST",
+      dataType: "json",
+      contentType: "application/json",
+      data: JSON.stringify({
+        operationName: "sessionId",
+        variables: {
+          neo4j_version: neo4j_version
+        },
+        query: "query sessionId($neo4j_version: String) { getConsoleSessionId(neo4j_version: $neo4j_version) }"
+      }),
+      crossDomain: true,
     }).done(function (result) {
-      return (sessionId = result);
+      return (sessionId = result.data.getConsoleSessionId);
     });
   };
   init = function (params, success, error, data) {};
@@ -329,22 +326,22 @@ const Consolr = function (gistId, neo4j_version) {
       (cypher = ref.cypher),
       (success = ref.success),
       (error = ref.error);
-    return $.ajax(
-      graph_gist_portal_url() + "/graph_gists/" + gistId + "/query",
-      {
-        method: "POST",
-        data: {
-          gist_load_session: sessionId,
+    return $.ajax(process.env.REACT_APP_GRAPHQL_URI, {
+      method: "POST",
+      dataType: "json",
+      contentType: "application/json",
+      data: JSON.stringify({
+        operationName: "cypherQuery",
+        variables: {
+          session_id: sessionId,
           neo4j_version: neo4j_version,
           cypher: cypher,
         },
-        xhrFields: {
-          withCredentials: true,
-        },
-      }
-    ).done(function (result) {
-      var data;
-      data = JSON.parse(result);
+        query: "query cypherQuery($neo4j_version: String, $session_id: String!, $cypher: String!) { queryConsole(neo4j_version: $neo4j_version, session_id: $session_id, cypher: $cypher) }"
+      }),
+      crossDomain: true,
+    }).done(function (result) {
+      var data = JSON.parse(result.data.queryConsole);
       (data.error ? error : success)(data);
       if (query_queue.length) {
         currently_querying = false;
