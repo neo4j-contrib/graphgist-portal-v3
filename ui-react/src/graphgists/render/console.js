@@ -341,7 +341,12 @@ const Consolr = function (gistId, neo4j_version) {
       }),
       crossDomain: true,
     }).done(function (result) {
-      var data = JSON.parse(result.data.queryConsole);
+      var data = {};
+      try {
+        data = JSON.parse(result.data.queryConsole);
+      } catch(error) {
+        data = {error: 'Can not reach neo4j-console server'};
+      }
       (data.error ? error : success)(data);
       if (query_queue.length) {
         currently_querying = false;

@@ -1,8 +1,8 @@
-import { convertAsciiDocToHtml, getGraphGistByUUID } from "./utils";
+import { convertAsciiDocToHtml, renderMathJax, getGraphGistByUUID } from "./utils";
 import S3 from "../images/s3";
 
 export const PreviewGraphGist = (root, args, context, info) => {
-  return convertAsciiDocToHtml(args.asciidoc);
+  return renderMathJax(convertAsciiDocToHtml(args.asciidoc));
 };
 
 
@@ -23,7 +23,7 @@ export const CreateGraphGist = async (root, args, context, info) => {
     const graphgist_post = {
       ...proprieties,
       status: "candidate",
-      raw_html: await convertAsciiDocToHtml(proprieties.asciidoc),
+      raw_html: renderMathJax(await convertAsciiDocToHtml(proprieties.asciidoc)),
       has_errors: false,
     };
 

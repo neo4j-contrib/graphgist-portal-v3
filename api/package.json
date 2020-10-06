@@ -28,6 +28,8 @@
     "graphql-tools": "^6.0.18",
     "jsonwebtoken": "^8.5.1",
     "jwks-rsa": "^1.8.1",
+    "mathjax": "^3.1.2",
+    "mathjax-full": "^3.1.2",
     "mkdirp": "^1.0.4",
     "neo4j-driver": "^4.1.1",
     "neo4j-graphql-js": "^2.16.1",
