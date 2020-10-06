@@ -216,6 +216,7 @@ type GraphGist implements GraphGistInterface & Asset {
   asciidoc: String!
   html: String!
   raw_html: String!
+  guide_html: String
   neo4j_version: String
 
   query_cache: String!
@@ -285,6 +286,7 @@ type GraphGistCandidate implements GraphGistInterface & Asset {
   asciidoc: String!
   html: String!
   raw_html: String!
+  guide_html: String
   neo4j_version: String
 
   query_cache: String!

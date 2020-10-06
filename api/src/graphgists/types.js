@@ -1,3 +1,5 @@
+import { renderMathJax } from "./utils";
+
 export const GraphGist = {
   my_perms: async (obj, args, context, info) => {
     try {
@@ -16,6 +18,9 @@ export const GraphGist = {
 
     return [];
   },
+  raw_html: (obj, args, context, info) => {
+    return renderMathJax(obj.raw_html);
+  }
 };
 
 export const GraphGistCandidate = {
@@ -36,4 +41,7 @@ export const GraphGistCandidate = {
 
     return [];
   },
+  raw_html: (obj, args, context, info) => {
+    return renderMathJax(obj.raw_html);
+  }
 };

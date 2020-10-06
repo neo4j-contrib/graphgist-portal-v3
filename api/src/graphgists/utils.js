@@ -1,6 +1,13 @@
 import Asciidoctor from "asciidoctor";
 import ValidationError from "../ValidationError";
 
+import { mathjax } from "mathjax-full/js/mathjax";
+import { TeX } from "mathjax-full/js/input/tex";
+import { CHTML } from "mathjax-full/js/output/chtml";
+import { SVG } from "mathjax-full/js/output/svg";
+import { liteAdaptor } from "mathjax-full/js/adaptors/liteAdaptor";
+import { RegisterHTMLHandler } from "mathjax-full/js/handlers/html";
+
 const fetch = require("node-fetch");
 
 export async function getGraphGistByUUID(txc, uuid) {
@@ -12,6 +19,19 @@ export async function getGraphGistByUUID(txc, uuid) {
   if (result.records.length >= 1) {
     return result.records[0].get("g").properties;
   }
+}
+
+export function renderMathJax(raw_html) {
+  const adaptor = liteAdaptor({fontSize: "1em"});
+  RegisterHTMLHandler(adaptor);
+
+  const tex = new TeX({ inlineMath: [['$','$'],['\\(','\\)']] }); // packages: argv.packages.split(/\s*,\s*/)
+  const chtml = new SVG({fontCache: 'none'}); // {fontURL: argv.fontURL, exFactor: argv.ex / argv.em}
+  const html = mathjax.document(raw_html, {InputJax: tex, OutputJax: chtml});
+
+  html.render();
+
+  return adaptor.innerHTML(html.document.body);
 }
 
 export async function convertAsciiDocToHtml(asciidoc) {
