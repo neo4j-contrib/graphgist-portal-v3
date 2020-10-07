@@ -111,17 +111,29 @@ function GraphGistCreate() {
     <React.Fragment>
       <Helmet title="Submit a GraphGist" />
 
-      <p>Enter the URL or AsciiDoc of your GraphGist and click "Preview". If it looks good you can click on the "Submit GraphGist" button to submit it for publication on this site!</p>
-      <p>If you don't know what a GraphGist is or need help creating one you can consult <Link to={`/`}>this guide</Link></p>
-      <p>If you still need help you can find us on <a href="http://neo4j.com/blog/public-neo4j-users-slack-group/">Slack</a></p>
+      <p>
+        Enter the URL or AsciiDoc of your GraphGist and click "Preview". If it
+        looks good you can click on the "Submit GraphGist" button to submit it
+        for publication on this site!
+      </p>
+      <p>
+        If you don't know what a GraphGist is or need help creating one you can
+        consult <Link to={`/`}>this guide</Link>
+      </p>
+      <p>
+        If you still need help you can find us on{" "}
+        <a href="http://neo4j.com/blog/public-neo4j-users-slack-group/">
+          Slack
+        </a>
+      </p>
 
       <Formik
         initialValues={{
-          title: '',
-          asciidoc: '',
-          author: '',
-          summary: '',
-          status: 'candidate',
+          title: "",
+          asciidoc: "",
+          author: "",
+          summary: "",
+          status: "candidate",
           industries: [],
           challenges: [],
           use_cases: [],
@@ -129,10 +141,12 @@ function GraphGistCreate() {
         }}
         onSubmit={(values, e, a) => {
           updateGraphGist({
-            variables: { graphgist: {
-              ...values,
-              images: values.images.map(image => (image.file))
-            }},
+            variables: {
+              graphgist: {
+                ...values,
+                images: values.images.map((image) => image.file),
+              },
+            },
           });
         }}
       >
@@ -148,69 +162,71 @@ function GraphGistCreate() {
               <div className={classes.imagesContainer}>
                 <FieldArray
                   name="images"
-                  render={arrayHelpers => {
+                  render={(arrayHelpers) => {
                     const addImage = (e) => {
                       for (var i = 0; i < e.target.files.length; i++) {
                         const file = e.target.files[i];
                         const fileReader = new FileReader();
                         fileReader.onload = (ee) => {
-                          arrayHelpers.remove(0);  // this line makes it only accept 1 image
+                          arrayHelpers.remove(0); // this line makes it only accept 1 image
                           arrayHelpers.push({
                             file: file,
-                            source_url: fileReader.result
+                            source_url: fileReader.result,
                           });
                         };
                         fileReader.readAsDataURL(file);
                       }
                       e.target.value = null;
-                    }
+                    };
 
-                    return <Card.Group>
-                      {values.images.map((image, i) => {
-                        return (
-                          <Card key={i}>
-                            <Image
-                              src={image.source_url}
-                              wrapped
-                              fluid
-                              ui={false}
-                            />
-                            {(image.title || image.description) && (
+                    return (
+                      <Card.Group>
+                        {values.images.map((image, i) => {
+                          return (
+                            <Card key={i}>
+                              <Image
+                                src={image.source_url}
+                                wrapped
+                                fluid
+                                ui={false}
+                              />
+                              {(image.title || image.description) && (
+                                <Card.Content>
+                                  {image.title && (
+                                    <Card.Header>{image.title}</Card.Header>
+                                  )}
+                                  {image.description && (
+                                    <Card.Meta>{image.description}</Card.Meta>
+                                  )}
+                                </Card.Content>
+                              )}
                               <Card.Content>
-                                {image.title && (
-                                  <Card.Header>{image.title}</Card.Header>
-                                )}
-                                {image.description && (
-                                  <Card.Meta>{image.description}</Card.Meta>
-                                )}
+                                <Button
+                                  color="green"
+                                  size="large"
+                                  href={image.source_url}
+                                >
+                                  Full Size
+                                </Button>
+                                <Button
+                                  color="red"
+                                  size="small"
+                                  onClick={() => arrayHelpers.remove(i)}
+                                >
+                                  Remove
+                                </Button>
                               </Card.Content>
-                            )}
-                            <Card.Content>
-                              <Button
-                                color="green"
-                                size="large"
-                                href={image.source_url}
-                              >
-                                Full Size
-                              </Button>
-                              <Button
-                                color="red"
-                                size="small"
-                                onClick={() => arrayHelpers.remove(i)}
-                              >
-                                Remove
-                              </Button>
-                            </Card.Content>
-                          </Card>
-                        );
-                      })}
+                            </Card>
+                          );
+                        })}
 
-                      <Form.Field className={classes.imageField}>
-                        <label>Add Image</label>
-                        <input name="image" type="file" onChange={addImage} />
-                      </Form.Field>
-                    </Card.Group>}
-                  }
+                        <Form.Field className={classes.imageField}>
+                          <label>Add Image</label>
+                          <input name="image" type="file" onChange={addImage} />
+                        </Form.Field>
+                      </Card.Group>
+                    );
+                  }}
                 />
               </div>
 

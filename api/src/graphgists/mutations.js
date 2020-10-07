@@ -1,10 +1,13 @@
-import { convertAsciiDocToHtml, renderMathJax, getGraphGistByUUID } from "./utils";
+import {
+  convertAsciiDocToHtml,
+  renderMathJax,
+  getGraphGistByUUID,
+} from "./utils";
 import S3 from "../images/s3";
 
 export const PreviewGraphGist = (root, args, context, info) => {
   return renderMathJax(convertAsciiDocToHtml(args.asciidoc));
 };
-
 
 export const CreateGraphGist = async (root, args, context, info) => {
   const session = context.driver.session();
@@ -23,7 +26,9 @@ export const CreateGraphGist = async (root, args, context, info) => {
     const graphgist_post = {
       ...proprieties,
       status: "candidate",
-      raw_html: renderMathJax(await convertAsciiDocToHtml(proprieties.asciidoc)),
+      raw_html: renderMathJax(
+        await convertAsciiDocToHtml(proprieties.asciidoc)
+      ),
       has_errors: false,
     };
 
@@ -44,7 +49,7 @@ export const CreateGraphGist = async (root, args, context, info) => {
     const graphgist = result.records[0].get("g").properties;
     const candidate = result.records[0].get("gc").properties;
 
-		const current_user = await context.user;
+    const current_user = await context.user;
     await txc.run(
       `
       MATCH (g:GraphGist {uuid: $uuid}), (gc:GraphGistCandidate {uuid: $candidateUuid}), (User {uuid: $authorUuid})-[:IS_PERSON]->(p:Person)
@@ -52,7 +57,11 @@ export const CreateGraphGist = async (root, args, context, info) => {
       CREATE (g)<-[rr:WROTE]-(p)
       RETURN r, rr
       `,
-      { uuid: graphgist.uuid, candidateUuid: candidate.uuid, authorUuid: current_user.uuid }
+      {
+        uuid: graphgist.uuid,
+        candidateUuid: candidate.uuid,
+        authorUuid: current_user.uuid,
+      }
     );
 
     var categoryUuid;
@@ -65,7 +74,12 @@ export const CreateGraphGist = async (root, args, context, info) => {
         CREATE (gc)-[rr:FOR_INDUSTRY]->(c)
         RETURN r, rr
         `,
-        { uuid: graphgist.uuid, candidateUuid: candidate.uuid, authorUuid: author, categoryUuid: categoryUuid }
+        {
+          uuid: graphgist.uuid,
+          candidateUuid: candidate.uuid,
+          authorUuid: author,
+          categoryUuid: categoryUuid,
+        }
       );
     }
 
@@ -77,7 +91,12 @@ export const CreateGraphGist = async (root, args, context, info) => {
         CREATE (gc)-[rr:FOR_USE_CASE]->(c)
         RETURN r, rr
         `,
-        { uuid: graphgist.uuid, candidateUuid: candidate.uuid, authorUuid: author, categoryUuid: categoryUuid }
+        {
+          uuid: graphgist.uuid,
+          candidateUuid: candidate.uuid,
+          authorUuid: author,
+          categoryUuid: categoryUuid,
+        }
       );
     }
 
@@ -89,12 +108,17 @@ export const CreateGraphGist = async (root, args, context, info) => {
         CREATE (gc)-[rr:FOR_CHALLENGE]->(c)
         RETURN r, rr
         `,
-        { uuid: graphgist.uuid, candidateUuid: candidate.uuid, authorUuid: author, categoryUuid: categoryUuid }
+        {
+          uuid: graphgist.uuid,
+          candidateUuid: candidate.uuid,
+          authorUuid: author,
+          categoryUuid: categoryUuid,
+        }
       );
     }
-    
+
     for (let image_upload of images) {
-      const image_uploaded = await S3.upload(image_upload)
+      const image_uploaded = await S3.upload(image_upload);
       await txc.run(
         `
         MATCH (g:GraphGist {uuid: $uuid}), (gc:GraphGistCandidate {uuid: $candidateUuid})
@@ -103,7 +127,12 @@ export const CreateGraphGist = async (root, args, context, info) => {
         CREATE (i)<-[rr:HAS_IMAGE]-(gc)
         RETURN r, rr
         `,
-        { uuid: graphgist.uuid, candidateUuid: candidate.uuid, authorUuid: author, image: image_uploaded }
+        {
+          uuid: graphgist.uuid,
+          candidateUuid: candidate.uuid,
+          authorUuid: author,
+          image: image_uploaded,
+        }
       );
     }
 
@@ -119,7 +148,6 @@ export const CreateGraphGist = async (root, args, context, info) => {
 
   return null;
 };
-
 
 export const UpdateGraphGist = async (root, args, context, info) => {
   const session = context.driver.session();
@@ -226,7 +254,7 @@ export const UpdateGraphGist = async (root, args, context, info) => {
       );
 
       for (let image_upload of images) {
-        const image_uploaded = await S3.upload(image_upload)
+        const image_uploaded = await S3.upload(image_upload);
         await txc.run(
           `
           MATCH (gc:GraphGistCandidate {uuid: $uuid})

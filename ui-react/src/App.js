@@ -98,14 +98,16 @@ function App() {
         <Menu.Item as={NavLink} to="/graph_gists">
           GraphGists
         </Menu.Item>
-        {me && (<>
-          <Menu.Item as={NavLink} to="/submit_graphgist">
-            Create a GraphGist
-          </Menu.Item>
-          <Menu.Item as={NavLink} to="/my_graphgists">
-            My GraphGists
-          </Menu.Item>
-        </>)}
+        {me && (
+          <>
+            <Menu.Item as={NavLink} to="/submit_graphgist">
+              Create a GraphGist
+            </Menu.Item>
+            <Menu.Item as={NavLink} to="/my_graphgists">
+              My GraphGists
+            </Menu.Item>
+          </>
+        )}
         <Menu.Item as={NavLink} to="/graph_guides">
           Graph Guides
         </Menu.Item>

@@ -306,9 +306,10 @@ const Consolr = function (gistId, neo4j_version) {
       data: JSON.stringify({
         operationName: "sessionId",
         variables: {
-          neo4j_version: neo4j_version
+          neo4j_version: neo4j_version,
         },
-        query: "query sessionId($neo4j_version: String) { getConsoleSessionId(neo4j_version: $neo4j_version) }"
+        query:
+          "query sessionId($neo4j_version: String) { getConsoleSessionId(neo4j_version: $neo4j_version) }",
       }),
       crossDomain: true,
     }).done(function (result) {
@@ -337,15 +338,16 @@ const Consolr = function (gistId, neo4j_version) {
           neo4j_version: neo4j_version,
           cypher: cypher,
         },
-        query: "query cypherQuery($neo4j_version: String, $session_id: String!, $cypher: String!) { queryConsole(neo4j_version: $neo4j_version, session_id: $session_id, cypher: $cypher) }"
+        query:
+          "query cypherQuery($neo4j_version: String, $session_id: String!, $cypher: String!) { queryConsole(neo4j_version: $neo4j_version, session_id: $session_id, cypher: $cypher) }",
       }),
       crossDomain: true,
     }).done(function (result) {
       var data = {};
       try {
         data = JSON.parse(result.data.queryConsole);
-      } catch(error) {
-        data = {error: 'Can not reach neo4j-console server'};
+      } catch (error) {
+        data = { error: "Can not reach neo4j-console server" };
       }
       (data.error ? error : success)(data);
       if (query_queue.length) {

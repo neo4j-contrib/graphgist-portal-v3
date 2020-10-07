@@ -8,6 +8,7 @@ import {
   Header,
   Divider,
   Label,
+  Modal,
 } from "semantic-ui-react";
 import moment from "moment";
 import { Helmet } from "react-helmet";
@@ -42,7 +43,7 @@ const DISABLE_GRAPHGIST = gql`
 const useStyles = createUseStyles({
   sidebarImg: {
     maxWidth: "100%",
-  }
+  },
 });
 
 function GraphGistPage({ graphGist, loading, error, candidate, refetch }) {
@@ -89,16 +90,16 @@ function GraphGistPage({ graphGist, loading, error, candidate, refetch }) {
               {graphGist.my_perms.indexOf("edit") >= 0 && (
                 <>
                   {candidate && (
-                      <p>
-                        <Label
-                          as={Link}
-                          color="red"
-                          to={`/graph_gists/${graphGist.graphgist.slug}`}
-                        >
-                          Go to master version.
-                        </Label>
-                      </p>
-                    )}
+                    <p>
+                      <Label
+                        as={Link}
+                        color="red"
+                        to={`/graph_gists/${graphGist.graphgist.slug}`}
+                      >
+                        Go to master version.
+                      </Label>
+                    </p>
+                  )}
 
                   {!candidate && graphGist.is_candidate_updated && (
                     <p>
@@ -144,8 +145,9 @@ function GraphGistPage({ graphGist, loading, error, candidate, refetch }) {
 
 function AssetExtraButtons({ graphGist, candidate, slug, refetch }) {
   const history = useHistory();
+  const [openDialog, setOpenDialog] = React.useState(false);
   const classes = useStyles();
-
+  const localUrl = window.location.protocol + "//" + window.location.host;
   const uuid = candidate ? _.get(graphGist, "graphgist.uuid") : graphGist.uuid;
 
   const [
@@ -160,6 +162,7 @@ function AssetExtraButtons({ graphGist, candidate, slug, refetch }) {
   const handlePublish = () => {
     publishGraphGistCandidateMutation({ variables: { uuid } });
   };
+  const handleMarkAsGuide = () => {};
 
   const [disableGraphGistMutation, { loading: isDisabling }] = useMutation(
     DISABLE_GRAPHGIST,
@@ -173,6 +176,12 @@ function AssetExtraButtons({ graphGist, candidate, slug, refetch }) {
 
   const handleDisable = () => {
     disableGraphGistMutation({ variables: { uuid } });
+  };
+  const handleClose = () => {
+    setOpenDialog(false);
+  };
+  const handleOpenDialog = () => {
+    setOpenDialog(true);
   };
 
   return (
@@ -207,8 +216,47 @@ function AssetExtraButtons({ graphGist, candidate, slug, refetch }) {
         </React.Fragment>
       )}
 
-      <a href=".">Run this gist in the Neo4j console</a>
-
+      <Modal
+        onClose={handleClose}
+        onOpen={handleOpenDialog}
+        open={openDialog}
+        trigger={<a href="#">Run this gist in the Neo4j console</a>}
+      >
+        <Modal.Header>
+          Play this GraphGist in your Neo4j web Console
+        </Modal.Header>
+        <Modal.Content>
+          <Modal.Description>
+            <p>Run this line in your Neo4j web Console</p>
+            <pre>
+              :play {localUrl}/graph_gists/{slug}/graph_guide
+            </pre>
+            <p>You will likely need to configure your whitelist in Neo4j:</p>
+            <Header>Neo4j 3.0</Header>
+            <pre>browser.remote_content_hostname_whitelist={localUrl}</pre>
+            <Header>Before Neo4j 3.0</Header>
+            <pre>
+              dbms.browser.remote_content_hostname_whitelist="{localUrl}"
+            </pre>
+          </Modal.Description>
+        </Modal.Content>
+      </Modal>
+      {graphGist.my_perms.indexOf("admin") >= 0 && (
+        <React.Fragment>
+          <Divider />
+          <Button
+            icon
+            labelPosition="left"
+            fluid
+            color="teal"
+            loading={isPublishing}
+            onClick={handleMarkAsGuide}
+          >
+            <Icon name="checkmark" />
+            Mark as Graph guide
+          </Button>
+        </React.Fragment>
+      )}
       {graphGist.my_perms.indexOf("edit") >= 0 && uuid && (
         <React.Fragment>
           <Divider />
@@ -276,18 +324,31 @@ function AssetExtraButtons({ graphGist, candidate, slug, refetch }) {
       )}
 
       <Item.Group>
-        {graphGist.image.length > 0 && <Item>
-          <Item.Content>
-            <Divider horizontal>Image</Divider>
-            <Item.Description>
-              {graphGist.image.map((image, i) => {
-                return <a href={image.source_url} key={i} target="_blank" rel="noopener noreferrer">
-                  <img src={image.source_url} alt={graphGist.title} className={classes.sidebarImg} />
-                </a>
-              })}
-            </Item.Description>
-          </Item.Content>
-        </Item>}
+        {graphGist.image.length > 0 && (
+          <Item>
+            <Item.Content>
+              <Divider horizontal>Image</Divider>
+              <Item.Description>
+                {graphGist.image.map((image, i) => {
+                  return (
+                    <a
+                      href={image.source_url}
+                      key={i}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      <img
+                        src={image.source_url}
+                        alt={graphGist.title}
+                        className={classes.sidebarImg}
+                      />
+                    </a>
+                  );
+                })}
+              </Item.Description>
+            </Item.Content>
+          </Item>
+        )}
         <Item>
           <Item.Content>
             <Divider horizontal>Author</Divider>

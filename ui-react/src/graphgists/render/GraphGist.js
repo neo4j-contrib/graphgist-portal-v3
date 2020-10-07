@@ -27,7 +27,7 @@ const CONSOLE_VERSIONS = {
   "3.2": "http://neo4j-console-32.herokuapp.com/",
   "3.3": "http://neo4j-console-33.herokuapp.com/",
   "3.4": "http://neo4j-console-34.herokuapp.com/",
-  "3.5": "http://neo4j-console-35.herokuapp.com/" // default
+  "3.5": "http://neo4j-console-35.herokuapp.com/", // default
 };
 const DEFAULT_VERSION = "3.5";
 

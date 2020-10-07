@@ -151,12 +151,10 @@ function GraphGistEditByOwner() {
   );
   const showApiError = (data) => {
     history.push(`/graph_gists/${id}/edit_by_owner`, {
-      messages: data.graphQLErrors.map(error => (
-        {
-          body: error.message,
-          type: "negative",
-        }
-      )),
+      messages: data.graphQLErrors.map((error) => ({
+        body: error.message,
+        type: "negative",
+      })),
     });
   };
   const handlePreview = (e, asciidoc) => {
@@ -220,10 +218,13 @@ function GraphGistEditByOwner() {
         }}
         onSubmit={(values, e, a) => {
           updateGraphGist({
-            variables: { id: graphGist.uuid, graphgist: {
-              ...values,
-              images: values.images.map(image => (image.file))
-            }},
+            variables: {
+              id: graphGist.uuid,
+              graphgist: {
+                ...values,
+                images: values.images.map((image) => image.file),
+              },
+            },
           });
         }}
       >
@@ -239,68 +240,70 @@ function GraphGistEditByOwner() {
               <div className={classes.imagesContainer}>
                 <FieldArray
                   name="images"
-                  render={arrayHelpers => {
+                  render={(arrayHelpers) => {
                     const addImage = (e) => {
                       for (var i = 0; i < e.target.files.length; i++) {
                         const file = e.target.files[i];
                         const fileReader = new FileReader();
                         fileReader.onload = (ee) => {
-                          arrayHelpers.remove(0);  // this line makes it only accept 1 image
+                          arrayHelpers.remove(0); // this line makes it only accept 1 image
                           arrayHelpers.push({
                             file: file,
-                            source_url: fileReader.result
+                            source_url: fileReader.result,
                           });
                         };
                         fileReader.readAsDataURL(file);
                       }
-                    }
+                    };
 
-                    return <Card.Group>
-                      {values.images.map((image, i) => {
-                        return (
-                          <Card key={i}>
-                            <Image
-                              src={image.source_url}
-                              wrapped
-                              fluid
-                              ui={false}
-                            />
-                            {(image.title || image.description) && (
+                    return (
+                      <Card.Group>
+                        {values.images.map((image, i) => {
+                          return (
+                            <Card key={i}>
+                              <Image
+                                src={image.source_url}
+                                wrapped
+                                fluid
+                                ui={false}
+                              />
+                              {(image.title || image.description) && (
+                                <Card.Content>
+                                  {image.title && (
+                                    <Card.Header>{image.title}</Card.Header>
+                                  )}
+                                  {image.description && (
+                                    <Card.Meta>{image.description}</Card.Meta>
+                                  )}
+                                </Card.Content>
+                              )}
                               <Card.Content>
-                                {image.title && (
-                                  <Card.Header>{image.title}</Card.Header>
-                                )}
-                                {image.description && (
-                                  <Card.Meta>{image.description}</Card.Meta>
-                                )}
+                                <Button
+                                  color="green"
+                                  size="large"
+                                  href={image.source_url}
+                                >
+                                  Full Size
+                                </Button>
+                                <Button
+                                  color="red"
+                                  size="small"
+                                  onClick={() => arrayHelpers.remove(i)}
+                                >
+                                  Remove
+                                </Button>
                               </Card.Content>
-                            )}
-                            <Card.Content>
-                              <Button
-                                color="green"
-                                size="large"
-                                href={image.source_url}
-                              >
-                                Full Size
-                              </Button>
-                              <Button
-                                color="red"
-                                size="small"
-                                onClick={() => arrayHelpers.remove(i)}
-                              >
-                                Remove
-                              </Button>
-                            </Card.Content>
-                          </Card>
-                        );
-                      })}
+                            </Card>
+                          );
+                        })}
 
-                      <Form.Field className={classes.imageField}>
-                        <label>Add Image</label>
-                        <input name="image" type="file" onChange={addImage} />
-                      </Form.Field>
-                    </Card.Group>}
-                  }
+                        <Form.Field className={classes.imageField}>
+                          <label>Add Image</label>
+                          <input name="image" type="file" onChange={addImage} />
+                        </Form.Field>
+                      </Card.Group>
+                    );
+                  }}
                 />
               </div>
 
