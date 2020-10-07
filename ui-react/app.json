@@ -1,10 +1,6 @@
 {
   "name": "graphgist-v3-staging",
   "env": {
-    "PROXY": {
-      "description": "URL of GraphQL server and endpoint",
-      "required": true
-    },
     "REACT_APP_AUTH0_DOMAIN": {
       "description": "Auth0 Domain",
       "required": true
