@@ -684,7 +684,11 @@ const GraphGist = function (options, graphgist_cached_queries) {
     }
   };
   replaceNewlines = function (str) {
-    return str.replace(/\\n/g, "&#013;");
+    if (str) {
+      return str.replace(/\\n/g, '&#013;');
+    } else {
+      return str;
+    }
   };
   createQueryResultButton = function ($labelType, $wrapper, message, hide) {
     var $button, $label, $message;
