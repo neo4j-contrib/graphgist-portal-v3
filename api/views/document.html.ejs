@@ -66,8 +66,10 @@
 </style>
 <article class="guide" ng-controller="AdLibDataController">
     <carousel class="deck container-fluid">
+        <%#= node %>
 
         <% node.blocks.forEach(function (block, index){ %>
+            <%#= block %>
             <slide class="row-fluid">
                 <div class="col-sm-12">
                     <% if(index === 0 && block.context === 'preamble') { %>
@@ -80,14 +82,10 @@
                     <% if(block.context === 'paragraph' ) { %>
                         <h3><%- block.getContent() %></h3>
                         <br/>
-                    <% }else if(block.context === 'image' ) { %>
-                        <!-- image is not working when coming from block statement node.getContent returns all
-                                    but not sections as it is expected -->
-                        <br/>
                     <% }else if(block.context === 'listing' && block.style === 'source'){ %>
                         <pre mode="cypher"
                              class="highlight pre-scrollable code runnable standalone-example ng-binding" lang>
-                                <code class="language-<%= block.language %>"><%- block.getContent() %></code>
+                                <code class="language"><%- block.getContent() %></code>
                               </pre>
                     <% }else if(block.blocks.length === 0 || (block.blocks.length > 0 && block.blocks[0].level !== 2) ){ %>
                         <div><%- block.getContent() %></div>
@@ -97,14 +95,23 @@
             </slide>
             <% if(block.blocks.length > 0 && block.blocks[0].level === 2) { %>
                 <% block.blocks.forEach(function (inner){ %>
+                    <%#= inner %>
                     <slide class="row-fluid">
                         <div class="col-sm-12">
                             <% if(inner.title) { %>
                                 <h3><%- inner.title %></h3>
                                 <br/>
                             <% } %>
-                            <div><%- inner.getContent() %></div>
-                            <br/>
+                            <% if(inner.context === 'paragraph' ) { %>
+                                <div><%- inner.getContent() %></div>
+                                <br/>
+                            <% }else if(inner.context === 'listing' && inner.style === 'source'){ %>
+                                <pre mode="cypher"
+                                     class="highlight pre-scrollable code runnable standalone-example ng-binding" lang>
+                                <code class="language"><%- inner.getContent() %></code>
+                              </pre>
+                                <br/>
+                            <% } %>
                         </div>
                     </slide>
                 <% }); %>

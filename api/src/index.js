@@ -115,6 +115,7 @@ app.get("/graph_gists/:slug/graph_guide", function (req, res) {
       title: graph.title,
       html: adoc.convert(graph.asciidoc, {
         header_footer: true,
+        catalog_assets: true,
         safe: 0,
         template_dir: 'views',
         template_cache: false,
