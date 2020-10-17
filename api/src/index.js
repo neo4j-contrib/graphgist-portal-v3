@@ -116,10 +116,9 @@ app.get("/graph_gists/:slug/graph_guide", function (req, res) {
       html: adoc.convert(graph.asciidoc, {
         header_footer: true,
         safe: 0,
-        //if views are used asccidoctor structure is not returning correct structures expected on ERB files
-        //template_dir: 'views',
+        template_dir: 'views',
         template_cache: false,
-      }),
+      })
     });
   });
 });
