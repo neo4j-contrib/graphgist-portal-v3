@@ -5,8 +5,8 @@ import {
 } from "./utils";
 import S3 from "../images/s3";
 
-export const PreviewGraphGist = (root, args, context, info) => {
-  return renderMathJax(convertAsciiDocToHtml(args.asciidoc));
+export const PreviewGraphGist = async (root, args, context, info) => {
+  return renderMathJax(await convertAsciiDocToHtml(args.asciidoc));
 };
 
 export const CreateGraphGist = async (root, args, context, info) => {
