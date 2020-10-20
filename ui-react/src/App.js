@@ -95,9 +95,6 @@ function App() {
         <Menu.Item as={NavLink} exact to="/">
           Home
         </Menu.Item>
-        <Menu.Item as={NavLink} to="/graph_gists">
-          GraphGists
-        </Menu.Item>
         {me && (
           <>
             <Menu.Item as={NavLink} to="/submit_graphgist">
@@ -142,10 +139,9 @@ function App() {
           </Message>
         ))}
         <Switch>
-          <Route exact path="/" component={Home} />
+          <Route exact path="/" component={GraphGists} />
           <Route exact path="/people/:slug" component={PersonGraphGists} />
           <Route exact path="/my_graphgists" component={MyGraphGists} />
-          <Route exact path="/graph_gists" component={GraphGists} />
           <Route exact path="/graph_guides" component={GraphGuides} />
           <Route exact path="/submit_graphgist" component={GraphGistCreate} />
           <Route exact path="/graph_gists/:id" component={GraphGistPage} />
