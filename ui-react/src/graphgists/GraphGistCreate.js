@@ -38,7 +38,7 @@ const PREVIEW = gql`
   }
 `;
 
-const UPDATE_GRAPHGIST = gql`
+const CREATE_GRAPHGIST = gql`
   mutation CreateGraphGist($graphgist: GraphGistInput!) {
     CreateGraphGist(graphgist: $graphgist) {
       uuid
@@ -75,16 +75,32 @@ function GraphGistCreate() {
     fetchPolicy: "cache-and-network",
   });
 
+  const showApiError = (data) => {
+    history.push('/submit_graphgist', {
+      messages: data.graphQLErrors.map((error) => ({
+        body: error.message,
+        type: "negative",
+      })),
+    });
+  };
+
   const [
     previewGraphGist,
     { data: graphGistPreviewResult, loading: isLoadingPreview },
-  ] = useMutation(PREVIEW);
+  ] = useMutation(PREVIEW, {
+    onError: (data) => {
+      showApiError(data);
+    },
+  });
 
-  const [updateGraphGist, { loading: isSaving }] = useMutation(
-    UPDATE_GRAPHGIST,
+  const [createGraphGist, { loading: isSaving }] = useMutation(
+    CREATE_GRAPHGIST,
     {
       onCompleted: (data) => {
         history.push(`/graph_gist_candidates/${data.CreateGraphGist.uuid}`);
+      },
+      onError: (data) => {
+        showApiError(data);
       },
     }
   );
@@ -140,7 +156,7 @@ function GraphGistCreate() {
           images: [],
         }}
         onSubmit={(values, e, a) => {
-          updateGraphGist({
+          createGraphGist({
             variables: {
               graphgist: {
                 ...values,

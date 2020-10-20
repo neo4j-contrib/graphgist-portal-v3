@@ -149,6 +149,7 @@ function GraphGistEditByOwner() {
       },
     }
   );
+
   const showApiError = (data) => {
     history.push(`/graph_gists/${id}/edit_by_owner`, {
       messages: data.graphQLErrors.map((error) => ({
@@ -157,6 +158,7 @@ function GraphGistEditByOwner() {
       })),
     });
   };
+
   const handlePreview = (e, asciidoc) => {
     e.preventDefault();
     previewGraphGist({ variables: { asciidoc } });
@@ -167,6 +169,7 @@ function GraphGistEditByOwner() {
     "PreviewGraphGist",
     ""
   );
+
   const graphGistCandidate = _.get(data, "getGraphGistCandidate", null);
   const graphGist = _.get(graphGistCandidate, "graphgist", null);
   const statusChoices = _.get(data, "statusChoices.enumValues", []).map(

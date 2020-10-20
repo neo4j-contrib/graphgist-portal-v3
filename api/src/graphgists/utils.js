@@ -58,7 +58,7 @@ export async function convertAsciiDocToHtml(asciidoc) {
     "env-graphgist": true,
   });
   if (rawHtml === "") {
-    return new ValidationError(
+    throw new ValidationError(
       [{ key: "asciidoc", message: "AsciiDoc is empty, it is required." }],
       "AsciiDoc is empty, it is required."
     );
@@ -77,7 +77,7 @@ export async function convertAsciiDocToHtml(asciidoc) {
           try {
             const response = await fetch(match);
             if (!response.ok) {
-              return new ValidationError(
+              throw new ValidationError(
                 [
                   {
                     key: "asciidoc",
@@ -89,7 +89,7 @@ export async function convertAsciiDocToHtml(asciidoc) {
               );
             }
           } catch (error) {
-            return new ValidationError(
+            throw new ValidationError(
               [
                 {
                   key: "asciidoc",
