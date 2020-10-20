@@ -56,6 +56,7 @@ type Mutation {
   UpdateGraphGist(uuid: ID!, graphgist: GraphGistInput!): GraphGistCandidate
   UpdateUser(user: UserInput!): User
   PublishGraphGistCandidate(uuid: ID!): GraphGist
+  FlagGraphGistAsGuide(uuid: ID!, is_guide: Boolean!): GraphGist
   DisableGraphGist(uuid: ID!): GraphGist
 }
 
