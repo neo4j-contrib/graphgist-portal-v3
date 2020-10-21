@@ -121,6 +121,8 @@ app.get("/graph_gists/:slug/graph_guide", function (req, res) {
         template_cache: false,
       })
     });
+  }).catch(()=>{
+    res.render("404");
   });
 });
 app.listen({ port, path }, () => {
