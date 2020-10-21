@@ -1,4 +1,5 @@
 import Asciidoctor from "asciidoctor";
+import _ from "lodash";
 import ValidationError from "../ValidationError";
 
 import { mathjax } from "mathjax-full/js/mathjax";
@@ -50,19 +51,47 @@ export function renderMathJax(raw_html) {
   return adaptor.innerHTML(html.document.body);
 }
 
+const loading_image_tag = '<img src="/images/loading.gif" style="width: 30px">';
+
+const COMMENT_REPLACEMENTS = {
+  console: '<p class="console"><span class="loading">' + loading_image_tag + ' Running queries, preparing the console!</span></p>',
+
+  graph_result: '<h5 class="graph-visualization" data-style="{style}" graph-mode="result">Loading graph...' + loading_image_tag + '</h5>',
+  graph: '<h5 class="graph-visualization" data-style="{style}">Loading graph...' + loading_image_tag + '</h5>',
+  table: '<h5 class="result-table">Loading table...' + loading_image_tag + '</h5>',
+
+  hide: '<span class="hide-query"></span>',
+  setup: '<span class="setup"></span>',
+  output: '<span class="query-output"></span>'
+};
+
 export async function convertAsciiDocToHtml(asciidoc) {
   const asciidoctor = Asciidoctor();
-  const rawHtml = asciidoctor.convert(asciidoc, {
-    toc: "macro",
-    "toc-placement": "macro",
-    "env-graphgist": true,
+
+  _.toPairs(COMMENT_REPLACEMENTS).forEach(([tag, replacement]) => {
+      const prefix = ['graph_result', 'graph'].indexOf(tag) >= 0 ? "\n\n[subs=\"attributes\"]\n" : "";
+      const regex = new RegExp(`^\/\/\s*${tag}`, 'gm');
+      asciidoc = asciidoc.replace(regex, `${prefix}++++\n${replacement}\n++++\n`);
   });
+
+  const doc = asciidoctor.load(asciidoc);
+
+  doc.setAttribute("toc", "macro");
+  doc.setAttribute("toc-placement", "macro");
+  doc.setAttribute("env-graphgist", "true");
+
+  const attrs = doc.getAttributes();
+
+  let rawHtml = doc.convert();
+  rawHtml = `${rawHtml}<span id="metadata" author="${attrs['author'] || ''}" version="${attrs['neo4j-version'] || ''}" twitter="${attrs['twitter'] || ''}" tags="${attrs['tags'] || ''}" />`;
+
   if (rawHtml === "") {
     throw new ValidationError(
       [{ key: "asciidoc", message: "AsciiDoc is empty, it is required." }],
       "AsciiDoc is empty, it is required."
     );
   }
+
   const matches = rawHtml.matchAll(
     /(?:href|src)=["'](https?:\/\/[^"']+)["']/gim
   );
