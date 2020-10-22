@@ -20,6 +20,7 @@ const GET_GRAPHGIST = gql`
       cached
       my_perms
       is_candidate_updated
+      is_guide
       author {
         uuid
         name

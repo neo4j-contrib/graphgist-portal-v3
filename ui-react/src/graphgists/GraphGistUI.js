@@ -40,6 +40,15 @@ const DISABLE_GRAPHGIST = gql`
   }
 `;
 
+const FLAG_GRAPHGIST_AS_GUIDE = gql`
+  mutation flagGraphGistAsGuideMutation($uuid: ID!, $is_guide: Boolean!) {
+    FlagGraphGistAsGuide(uuid: $uuid, is_guide: $is_guide) {
+      uuid
+      is_guide
+    }
+  }
+`;
+
 const useStyles = createUseStyles({
   sidebarImg: {
     maxWidth: "100%",
@@ -162,7 +171,19 @@ function AssetExtraButtons({ graphGist, candidate, slug, refetch }) {
   const handlePublish = () => {
     publishGraphGistCandidateMutation({ variables: { uuid } });
   };
-  const handleMarkAsGuide = () => {};
+
+  const [flagAsGuideMutation, { loading: isSavingAsGuide }] = useMutation(
+    FLAG_GRAPHGIST_AS_GUIDE,
+    {
+      onCompleted: () => {
+        refetch();
+      },
+    }
+  );
+
+  const handleMarkAsGuide = () => {
+    flagAsGuideMutation({ variables: { uuid, is_guide: !graphGist.is_guide } });
+  };
 
   const [disableGraphGistMutation, { loading: isDisabling }] = useMutation(
     DISABLE_GRAPHGIST,
@@ -177,9 +198,11 @@ function AssetExtraButtons({ graphGist, candidate, slug, refetch }) {
   const handleDisable = () => {
     disableGraphGistMutation({ variables: { uuid } });
   };
+
   const handleClose = () => {
     setOpenDialog(false);
   };
+
   const handleOpenDialog = () => {
     setOpenDialog(true);
   };
@@ -241,19 +264,17 @@ function AssetExtraButtons({ graphGist, candidate, slug, refetch }) {
           </Modal.Description>
         </Modal.Content>
       </Modal>
-      {graphGist.my_perms.indexOf("admin") >= 0 && (
+      {(!candidate && graphGist.my_perms.indexOf("admin") >= 0) && (
         <React.Fragment>
           <Divider />
           <Button
             icon
             labelPosition="left"
             fluid
-            color="teal"
-            loading={isPublishing}
+            loading={isSavingAsGuide}
             onClick={handleMarkAsGuide}
           >
-            <Icon name="checkmark" />
-            Mark as Graph guide
+            {graphGist.is_guide ? "Remove from guides" : "Optimized as Guide"}
           </Button>
         </React.Fragment>
       )}

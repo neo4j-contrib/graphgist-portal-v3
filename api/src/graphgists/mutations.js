@@ -404,3 +404,35 @@ export const DisableGraphGist = async (root, args, context, info) => {
 
   return null;
 };
+
+export const FlagGraphGistAsGuide = async (root, args, context, info) => {
+  const session = context.driver.session();
+  const txc = session.beginTransaction();
+
+  try {
+    const result = await txc.run(
+      `
+      MATCH (g:GraphGist {uuid: $uuid})<-[:IS_VERSION]-(gc:GraphGistCandidate)
+      SET gc.is_guide = $is_guide
+      SET g.is_guide = $is_guide
+      RETURN g, gc
+    `,
+      {
+        uuid: args.uuid,
+        is_guide: args.is_guide,
+      }
+    );
+    const graphGist = result.records[0].get("g").properties;
+
+    await txc.commit();
+    return graphGist;
+  } catch (error) {
+    console.error(error);
+    await txc.rollback();
+    throw error;
+  } finally {
+    await session.close();
+  }
+
+  return null;
+};
