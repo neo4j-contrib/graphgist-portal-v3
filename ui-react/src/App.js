@@ -11,7 +11,6 @@ import { Helmet } from "react-helmet";
 
 import ScrollToTop from "./components/ScrollToTop";
 
-import Home from "./Home";
 import GraphGists from "./graphgists/GraphGists";
 import GraphGuides from "./graphgists/GraphGuides";
 import GraphGistPage from "./graphgists/GraphGistPage";
