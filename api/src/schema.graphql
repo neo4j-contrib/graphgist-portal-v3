@@ -39,6 +39,13 @@ type Query {
       RETURN asset
       """
     )
+  myGraphGists: [GraphGist]
+    @cypher(
+      statement: """
+      MATCH (asset:GraphGist)<-[:WROTE]-(p:Person)<-[:IS_PERSON]-(u:User {uuid: $cypherParams.currentUser})
+      RETURN asset
+      """
+    )
   getGraphGistCandidate(uuid: ID!): GraphGistCandidate
   getConsoleSessionId(neo4j_version: String): String
   queryConsole(

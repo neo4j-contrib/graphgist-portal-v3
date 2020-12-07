@@ -1,14 +1,14 @@
 import { AuthenticationError } from "apollo-server-express";
 import { v4 as uuidv4 } from "uuid";
 import { neo4jgraphql } from "neo4j-graphql-js";
-import { auth0Verify, getUser } from "../auth";
+import { auth0Verify } from "../auth";
 
 export const UpdateUser = async (obj, args, context, info) => {
   const session = context.driver.session();
   const txc = session.beginTransaction();
   try {
     const profile = args.user;
-    const user = await context.user;
+    const user = context.user;
 
     const result = await txc.run(
       `

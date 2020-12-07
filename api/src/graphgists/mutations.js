@@ -49,7 +49,7 @@ export const CreateGraphGist = async (root, args, context, info) => {
     const graphgist = result.records[0].get("g").properties;
     const candidate = result.records[0].get("gc").properties;
 
-    const current_user = await context.user;
+    const current_user = context.user;
     await txc.run(
       `
       MATCH (g:GraphGist {uuid: $uuid}), (gc:GraphGistCandidate {uuid: $candidateUuid}), (User {uuid: $authorUuid})-[:IS_PERSON]->(p:Person)

@@ -21,7 +21,7 @@ function MyGraphGists() {
     <React.Fragment>
       <Helmet title="My GraphGists" />
       <h1>My GraphGists</h1>
-      <GraphGistsByPerson userUUID={meUuid} />
+      <GraphGistsByPerson myGraphGists />
     </React.Fragment>
   );
 }

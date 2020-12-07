@@ -32,15 +32,30 @@ const GET_GISTS_BY_PERSON = gql`
   ${GraphGistCard.fragments.graphGist}
 `;
 
+const GET_MY_GISTS = gql`
+  query graphGistsByAuthorPersonQuery($first: Int, $offset: Int) {
+    graphgists: myGraphGists(
+      first: $first
+      offset: $offset
+      orderBy: [avg_rating_desc, title_asc]
+    ) {
+      ...GraphGistCard
+    }
+  }
+  ${GraphGistCard.fragments.graphGist}
+`;
+
 const rowsPerPage = 30;
 
-function GraphGistsByPerson({ personUUID, userUUID }) {
+function GraphGistsByPerson({ personUUID, userUUID, myGraphGists }) {
   const [hasMore, setHasMore] = React.useState(false);
+  
+  const query = myGraphGists ? GET_MY_GISTS : userUUID ? GET_GISTS_BY_USER : GET_GISTS_BY_PERSON;
 
   const [
     loadMyGraphGists,
     { data: myGraphGistsData, loading, error, fetchMore },
-  ] = useLazyQuery(userUUID ? GET_GISTS_BY_USER : GET_GISTS_BY_PERSON, {
+  ] = useLazyQuery(query, {
     fetchPolicy: "cache-and-network",
     onCompleted: (data) => {
       if (data && data.graphgists) {
@@ -52,7 +67,7 @@ function GraphGistsByPerson({ personUUID, userUUID }) {
   const uuid = personUUID || userUUID;
 
   useEffect(() => {
-    if (uuid) {
+    if (uuid || myGraphGists) {
       loadMyGraphGists({
         variables: {
           uuid,
@@ -61,7 +76,7 @@ function GraphGistsByPerson({ personUUID, userUUID }) {
         },
       });
     }
-  }, [uuid, loadMyGraphGists]);
+  }, [uuid, myGraphGists, loadMyGraphGists]);
 
   function loadMore() {
     fetchMore({
