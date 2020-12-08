@@ -12,6 +12,7 @@ const GET_GISTS = gql`
       offset: $offset
       orderBy: [avg_rating_desc, title_asc]
       is_guide: true
+      status: live
     ) {
       ...GraphGistCard
     }

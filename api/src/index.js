@@ -77,11 +77,14 @@ export const schema = makeAugmentedSchema({
  * generated resolvers to connect to the database.
  */
 const server = new ApolloServer({
-  context: ({ req }) => {
-    const user = getUser(driver, req);
+  context: async ({ req }) => {
+    const user = await getUser(driver, req);
     return {
       driver,
       user,
+      cypherParams: {
+        currentUser: user ? user.uuid : null
+      }
     };
   },
   schema: schema,

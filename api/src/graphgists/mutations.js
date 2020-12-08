@@ -49,7 +49,7 @@ export const CreateGraphGist = async (root, args, context, info) => {
     const graphgist = result.records[0].get("g").properties;
     const candidate = result.records[0].get("gc").properties;
 
-    const current_user = await context.user;
+    const current_user = context.user;
     await txc.run(
       `
       MATCH (g:GraphGist {uuid: $uuid}), (gc:GraphGistCandidate {uuid: $candidateUuid}), (User {uuid: $authorUuid})-[:IS_PERSON]->(p:Person)
@@ -204,7 +204,7 @@ export const UpdateGraphGist = async (root, args, context, info) => {
 
     await txc.run(
       `
-      MATCH (gc:GraphGistCandidate {uuid: $uuid})-[r:FOR_CHALLENGE|:FOR_USE_CASE|:FOR_INDUSTRY]->()
+      MATCH (gc:GraphGistCandidate {uuid: $uuid})-[r:FOR_CHALLENGE|FOR_USE_CASE|FOR_INDUSTRY]->()
       DELETE r
       `,
       { uuid: candidate.uuid }
@@ -244,7 +244,8 @@ export const UpdateGraphGist = async (root, args, context, info) => {
       );
     }
 
-    if (images.length > 0) {
+    const uploaded_images = images.filter((i) => !!i);
+    if (uploaded_images.length > 0) {
       await txc.run(
         `
         MATCH (gc:GraphGistCandidate {uuid: $uuid})-[r:HAS_IMAGE]->()
@@ -253,7 +254,7 @@ export const UpdateGraphGist = async (root, args, context, info) => {
         { uuid: candidate.uuid }
       );
 
-      for (let image_upload of images) {
+      for (let image_upload of uploaded_images) {
         const image_uploaded = await S3.upload(image_upload);
         await txc.run(
           `
@@ -319,7 +320,7 @@ export const PublishGraphGistCandidate = async (root, args, context, info) => {
 
     await txc.run(
       `
-      MATCH (g:GraphGist {uuid: $uuid})-[r:FOR_CHALLENGE|:FOR_USE_CASE|:FOR_INDUSTRY|:HAS_IMAGE]->()
+      MATCH (g:GraphGist {uuid: $uuid})-[r:FOR_CHALLENGE|FOR_USE_CASE|FOR_INDUSTRY|HAS_IMAGE]->()
       DELETE r
       `,
       { uuid }

@@ -3,7 +3,7 @@ import { renderMathJax } from "./utils";
 export const GraphGist = {
   my_perms: async (obj, args, context, info) => {
     try {
-      const user = await context.user;
+      const user = context.user;
 
       if (user.admin) {
         return ["edit", "delete", "admin"];
@@ -26,7 +26,7 @@ export const GraphGist = {
 export const GraphGistCandidate = {
   my_perms: async (obj, args, context, info) => {
     try {
-      const user = await context.user;
+      const user = context.user;
 
       if (user.admin) {
         return ["edit", "delete", "admin"];

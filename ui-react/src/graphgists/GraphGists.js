@@ -11,6 +11,7 @@ import {
 } from "semantic-ui-react";
 import { Helmet } from "react-helmet";
 import GraphGistCard from "./GraphGistCard";
+import SearchAutoComplete from "./SearchAutoComplete";
 
 const GET_GISTS = gql`
   query gistsPaginateQuery($first: Int, $offset: Int) {
@@ -84,13 +85,7 @@ function GraphGists() {
       <Helmet title="Graph Gists" />
       <Grid.Row>
         <Grid.Column columns={9}>
-          <Input
-            id="search"
-            icon="search"
-            placeholder="Search..."
-            margin="normal"
-            type="text"
-          />
+          <SearchAutoComplete />
         </Grid.Column>
         <Grid.Column columns={3}>
           <Checkbox
