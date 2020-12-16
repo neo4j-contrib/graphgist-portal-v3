@@ -46,7 +46,7 @@ export async function getUser(driver, req) {
   const txc = session.beginTransaction();
 
   try {
-    const user = await auth0Verify(req.headers.authorization);
+    const user = await auth0Verify(req.headers.authorization?null:req.headers.authorization);
 
     if (!user) {
       return null;
