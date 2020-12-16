@@ -3,13 +3,13 @@ deploy-staging:
 	make deploy-staging-web
 
 deploy-staging-api:
-	git checkout -B heroku-api
+	git branch --force heroku-api
 	git branch -D heroku-api
 	git subtree split --prefix api -b heroku-api
 	git push heroku-api heroku-api:master --force
 
 deploy-staging-web:
-	git checkout -B heroku-web
+	git branch --force heroku-web
 	git branch -D heroku-web
 	git subtree split --prefix ui-react -b heroku-web
 	git push heroku-web heroku-web:master --force
