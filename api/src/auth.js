@@ -43,7 +43,7 @@ export function auth0Verify(token) {
 
 export async function getUser(driver, req) {
   const session = driver.session();
-  const txc = session.beginTransaction(); 
+  const txc = session.beginTransaction();
     if(req.headers.authorization && req.headers.authorization !== 'null') {
       try {
         const user = await auth0Verify(req.headers.authorization);
