@@ -21,6 +21,8 @@ import GraphGistEditByOwner from "./graphgists/GraphGistEditByOwner";
 import GraphGistCreate from "./graphgists/GraphGistCreate";
 import MyGraphGists from "./graphgists/MyGraphGists";
 import PersonGraphGists from "./people/PersonGraphGists";
+import ChallengesList from "./graphgists/challenges/ChallengesList";
+import ChallengeCreate from "./graphgists/challenges/ChallengeCreate";
 
 import Candidates from "./candidates/Candidates";
 
@@ -108,6 +110,9 @@ function App() {
             </Menu.Item>
           </>
         )}
+        <Menu.Item as={NavLink} to="/challenges">
+          Challenges
+        </Menu.Item>
         <Menu.Item as={NavLink} to="/graph_guides">
           Graph Guides
         </Menu.Item>
@@ -147,6 +152,8 @@ function App() {
           <Route exact path="/people/:slug" component={PersonGraphGists} />
           <Route exact path="/my_graphgists" component={MyGraphGists} />
           <Route exact path="/graph_guides" component={GraphGuides} />
+          <Route exact path="/challenges" component={ChallengesList} />
+          <Route exact path="/challenges/new" component={ChallengeCreate} />
           <Route exact path="/submit_graphgist" component={GraphGistCreate} />
           <Route exact path="/graph_gists/:id" component={GraphGistPage} />
           <Route
