@@ -1,6 +1,6 @@
 import React from "react";
 import ReactDOM from "react-dom";
-import { ApolloClient, ApolloProvider, InMemoryCache } from "@apollo/client";
+import { ApolloClient, ApolloLink, ApolloProvider, InMemoryCache, concat } from "@apollo/client";
 import { BrowserRouter } from "react-router-dom";
 import { Auth0Provider } from "@auth0/auth0-react";
 import { createUploadLink } from "apollo-upload-client";
@@ -12,22 +12,21 @@ import { authToken } from "./auth/state";
 const AUTH0_DOMAIN = process.env.REACT_APP_AUTH0_DOMAIN;
 const AUTH0_CLIENT_ID = process.env.REACT_APP_AUTH0_CLIENT_ID;
 
-const client = new ApolloClient({
-  request: (operation) => {
-    operation.setContext((context) => ({
-      headers: {
-        ...context.headers,
-        authorization: authToken.get(),
-      },
-    }));
-  },
-  cache: new InMemoryCache(),
-  link: createUploadLink({
-    uri: process.env.REACT_APP_GRAPHQL_URI,
+const authMiddleware = new ApolloLink((operation, forward) => {
+  operation.setContext((context) => ({
     headers: {
+      ...context.headers,
       authorization: authToken.get(),
     },
-  }),
+  }));
+  return forward(operation);
+});
+
+const client = new ApolloClient({
+  cache: new InMemoryCache(),
+  link: concat(authMiddleware, createUploadLink({
+    uri: process.env.REACT_APP_GRAPHQL_URI,
+  })),
 });
 
 const Main = () => (

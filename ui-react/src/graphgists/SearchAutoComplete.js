@@ -71,7 +71,6 @@ function GraphGists() {
           history.push(data.result.url);
         }}
       />
-      {console.log(data)}
     </div>
   );
 }

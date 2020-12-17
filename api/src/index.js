@@ -33,7 +33,10 @@ export const driver = neo4j.driver(
   neo4j.auth.basic(
     process.env.NEO4J_USER || "neo4j",
     process.env.NEO4J_PASSWORD || "neo4j"
-  )
+  ),
+  {
+    maxConnectionPoolSize: 500,
+  }
 );
 
 const app = express();
@@ -133,6 +136,9 @@ app.listen({ port, path }, () => {
 });
 
 async function getGraph(slug, txc) {
-  const graphGist = await getGraphGistBySlug(txc, slug);
+  let graphGist = await getGraphGistBySlug(txc, slug);
+  if (!graphGist) {
+    graphGist = await getGraphGistByUUID(txc, slug);
+  }
   return graphGist;
 }

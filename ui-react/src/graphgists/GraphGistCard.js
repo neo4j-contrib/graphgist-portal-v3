@@ -24,14 +24,14 @@ function GraphGistCard(props) {
   const classes = useStyles();
   const history = useHistory();
   const { graphGist } = props;
-  const graphGistUrl = `/graph_gists/${graphGist.slug}`;
+  const graphGistUrl = `/graph_gists/${graphGist.slug || graphGist.uuid}`;
 
   function onCardClick() {
     history.push(graphGistUrl);
   }
 
   return (
-    <Card key={graphGist.id} link onClick={onCardClick} as="div">
+    <Card key={graphGist.uuid} link onClick={onCardClick} as="div">
       <Card.Content>
         <Card.Header>
           <Link to={graphGistUrl}>{graphGist.title}</Link>

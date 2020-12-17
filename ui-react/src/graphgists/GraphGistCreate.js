@@ -5,8 +5,8 @@ import gql from "graphql-tag";
 import {
   Form,
   Button,
-  Image,
-  Card,
+  // Image,
+  // Card,
   Loader,
   Dimmer,
   Segment,
@@ -14,7 +14,8 @@ import {
 } from "semantic-ui-react";
 import _ from "lodash";
 import { Helmet } from "react-helmet";
-import { Formik, FieldArray } from "formik";
+import { Formik } from "formik";
+// import { FieldArray } from "formik";
 import { createUseStyles } from "react-jss";
 import CodeMirrorTextArea from "./render/TextArea";
 import IndustriesSelect from "./components/IndustriesSelect";
@@ -175,7 +176,7 @@ function GraphGistCreate() {
 
           return (
             <Form className={classes.form} onSubmit={handleSubmit}>
-              <div className={classes.imagesContainer}>
+              {/*<div className={classes.imagesContainer}>
                 <FieldArray
                   name="images"
                   render={(arrayHelpers) => {
@@ -244,7 +245,7 @@ function GraphGistCreate() {
                     );
                   }}
                 />
-              </div>
+              </div>*/}
 
               <Form.Field required>
                 <label>Title (Required)</label>

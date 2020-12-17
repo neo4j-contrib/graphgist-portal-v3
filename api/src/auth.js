@@ -42,9 +42,9 @@ export function auth0Verify(token) {
 }
 
 export async function getUser(driver, req) {
-  const session = driver.session();
-  const txc = session.beginTransaction();
-    if(req.headers.authorization && req.headers.authorization !== 'null') {
+  if (req.headers.authorization && req.headers.authorization !== 'null') {
+    const session = driver.session();
+    return await session.readTransaction(async txc => {
       try {
         const user = await auth0Verify(req.headers.authorization);
         if (!user) {
@@ -54,25 +54,43 @@ export async function getUser(driver, req) {
         const [provider, uid] = user.sub.split("|");
 
         const result = await txc.run(
-            `MATCH (u:User) WHERE (u.provider = $provider AND u.uid = $uid) OR u.uid = '${provider}|${uid}' OR u.email = $email RETURN u`,
-            {
-              provider,
-              uid,
-              email: user.email,
-            }
+          `MATCH (u:User) WHERE (u.provider = $provider AND u.uid = $uid) OR u.uid = '${provider}|${uid}' OR u.email = $email RETURN u`,
+          {
+            provider,
+            uid,
+            email: user.email,
+          }
         );
 
         if (result.records.length >= 1) {
-          await txc.commit();
           return result.records[0].get("u").properties;
         }
       } catch (error) {
         console.error(error);
-        await txc.rollback();
         throw error;
-      } finally {
-        await session.close();
       }
+    });
+  }
+}
+
+export async function getUserProfile(driver, user) {
+  const session = driver.session();
+  return await session.readTransaction(async txc => {
+    try {
+      const result = await txc.run(
+        `MATCH (u:User {uuid: $uuid})-[:IS_PERSON]->(p:Person) RETURN p`,
+        {
+          uuid: user.uuid,
+        }
+      );
+
+      if (result.records.length >= 1) {
+        await txc.commit();
+        return result.records[0].get("p").properties;
+      }
+    } catch (error) {
+      console.error(error);
+      throw error;
     }
-  return null;
+  })
 }
