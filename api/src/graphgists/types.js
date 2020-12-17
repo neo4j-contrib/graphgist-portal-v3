@@ -1,4 +1,5 @@
 import { renderMathJax } from "./utils";
+import { getUserProfile } from "../auth.js";
 
 export const GraphGist = {
   my_perms: async (obj, args, context, info) => {
@@ -9,7 +10,8 @@ export const GraphGist = {
         return ["edit", "delete", "admin"];
       }
 
-      if (user.uuid === obj.author.uuid) {
+      const profile = await getUserProfile(context.driver, user);
+      if (profile.uuid === obj.author.uuid) {
         return ["edit"];
       }
     } catch (error) {
@@ -32,7 +34,8 @@ export const GraphGistCandidate = {
         return ["edit", "delete", "admin"];
       }
 
-      if (user.uuid === obj.author.uuid) {
+      const profile = await getUserProfile(context.driver, user);
+      if (profile.uuid === obj.author.uuid) {
         return ["edit"];
       }
     } catch (error) {
