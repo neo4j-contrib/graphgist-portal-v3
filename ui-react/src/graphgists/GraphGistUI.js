@@ -207,6 +207,8 @@ function AssetExtraButtons({ graphGist, candidate, slug, refetch }) {
     setOpenDialog(true);
   };
 
+  const playUrl = encodeURI(`https://guides.neo4j.com/graph-examples/${graphGist.slug}/graph_guide`);
+
   return (
     <React.Fragment>
       {graphGist.my_perms.indexOf("admin") >= 0 && (
@@ -239,31 +241,17 @@ function AssetExtraButtons({ graphGist, candidate, slug, refetch }) {
         </React.Fragment>
       )}
 
-      <Modal
-        onClose={handleClose}
-        onOpen={handleOpenDialog}
-        open={openDialog}
-        trigger={<a href="#">Run this gist in the Neo4j console</a>}
+      {!candidate && <Button
+        icon
+        labelPosition="left"
+        color="teal"
+        as="a"
+        href={`neo4j://graphapps/neo4j-browser?cmd=play&arg=${playUrl}`}
       >
-        <Modal.Header>
-          Play this GraphGist in your Neo4j web Console
-        </Modal.Header>
-        <Modal.Content>
-          <Modal.Description>
-            <p>Run this line in your Neo4j web Console</p>
-            <pre>
-              :play {localUrl}/graph_gists/{slug}/graph_guide
-            </pre>
-            <p>You will likely need to configure your whitelist in Neo4j:</p>
-            <Header>Neo4j 3.0</Header>
-            <pre>browser.remote_content_hostname_whitelist={localUrl}</pre>
-            <Header>Before Neo4j 3.0</Header>
-            <pre>
-              dbms.browser.remote_content_hostname_whitelist="{localUrl}"
-            </pre>
-          </Modal.Description>
-        </Modal.Content>
-      </Modal>
+        <Icon name="play" />
+        Play as Browser Guide
+      </Button>}
+
       {(!candidate && graphGist.my_perms.indexOf("admin") >= 0) && (
         <React.Fragment>
           <Divider />
