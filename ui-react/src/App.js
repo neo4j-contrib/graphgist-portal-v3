@@ -110,9 +110,9 @@ function App() {
             </Menu.Item>
           </>
         )}
-        <Menu.Item as={NavLink} to="/challenges">
+        {/*<Menu.Item as={NavLink} to="/challenges">
           Challenges
-        </Menu.Item>
+        </Menu.Item>*/}
         <Menu.Item as={NavLink} to="/graph_guides">
           Graph Guides
         </Menu.Item>
