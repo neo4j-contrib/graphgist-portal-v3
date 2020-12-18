@@ -60,45 +60,45 @@ function Home() {
       <h3>Pop Culture</h3>
       <ul>
         <li>
-          <a href="http://portal.graphgist.org/graph_gists/855363c7-cdeb-4c8b-b4a5-b72c8f2388e3">
+          <Link to="/graph_gists/855363c7-cdeb-4c8b-b4a5-b72c8f2388e3">
             Exploring the Star Wars Social Networks
-          </a>
+          </Link>
         </li>
       </ul>
 
       <h3>Open/Government Data and Politics</h3>
       <ul>
         <li>
-          <a href="http://portal.graphgist.org/graph_gists/c4eab62c-7f5e-4e17-8f75-811d65d83127">
+          <Link to="/graph_gists/c4eab62c-7f5e-4e17-8f75-811d65d83127">
             Drug Repurposing by hetnet relationship prediction: a new hope
-          </a>
+          </Link>
         </li>
       </ul>
 
       <h3>Investigative Journalism</h3>
       <ul>
         <li>
-          <a href="http://portal.graphgist.org/graph_gists/d9ec56c6-0a76-49ab-8f43-0504d92225f7">
+          <Link to="/graph_gists/d9ec56c6-0a76-49ab-8f43-0504d92225f7">
             Our Inspiration
-          </a>
+          </Link>
         </li>
       </ul>
 
       <h3>Sports and Recreation</h3>
       <ul>
         <li>
-          <a href="http://portal.graphgist.org/graph_gists/14bdffc9-8ba4-464e-86f8-577f484428e6">
+          <Link to="/graph_gists/14bdffc9-8ba4-464e-86f8-577f484428e6">
             Running Competition
-          </a>
+          </Link>
         </li>
       </ul>
 
       <h3>Public Web APIs</h3>
       <ul>
         <li>
-          <a href="http://portal.graphgist.org/graph_gists/09bb2bbc-fb73-47a8-9778-3e5f22dcd27c">
+          <Link to="/graph_gists/09bb2bbc-fb73-47a8-9778-3e5f22dcd27c">
             Wikipedia Game
-          </a>
+          </Link>
         </li>
       </ul>
 
