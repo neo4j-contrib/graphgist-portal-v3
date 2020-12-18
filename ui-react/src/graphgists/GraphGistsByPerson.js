@@ -49,8 +49,12 @@ const rowsPerPage = 30;
 
 function GraphGistsByPerson({ personUUID, userUUID, myGraphGists }) {
   const [hasMore, setHasMore] = React.useState(false);
-  
-  const query = myGraphGists ? GET_MY_GISTS : userUUID ? GET_GISTS_BY_USER : GET_GISTS_BY_PERSON;
+
+  const query = myGraphGists
+    ? GET_MY_GISTS
+    : userUUID
+    ? GET_GISTS_BY_USER
+    : GET_GISTS_BY_PERSON;
 
   const [
     loadMyGraphGists,

@@ -77,7 +77,7 @@ function GraphGistCreate() {
   });
 
   const showApiError = (data) => {
-    history.push('/submit_graphgist', {
+    history.push("/submit_graphgist", {
       messages: data.graphQLErrors.map((error) => ({
         body: error.message,
         type: "negative",

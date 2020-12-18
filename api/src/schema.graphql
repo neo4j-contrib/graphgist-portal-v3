@@ -17,6 +17,14 @@ type Query {
       RETURN asset
       """
     )
+    challengeSearch(searchString: String): [Challenge]
+    @cypher(
+      statement: """
+      MATCH (asset:Challenge)
+      WHERE toLower(asset.name) CONTAINS toLower($searchString)
+      RETURN asset
+      """
+    )
   graphGistsByCategory(slug: String): [GraphGist]
     @cypher(
       statement: """
@@ -65,6 +73,7 @@ type Mutation {
   PublishGraphGistCandidate(uuid: ID!): GraphGist
   FlagGraphGistAsGuide(uuid: ID!, is_guide: Boolean!): GraphGist
   DisableGraphGist(uuid: ID!): GraphGist
+  CreateChallenge(challenge: ChallengeInput!): Challenge
 }
 
 type User {
@@ -365,4 +374,13 @@ input UserInput {
   twitter_username: String
   tshirt_size: String
   tshirt_size_other: String
+}
+
+input ChallengeInput {
+    images: [Upload]
+    name: String!
+    slug: String
+    summary: String
+    start_date: DateTime
+    end_date: DateTime
 }

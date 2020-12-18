@@ -6,12 +6,12 @@ export const GraphGist = {
     try {
       const user = context.user;
 
-      if (user.admin) {
+      if (user && user.admin) {
         return ["edit", "delete", "admin"];
       }
 
       const profile = await getUserProfile(context.driver, user);
-      if (profile.uuid === obj.author.uuid) {
+      if (profile && profile.uuid === obj.author.uuid) {
         return ["edit"];
       }
     } catch (error) {
@@ -30,12 +30,12 @@ export const GraphGistCandidate = {
     try {
       const user = context.user;
 
-      if (user.admin) {
+      if (user && user.admin) {
         return ["edit", "delete", "admin"];
       }
 
       const profile = await getUserProfile(context.driver, user);
-      if (profile.uuid === obj.author.uuid) {
+      if (profile && profile.uuid === obj.author.uuid) {
         return ["edit"];
       }
     } catch (error) {
