@@ -10,6 +10,9 @@ import dotenv from "dotenv";
 
 dotenv.config();
 
+import * as Sentry from "@sentry/node";
+import * as Tracing from "@sentry/tracing";
+
 import { getUser } from "./auth";
 import { typeDefs } from "./graphql-schema";
 
@@ -22,6 +25,14 @@ import * as graphgistsTypes from "./graphgists/types";
 
 import * as imagesTypes from "./images/types";
 import { getGraphGistBySlug, getGraphGistByUUID } from "./graphgists/utils";
+
+Sentry.init({
+  dsn: process.env.SENTRY_DSN,
+  tracesSampleRate: 1.0,
+  integrations: [
+    new Sentry.Integrations.Http({ tracing: true }),
+  ],
+});
 
 /*
  * Create a Neo4j driver instance to connect to the database

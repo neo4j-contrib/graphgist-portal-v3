@@ -8,7 +8,7 @@ type Query {
       WHERE toLower(asset.title) CONTAINS toLower($searchString)
       RETURN asset
       UNION
-      MATCH (asset:GraphGist {status:'live'})-[:FOR_INDUSTRY|:FOR_USE_CASE]->(category)
+      MATCH (asset:GraphGist {status:'live'})-[:FOR_INDUSTRY|:FOR_USE_CASE|:FOR_CHALLENGE]->(category)
       WHERE toLower(category.name) CONTAINS toLower($searchString)
       RETURN asset
       UNION
@@ -28,7 +28,7 @@ type Query {
   graphGistsByCategory(slug: String): [GraphGist]
     @cypher(
       statement: """
-      MATCH (asset:GraphGist {status:'live'})-[:FOR_INDUSTRY|:FOR_USE_CASE]->(category)
+      MATCH (asset:GraphGist {status:'live'})-[:FOR_INDUSTRY|:FOR_USE_CASE|:FOR_CHALLENGE]->(category)
       WHERE category.slug = $slug
       RETURN asset
       """
@@ -52,6 +52,14 @@ type Query {
       statement: """
       MATCH (asset:GraphGist)<-[:WROTE]-(p:Person)<-[:IS_PERSON]-(u:User {uuid: $cypherParams.currentUser})
       RETURN asset
+      """
+    )
+  getCategory(slug: String!): Asset
+    @cypher(
+      statement: """
+      MATCH (c {slug: $slug})
+      WHERE c:UseCase OR c:Industry OR c:Challenge
+      RETURN c
       """
     )
   getGraphGistCandidate(uuid: ID!): GraphGistCandidate
@@ -142,7 +150,7 @@ type Industry implements Asset {
   summary: String
 
   graphgist: GraphGist @relation(name: "FOR_INDUSTRY", direction: "IN")
-  num_graphgists: Int
+  num_graphgists: Int @cypher(statement: "RETURN this")
 }
 
 type UseCase implements Asset {
@@ -153,7 +161,7 @@ type UseCase implements Asset {
   summary: String
 
   graphgist: GraphGist @relation(name: "FOR_USE_CASE", direction: "IN")
-  num_graphgists: Int
+  num_graphgists: Int @cypher(statement: "RETURN this")
 }
 
 type Challenge implements Asset {
@@ -166,7 +174,7 @@ type Challenge implements Asset {
   start_date: DateTime
   end_date: DateTime
   graphgist: GraphGist @relation(name: "FOR_CHALLENGE", direction: "IN")
-  num_graphgists: Int
+  num_graphgists: Int @cypher(statement: "RETURN this")
 }
 
 enum GraphGistStatus {
