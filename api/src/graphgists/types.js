@@ -6,13 +6,15 @@ export const GraphGist = {
     try {
       const user = context.user;
 
-      if (user && user.admin) {
-        return ["edit", "delete", "admin"];
-      }
+      if (user) {
+        if (user.admin) {
+          return ["edit", "delete", "admin"];
+        }
 
-      const profile = await getUserProfile(context.driver, user);
-      if (profile && profile.uuid === obj.author.uuid) {
-        return ["edit"];
+        const profile = await getUserProfile(context.driver, user);
+        if (profile && profile.uuid === obj.author.uuid) {
+          return ["edit"];
+        }
       }
     } catch (error) {
       console.error(error);
@@ -30,13 +32,15 @@ export const GraphGistCandidate = {
     try {
       const user = context.user;
 
-      if (user && user.admin) {
-        return ["edit", "delete", "admin"];
-      }
+      if (user) {
+        if (user.admin) {
+          return ["edit", "delete", "admin"];
+        }
 
-      const profile = await getUserProfile(context.driver, user);
-      if (profile && profile.uuid === obj.author.uuid) {
-        return ["edit"];
+        const profile = await getUserProfile(context.driver, user);
+        if (profile && profile.uuid === obj.author.uuid) {
+          return ["edit"];
+        }
       }
     } catch (error) {
       console.error(error);
@@ -48,3 +52,21 @@ export const GraphGistCandidate = {
     return renderMathJax(obj.raw_html);
   },
 };
+
+const Category = {
+  num_graphgists: async (obj, args, context, info) => {
+    const session = context.driver.session();
+    return await session.readTransaction(async txc => {
+      const result = await txc.run(`
+        MATCH (c {uuid: $uuid})<-[:FOR_INDUSTRY|:FOR_USE_CASE|:FOR_CHALLENGE]-(g:GraphGist {status: 'live'})
+        RETURN count(g) AS num_graphgists
+      `, {uuid: obj.num_graphgists.properties.uuid});
+      return result.records[0].get('num_graphgists').low;
+    });
+
+  }
+};
+
+export const UseCase = Category;
+export const Challenge = Category;
+export const Industry = Category;

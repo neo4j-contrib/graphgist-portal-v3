@@ -32,9 +32,9 @@ export function auth0Verify(token) {
       resolve(null);
     } else {
       jwt.verify(token, getKey, options, (err, decoded) => {
-        if (err) {
-          return reject(err);
-        }
+        // if (err) {
+        //   return reject(err);
+        // }
         resolve(decoded);
       });
     }
