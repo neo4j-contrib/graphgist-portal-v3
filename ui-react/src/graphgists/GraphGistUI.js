@@ -21,6 +21,7 @@ import GraphGistRenderer from "./render/GraphGistRenderer.js";
 import PageLoading from "../components/PageLoading.js";
 
 import "./GraphGistPage.scss";
+import { FacebookShareButton, TwitterShareButton } from "react-share";
 
 const PUBLISH_GRAPHGIST = gql`
   mutation publishGraphGistCandidateMutation($uuid: ID!) {
@@ -207,7 +208,9 @@ function AssetExtraButtons({ graphGist, candidate, slug, refetch }) {
     setOpenDialog(true);
   };
 
-  const playUrl = encodeURI(`https://guides.neo4j.com/graph-examples/${graphGist.slug}/graph_guide`);
+  const playUrl = encodeURI(
+    `https://guides.neo4j.com/graph-examples/${graphGist.slug}/graph_guide`
+  );
 
   return (
     <React.Fragment>
@@ -241,18 +244,20 @@ function AssetExtraButtons({ graphGist, candidate, slug, refetch }) {
         </React.Fragment>
       )}
 
-      {!candidate && <Button
-        icon
-        labelPosition="left"
-        color="teal"
-        as="a"
-        href={`neo4j://graphapps/neo4j-browser?cmd=play&arg=${playUrl}`}
-      >
-        <Icon name="play" />
-        Play as Browser Guide
-      </Button>}
+      {!candidate && (
+        <Button
+          icon
+          labelPosition="left"
+          color="teal"
+          as="a"
+          href={`neo4j://graphapps/neo4j-browser?cmd=play&arg=${playUrl}`}
+        >
+          <Icon name="play" />
+          Play as Browser Guide
+        </Button>
+      )}
 
-      {(!candidate && graphGist.my_perms.indexOf("admin") >= 0) && (
+      {!candidate && graphGist.my_perms.indexOf("admin") >= 0 && (
         <React.Fragment>
           <Divider />
           <Button
@@ -383,6 +388,31 @@ function AssetExtraButtons({ graphGist, candidate, slug, refetch }) {
             <Item.Description>
               {moment.unix(graphGist.created_at.formatted).format()}
             </Item.Description>
+          </Item.Content>
+        </Item>
+        <Item>
+          <Item.Content>
+            <Divider horizontal>Share</Divider>
+            <TwitterShareButton
+              url={window.location.href}
+              title={"Check out this graph gist! " + graphGist.title}
+              style={{ width: "100%", height: 40 }}
+            >
+              <Button primary style={{ width: "100%", height: "100%" }}>
+                Twitter
+              </Button>
+            </TwitterShareButton>
+
+            <FacebookShareButton
+              url={window.location.href}
+              hashtag="graphgist"
+              quote={"Check out this graph gist! " + graphGist.title}
+              style={{ width: "100%", height: 40, marginTop: 10 }}
+            >
+              <Button secondary style={{ width: "100%", height: "100%" }}>
+                Facebook
+              </Button>
+            </FacebookShareButton>
           </Item.Content>
         </Item>
       </Item.Group>
