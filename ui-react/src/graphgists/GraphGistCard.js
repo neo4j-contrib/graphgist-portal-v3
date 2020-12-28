@@ -1,7 +1,7 @@
 import React from "react";
 import gql from "graphql-tag";
 import { useHistory } from "react-router";
-import { Card, Image, Icon, List } from "semantic-ui-react";
+import { Card, Image, Icon, List, Button } from "semantic-ui-react";
 import { Link } from "react-router-dom";
 import { createUseStyles } from "react-jss";
 
@@ -11,6 +11,9 @@ const useStyles = createUseStyles({
   categoryIcon: {
     width: "1.7em",
     height: "1.7em",
+  },
+  cardFooter: {
+    flexGrow: "0 !important",
   },
 });
 
@@ -25,6 +28,9 @@ function GraphGistCard(props) {
   const history = useHistory();
   const { graphGist } = props;
   const graphGistUrl = `/graph_gists/${graphGist.slug || graphGist.uuid}`;
+  const playUrl = encodeURI(
+    `https://guides.neo4j.com/graph-examples/${graphGist.slug}/graph_guide`
+  );
 
   function onCardClick() {
     history.push(graphGistUrl);
@@ -96,6 +102,15 @@ function GraphGistCard(props) {
             )}
           </List>
         </Card.Description>
+      </Card.Content>
+      <Card.Content className={classes.cardFooter}>
+        <Button
+          as="a"
+          color="primary"
+          href={`neo4j://graphapps/neo4j-browser?cmd=play&arg=${playUrl}`}
+        >
+          Play as Browser Guide
+        </Button>
       </Card.Content>
     </Card>
   );
