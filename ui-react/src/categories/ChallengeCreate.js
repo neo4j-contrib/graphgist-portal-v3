@@ -1,9 +1,8 @@
 import React from "react";
-import { useQuery, useMutation } from "@apollo/client";
-import { Link, useHistory } from "react-router-dom";
+import { useMutation } from "@apollo/client";
+import { useHistory } from "react-router-dom";
 import gql from "graphql-tag";
 import { Form, Button, Image, Card } from "semantic-ui-react";
-import { DateTimeInput } from "semantic-ui-calendar-react";
 import moment from "moment";
 import { Helmet } from "react-helmet";
 import { Formik, FieldArray } from "formik";
@@ -105,9 +104,9 @@ function ChallengeCreate() {
         }}
       >
         {({ values, handleChange, handleSubmit }) => {
-          const handleChangeSelect = (e, { value, name }) => {
-            handleChange({ target: { name, value } });
-          };
+          // const handleChangeSelect = (e, { value, name }) => {
+          //   handleChange({ target: { name, value } });
+          // };
 
           return (
             <Form className={classes.form} onSubmit={handleSubmit}>

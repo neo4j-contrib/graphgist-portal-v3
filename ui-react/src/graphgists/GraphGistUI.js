@@ -8,7 +8,6 @@ import {
   Header,
   Divider,
   Label,
-  Modal,
 } from "semantic-ui-react";
 import moment from "moment";
 import { Helmet } from "react-helmet";
@@ -155,9 +154,7 @@ function GraphGistPage({ graphGist, loading, error, candidate, refetch }) {
 
 function AssetExtraButtons({ graphGist, candidate, slug, refetch }) {
   const history = useHistory();
-  const [openDialog, setOpenDialog] = React.useState(false);
   const classes = useStyles();
-  const localUrl = window.location.protocol + "//" + window.location.host;
   const uuid = candidate ? _.get(graphGist, "graphgist.uuid") : graphGist.uuid;
 
   const [
@@ -198,14 +195,6 @@ function AssetExtraButtons({ graphGist, candidate, slug, refetch }) {
 
   const handleDisable = () => {
     disableGraphGistMutation({ variables: { uuid } });
-  };
-
-  const handleClose = () => {
-    setOpenDialog(false);
-  };
-
-  const handleOpenDialog = () => {
-    setOpenDialog(true);
   };
 
   const playUrl = encodeURI(

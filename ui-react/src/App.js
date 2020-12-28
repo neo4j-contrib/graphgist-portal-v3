@@ -2,7 +2,7 @@ import React, { useEffect } from "react";
 import gql from "graphql-tag";
 import { useQuery } from "@apollo/client";
 import { Switch, Route, NavLink, Link, useLocation } from "react-router-dom";
-import { Menu, Container, Message } from "semantic-ui-react";
+import { Menu, Container, Message, Dropdown, Label } from "semantic-ui-react";
 import { createUseStyles } from "react-jss";
 import { useAuth0 } from "@auth0/auth0-react";
 import { useState as hookUseState } from "@hookstate/core";
@@ -21,8 +21,10 @@ import GraphGistEditByOwner from "./graphgists/GraphGistEditByOwner";
 import GraphGistCreate from "./graphgists/GraphGistCreate";
 import MyGraphGists from "./graphgists/MyGraphGists";
 import PersonGraphGists from "./people/PersonGraphGists";
-import ChallengesList from "./graphgists/challenges/ChallengesList";
-import ChallengeCreate from "./graphgists/challenges/ChallengeCreate";
+
+import CategoryPage from "./categories/CategoryPage";
+import ChallengesList from "./categories/ChallengesList";
+import ChallengeCreate from "./categories/ChallengeCreate";
 
 import Candidates from "./candidates/Candidates";
 
@@ -34,18 +36,49 @@ import { authToken } from "./auth/state";
 
 import "semantic-ui-css/semantic.min.css";
 
+
+export function getImage(field) {
+  return field.length > 0
+		? field[0].source_url
+		: null
+}
+
 const useStyles = createUseStyles({
   container: {
     marginTop: 60,
   },
 });
 
-const GET_ME = gql`
+const GET_TOOLBAR = gql`
   query meQuery($isAuthed: Boolean!) {
     me @include(if: $isAuthed) {
       uuid
       name
       image
+    }
+    useCases: UseCase {
+      slug
+      name
+      num_graphgists
+      image(first: 1) {
+        source_url
+      }
+    }
+    industries: Industry {
+      slug
+      name
+      num_graphgists
+      image(first: 1) {
+        source_url
+      }
+    }
+    challenges: Challenge {
+      slug
+      name
+      num_graphgists
+      image(first: 1) {
+        source_url
+      }
     }
   }
 `;
@@ -55,12 +88,15 @@ function App() {
   const classes = useStyles();
   const { loginWithRedirect, logout, getIdTokenClaims } = useAuth0();
   const authTokenState = hookUseState(authToken);
-  const { data, refetch } = useQuery(GET_ME, {
+  const { data, refetch } = useQuery(GET_TOOLBAR, {
     variables: {
       isAuthed: false,
     },
   });
   const me = _.get(data, "me");
+  const useCases = _.get(data, "useCases", []);
+  const industries = _.get(data, "industries", []);
+  const challenges = _.get(data, "challenges", []);
 
   useEffect(() => {
     (async () => {
@@ -110,9 +146,48 @@ function App() {
             </Menu.Item>
           </>
         )}
-        {/*<Menu.Item as={NavLink} to="/challenges">
-          Challenges
-        </Menu.Item>*/}
+        <Dropdown item text='Use Cases'>
+					<Dropdown.Menu className="categoriesList">
+						{useCases.map((category) => {
+							const category_image = getImage(category.image);
+							return <Dropdown.Item key={category.slug} as={NavLink} to={`/use_cases/${category.slug}`}>
+								{category_image && <img
+									src={category_image}
+									width="30"
+									alt={category.name}
+								/>} {category.name} <Label>{category.num_graphgists}</Label>
+							</Dropdown.Item>;
+						})}
+					</Dropdown.Menu>
+				</Dropdown>
+				<Dropdown item text='Industries'>
+					<Dropdown.Menu className="categoriesList">
+						{industries.map((category) => {
+							const category_image = getImage(category.image);
+							return <Dropdown.Item key={category.slug} as={NavLink} to={`/industries/${category.slug}`}>
+								{category_image && <img
+									src={category_image}
+									width="30"
+									alt={category.name}
+								/>} {category.name} <Label>{category.num_graphgists}</Label>
+							</Dropdown.Item>;
+						})}
+					</Dropdown.Menu>
+				</Dropdown>
+				<Dropdown item text='Challenges'>
+					<Dropdown.Menu className="categoriesList">
+						{challenges.map((category) => {
+							const category_image = getImage(category.image);
+							return <Dropdown.Item key={category.slug} as={NavLink} to={`/challenges/${category.slug}`}>
+								{category_image && <img
+									src={category_image}
+									width="30"
+									alt={category.name}
+								/>} {category.name} <Label>{category.num_graphgists}</Label>
+							</Dropdown.Item>;
+						})}
+					</Dropdown.Menu>
+				</Dropdown>
         <Menu.Item as={NavLink} to="/graph_guides">
           Graph Guides
         </Menu.Item>
@@ -156,6 +231,7 @@ function App() {
           <Route exact path="/challenges/new" component={ChallengeCreate} />
           <Route exact path="/submit_graphgist" component={GraphGistCreate} />
           <Route exact path="/graph_gists/:id" component={GraphGistPage} />
+          <Route exact path="/(challenges|industries|use_cases)/:categorySlug" component={CategoryPage} />
           <Route
             exact
             path="/graph_gists/:id/source"
