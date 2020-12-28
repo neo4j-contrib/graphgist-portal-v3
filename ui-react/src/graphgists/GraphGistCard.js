@@ -37,7 +37,7 @@ function GraphGistCard(props) {
   }
 
   return (
-    <Card key={graphGist.uuid} link onClick={onCardClick} as="div">
+    <Card key={graphGist.uuid} onClick={onCardClick} as="div" fluid link>
       <Card.Content>
         <Card.Header>
           <Link to={graphGistUrl}>{graphGist.title}</Link>
