@@ -22,7 +22,7 @@ function GraphGists() {
   const history = useHistory();
   const [searchString, setSearchString] = React.useState("");
   const [results, setResults] = React.useState([]);
-  const [fetch, { loading, data, error }] = useLazyQuery(SEARCH_GISTS, {
+  const [fetch, { loading }] = useLazyQuery(SEARCH_GISTS, {
     fetchPolicy: "cache-and-network",
     onCompleted: (data) => {
       if (data && data.graphGistSearch) {

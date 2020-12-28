@@ -51,6 +51,10 @@ export const driver = neo4j.driver(
 );
 
 const app = express();
+
+// The request handler must be the first middleware on the app
+app.use(Sentry.Handlers.requestHandler());
+
 app.use(express.json({ limit: "50mb" }));
 app.use(express.urlencoded({ limit: "50mb", extended: true }));
 app.use(cors());
@@ -142,6 +146,10 @@ app.get("/graph_gists/:slug/graph_guide", function (req, res) {
     res.render("404");
   });
 });
+
+// The error handler must be before any other error middleware and after all controllers
+app.use(Sentry.Handlers.errorHandler());
+
 app.listen({ port, path }, () => {
   console.log(`GraphQL server ready at http://localhost:${port}${path}`);
 });

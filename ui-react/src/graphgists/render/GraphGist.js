@@ -70,7 +70,7 @@ const GraphGist = function (options, graphgist_cached_queries) {
     find_all_next_globally,
     find_between,
     find_next_globally,
-    formUrl,
+    // formUrl,
     gist,
     handleSelection,
     initAndGetHeading,
@@ -181,20 +181,20 @@ const GraphGist = function (options, graphgist_cached_queries) {
     }
     return DotWrapper($).scan();
   };
-  formUrl = function (url, title, author, twitter) {
-    return (
-      "https://docs.google.com/forms/d/1blgZoRZ6vLbpnqdJx3b5c4BkO_mgmD-hgdRQTMm7kc4/viewform?entry.718349727=" +
-      encodeURIComponent(url) +
-      "&entry.1981612324=" +
-      encodeURIComponent(
-        title.length > 18 ? title.substr(0, title.length - 18) : title
-      ) +
-      "&entry.1328778537=" +
-      encodeURIComponent(author) +
-      "&entry.507462214=" +
-      encodeURIComponent(twitter)
-    );
-  };
+  // formUrl = function (url, title, author, twitter) {
+  //   return (
+  //     "https://docs.google.com/forms/d/1blgZoRZ6vLbpnqdJx3b5c4BkO_mgmD-hgdRQTMm7kc4/viewform?entry.718349727=" +
+  //     encodeURIComponent(url) +
+  //     "&entry.1981612324=" +
+  //     encodeURIComponent(
+  //       title.length > 18 ? title.substr(0, title.length - 18) : title
+  //     ) +
+  //     "&entry.1328778537=" +
+  //     encodeURIComponent(author) +
+  //     "&entry.507462214=" +
+  //     encodeURIComponent(twitter)
+  //   );
+  // };
   initAndGetHeading = function () {
     var heading, headingText;
     headingText = "Neo4j GraphGist";
@@ -208,10 +208,10 @@ const GraphGist = function (options, graphgist_cached_queries) {
     return headingText;
   };
   postProcessPage = function () {
-    var $footer,
-      $meta,
+    // var $footer,
+    var  $meta,
       author,
-      authorHtml,
+      // authorHtml,
       number,
       regex,
       tags,
@@ -248,22 +248,22 @@ const GraphGist = function (options, graphgist_cached_queries) {
     if (twitter && !author) {
       author = twitter;
     }
-    if (author) {
-      authorHtml =
-        "<i class=" +
-        (twitter ? '"icon-twitter-sign"' : '"icon-user"') +
-        "></i> Author ";
-      if (twitter) {
-        authorHtml +=
-          '<a target="_blank" href="http://twitter.com/' + twitter + '">';
-      }
-      authorHtml += author;
-      if (twitter) {
-        authorHtml += "</a>";
-      }
-      authorHtml += " ";
-      // $footer.prepend(authorHtml);
-    }
+    // if (author) {
+    //   authorHtml =
+    //     "<i class=" +
+    //     (twitter ? '"icon-twitter-sign"' : '"icon-user"') +
+    //     "></i> Author ";
+    //   if (twitter) {
+    //     authorHtml +=
+    //       '<a target="_blank" href="http://twitter.com/' + twitter + '">';
+    //   }
+    //   authorHtml += author;
+    //   if (twitter) {
+    //     authorHtml += "</a>";
+    //   }
+    //   authorHtml += " ";
+    //   // $footer.prepend(authorHtml);
+    // }
     // $footer.prepend(
     //   '<i class="icon-check"></i><a target="_blank" title="Submit an original GraphGist and get a Neo4j t-shirt" href="' +
     //     formUrl(window.location.href, document.title, author, twitter) +

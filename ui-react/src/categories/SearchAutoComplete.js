@@ -22,7 +22,7 @@ function SearchAutoComplete() {
   const history = useHistory();
   const [searchString, setSearchString] = React.useState("");
   const [results, setResults] = React.useState([]);
-  const [fetch, { loading, data, error }] = useLazyQuery(SEARCH_CHALLENGE, {
+  const [fetch, { loading }] = useLazyQuery(SEARCH_CHALLENGE, {
     fetchPolicy: "cache-and-network",
     onCompleted: (data) => {
       if (data && data.challengeSearch) {
