@@ -1,13 +1,26 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import { createUseStyles } from "react-jss";
+import { Grid, Header } from "semantic-ui-react";
+import gql from "graphql-tag";
 import Pre from "./components/Pre";
+import GraphGistList from "./graphgists/GraphGistList";
+import GraphGistCard from "./graphgists/GraphGistCard";
 
 const useStyles = createUseStyles({
-  root: {
-    fontSize: "1.4rem",
-  },
+  // root: {
+  //   fontSize: "1.4rem",
+  // },
 });
+
+const list_graphql = gql`
+  query GraphGists($uuid: ID!) {
+    items: GraphGist(uuid: $uuid) {
+      ...GraphGistCard
+    }
+  }
+  ${GraphGistCard.fragments.graphGist}
+`;
 
 function Home() {
   const classes = useStyles();
@@ -57,50 +70,53 @@ function Home() {
 
       <h2>Example GraphGists</h2>
 
-      <h3>Pop Culture</h3>
-      <ul>
-        <li>
-          <Link to="/graph_gists/855363c7-cdeb-4c8b-b4a5-b72c8f2388e3">
-            Exploring the Star Wars Social Networks
-          </Link>
-        </li>
-      </ul>
-
-      <h3>Open/Government Data and Politics</h3>
-      <ul>
-        <li>
-          <Link to="/graph_gists/c4eab62c-7f5e-4e17-8f75-811d65d83127">
-            Drug Repurposing by hetnet relationship prediction: a new hope
-          </Link>
-        </li>
-      </ul>
-
-      <h3>Investigative Journalism</h3>
-      <ul>
-        <li>
-          <Link to="/graph_gists/d9ec56c6-0a76-49ab-8f43-0504d92225f7">
-            Our Inspiration
-          </Link>
-        </li>
-      </ul>
-
-      <h3>Sports and Recreation</h3>
-      <ul>
-        <li>
-          <Link to="/graph_gists/14bdffc9-8ba4-464e-86f8-577f484428e6">
-            Running Competition
-          </Link>
-        </li>
-      </ul>
-
-      <h3>Public Web APIs</h3>
-      <ul>
-        <li>
-          <Link to="/graph_gists/09bb2bbc-fb73-47a8-9778-3e5f22dcd27c">
-            Wikipedia Game
-          </Link>
-        </li>
-      </ul>
+      <Grid columns={3}>
+        <Grid.Row>
+          <Grid.Column>
+            <Header as="h5">Pop Culture</Header>
+            <GraphGistList
+              graphql={list_graphql}
+              variables={{ uuid: "855363c7-cdeb-4c8b-b4a5-b72c8f2388e3" }}
+              group={false}
+            />
+          </Grid.Column>
+          <Grid.Column>
+            <Header as="h5">Open/Government Data and Politics</Header>
+            <GraphGistList
+              graphql={list_graphql}
+              variables={{ uuid: "c4eab62c-7f5e-4e17-8f75-811d65d83127" }}
+              group={false}
+            />
+          </Grid.Column>
+          <Grid.Column>
+            <Header as="h5">Investigative Journalism</Header>
+            <GraphGistList
+              graphql={list_graphql}
+              variables={{ uuid: "d9ec56c6-0a76-49ab-8f43-0504d92225f7" }}
+              group={false}
+            />
+          </Grid.Column>
+        </Grid.Row>
+        <Grid.Row>
+          <Grid.Column>
+            <Header as="h5">Sports and Recreation</Header>
+            <GraphGistList
+              graphql={list_graphql}
+              variables={{ uuid: "14bdffc9-8ba4-464e-86f8-577f484428e6" }}
+              group={false}
+            />
+          </Grid.Column>
+          <Grid.Column>
+            <Header as="h5">Public Web APIs</Header>
+            <GraphGistList
+              graphql={list_graphql}
+              variables={{ uuid: "09bb2bbc-fb73-47a8-9778-3e5f22dcd27c" }}
+              group={false}
+            />
+          </Grid.Column>
+          <Grid.Column></Grid.Column>
+        </Grid.Row>
+      </Grid>
 
       <h2>How do I create a GraphGist?</h2>
 
