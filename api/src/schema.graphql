@@ -82,6 +82,7 @@ type Mutation {
   FlagGraphGistAsGuide(uuid: ID!, is_guide: Boolean!): GraphGist
   DisableGraphGist(uuid: ID!): GraphGist
   CreateChallenge(challenge: ChallengeInput!): Challenge
+  UpdateChallenge(uuid: ID!, challenge: ChallengeInput!): Challenge
 }
 
 type User {
@@ -151,6 +152,7 @@ type Industry implements Asset {
 
   graphgist: GraphGist @relation(name: "FOR_INDUSTRY", direction: "IN")
   num_graphgists: Int @cypher(statement: "RETURN this")
+  my_perms: [String]
 }
 
 type UseCase implements Asset {
@@ -162,6 +164,7 @@ type UseCase implements Asset {
 
   graphgist: GraphGist @relation(name: "FOR_USE_CASE", direction: "IN")
   num_graphgists: Int @cypher(statement: "RETURN this")
+  my_perms: [String]
 }
 
 type Challenge implements Asset {
@@ -175,6 +178,7 @@ type Challenge implements Asset {
   end_date: DateTime
   graphgist: GraphGist @relation(name: "FOR_CHALLENGE", direction: "IN")
   num_graphgists: Int @cypher(statement: "RETURN this")
+  my_perms: [String]
 }
 
 enum GraphGistStatus {
