@@ -140,6 +140,10 @@ app.get("/graph_gists/:slug/graph_guide", function (req, res) {
     res.render("index", {
       title: graph.title,
       html: adoc.convert(graph.asciidoc, {
+        attributes: {
+          "env-guide": true,
+          "experimental": true
+        },
         header_footer: true,
         catalog_assets: true,
         safe: 0,
@@ -147,7 +151,8 @@ app.get("/graph_gists/:slug/graph_guide", function (req, res) {
         template_cache: false,
       })
     });
-  }).catch(()=>{
+  }).catch((error) => {
+    console.error(error);
     res.render("404");
   });
 });

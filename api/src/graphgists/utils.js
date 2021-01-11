@@ -80,10 +80,10 @@ export async function convertAsciiDocToHtml(asciidoc) {
   doc.setAttribute("toc-placement", "macro");
   doc.setAttribute("env-graphgist", "true");
 
-  const attrs = doc.getAttributes();
+  const attributes = doc.getAttributes();
 
-  let rawHtml = doc.convert();
-  rawHtml = `${rawHtml}<span id="metadata" author="${attrs['author'] || ''}" version="${attrs['neo4j-version'] || ''}" twitter="${attrs['twitter'] || ''}" tags="${attrs['tags'] || ''}" />`;
+  let rawHtml = asciidoctor.convert(asciidoc, { attributes });
+  rawHtml = `${rawHtml}<span id="metadata" author="${attributes['author'] || ''}" version="${attributes['neo4j-version'] || ''}" twitter="${attributes['twitter'] || ''}" tags="${attributes['tags'] || ''}" />`;
 
   if (rawHtml === "") {
     throw new ValidationError(
