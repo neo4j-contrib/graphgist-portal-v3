@@ -67,7 +67,7 @@ function GraphGistCard(props) {
               <List.Item>
                 <List.Icon name="user" size="large" />
                 <List.Content>
-                  <Link to={"people/" + graphGist.author.slug}>
+                  <Link to={"/people/" + graphGist.author.slug}>
                     {graphGist.author.name}
                   </Link>
                 </List.Content>
@@ -86,7 +86,7 @@ function GraphGistCard(props) {
                     className={classes.categoryIcon}
                   />
                   <List.Content>
-                    <Link to={`${categorySlug}/${category.slug}`}>
+                    <Link to={`/${categorySlug}/${category.slug}`}>
                       {category.name}
                     </Link>
                   </List.Content>
