@@ -49,6 +49,10 @@ export const Authenticate = async (root, args, context, info) => {
 
   try {
     const user = await auth0Verify(args.token);
+    if (!user) {
+      return null;
+    }
+
     const [provider, uid] = user.sub.split("|");
 
     const result = await txc.run(

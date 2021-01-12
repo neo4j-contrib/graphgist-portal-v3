@@ -23,6 +23,9 @@ import * as graphgistsMutations from "./graphgists/mutations";
 import * as graphgistsQueries from "./graphgists/queries";
 import * as graphgistsTypes from "./graphgists/types";
 
+import * as categoriesMutations from "./categories/mutations";
+import * as categoriesTypes from "./categories/types";
+
 import * as imagesTypes from "./images/types";
 import { getGraphGistBySlug, getGraphGistByUUID } from "./graphgists/utils";
 
@@ -74,12 +77,14 @@ export const schema = makeAugmentedSchema({
     Mutation: {
       ...usersMutations,
       ...graphgistsMutations,
+      ...categoriesMutations,
     },
     Query: {
       ...usersQueries,
       ...graphgistsQueries,
     },
     ...graphgistsTypes,
+    ...categoriesTypes,
     ...imagesTypes,
     Upload: GraphQLUpload,
   },

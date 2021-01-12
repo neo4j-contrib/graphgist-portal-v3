@@ -1,17 +1,18 @@
 import React from "react";
-import { useMutation } from "@apollo/client";
+import { useMutation, useQuery } from "@apollo/client";
 import { useHistory } from "react-router-dom";
 import gql from "graphql-tag";
-import { Form, Button, Image, Card } from "semantic-ui-react";
+import { Form, Button, Image, Card, Grid } from "semantic-ui-react";
+import { DateTimeInput } from "semantic-ui-calendar-react";
 import moment from "moment";
 import { Helmet } from "react-helmet";
 import { Formik, FieldArray } from "formik";
 import { createUseStyles } from "react-jss";
-import { DateTimeInput } from "semantic-ui-calendar-react";
+import _ from "lodash";
 
-const CREATE_CHALLENGE = gql`
-  mutation CreateChallenge($challenge: ChallengeInput!) {
-    CreateChallenge(challenge: $challenge) {
+const UPDATE_CHALLENGE = gql`
+  mutation UpdateChallenge($uuid: ID!, $challenge: ChallengeInput!) {
+    UpdateChallenge(uuid: $uuid, challenge: $challenge) {
       uuid
       slug
     }
@@ -30,12 +31,43 @@ const useStyles = createUseStyles({
   },
 });
 
-function ChallengeCreate() {
+const graphql = gql`
+  query Category($id: String!) {
+    category: getCategory(slug: $id) {
+      uuid
+      slug
+      name
+      summary
+      ... on Challenge {
+        start_date {
+          formatted
+        }
+        end_date {
+          formatted
+        }
+        images: image {
+          uuid
+          title
+          description
+          source_url
+        }
+      }
+    }
+  }
+`;
+
+function ChallengeUpdate(props) {
+  const { id } = props.match.params;
+
+  const { loading, data, error } = useQuery(graphql, {
+    fetchPolicy: "cache-and-network",
+    variables: { id },
+  });
   const classes = useStyles();
   const history = useHistory();
 
   const showApiError = (data) => {
-    history.push("/challenges/new", {
+    history.push(`/challenges/${id}/edit`, {
       messages: data.graphQLErrors.map((error) => ({
         body: error.message,
         type: "negative",
@@ -43,11 +75,11 @@ function ChallengeCreate() {
     });
   };
 
-  const [createChallenge, { loading: isSaving }] = useMutation(
-    CREATE_CHALLENGE,
+  const [updateChallenge, { loading: isSaving }] = useMutation(
+    UPDATE_CHALLENGE,
     {
       onCompleted: (data) => {
-        history.push(`/challenges/${data.CreateChallenge.slug}`);
+        history.push(`/challenges/${data.UpdateChallenge.slug}`);
       },
       onError: (data) => {
         showApiError(data);
@@ -55,17 +87,29 @@ function ChallengeCreate() {
     }
   );
 
+  const challenge = _.get(data, "category");
+
+  if ((loading && !error) || !challenge) {
+    return (
+      <Grid>
+        <Grid.Column width={16}>
+          <p>Loading...</p>
+        </Grid.Column>
+      </Grid>
+    );
+  }
+
   return (
     <React.Fragment>
       <Helmet title="Submit a Challenge" />
 
       <Formik
         initialValues={{
-          images: [],
-          name: "",
-          summary: "",
-          start_date: "",
-          end_date: "",
+          images: challenge.images || [],
+          name: challenge.name,
+          summary: challenge.summary,
+          start_date: challenge.start_date.formatted || "",
+          end_date: challenge.end_date.formatted || "",
         }}
         onSubmit={(values, e, a) => {
           let start_date = {};
@@ -83,8 +127,9 @@ function ChallengeCreate() {
             ).toISOString();
           }
 
-          createChallenge({
+          updateChallenge({
             variables: {
+              uuid: challenge.uuid,
               challenge: {
                 ...values,
                 start_date: start_date,
@@ -172,7 +217,6 @@ function ChallengeCreate() {
                   }}
                 />
               </div>
-
               <Form.Field required>
                 <label>Name (Required)</label>
                 <input
@@ -182,7 +226,6 @@ function ChallengeCreate() {
                   onChange={handleChange}
                 />
               </Form.Field>
-
               <Form.Field>
                 <label>Summary</label>
                 <Form.TextArea
@@ -222,4 +265,4 @@ function ChallengeCreate() {
   );
 }
 
-export default ChallengeCreate;
+export default ChallengeUpdate;

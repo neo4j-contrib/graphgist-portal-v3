@@ -25,6 +25,7 @@ import PersonGraphGists from "./people/PersonGraphGists";
 import CategoryPage from "./categories/CategoryPage";
 import ChallengesList from "./categories/ChallengesList";
 import ChallengeCreate from "./categories/ChallengeCreate";
+import ChallengeUpdate from "./categories/ChallengeUpdate";
 
 import Candidates from "./candidates/Candidates";
 
@@ -36,11 +37,8 @@ import { authToken } from "./auth/state";
 
 import "semantic-ui-css/semantic.min.css";
 
-
 export function getImage(field) {
-  return field.length > 0
-		? field[0].source_url
-		: null
+  return field.length > 0 ? field[0].source_url : null;
 }
 
 const useStyles = createUseStyles({
@@ -146,48 +144,63 @@ function App() {
             </Menu.Item>
           </>
         )}
-        <Dropdown item text='Use Cases'>
-					<Dropdown.Menu className="categoriesList">
-						{useCases.map((category) => {
-							const category_image = getImage(category.image);
-							return <Dropdown.Item key={category.slug} as={NavLink} to={`/use_cases/${category.slug}`}>
-								{category_image && <img
-									src={category_image}
-									width="30"
-									alt={category.name}
-								/>} {category.name} <Label>{category.num_graphgists}</Label>
-							</Dropdown.Item>;
-						})}
-					</Dropdown.Menu>
-				</Dropdown>
-				<Dropdown item text='Industries'>
-					<Dropdown.Menu className="categoriesList">
-						{industries.map((category) => {
-							const category_image = getImage(category.image);
-							return <Dropdown.Item key={category.slug} as={NavLink} to={`/industries/${category.slug}`}>
-								{category_image && <img
-									src={category_image}
-									width="30"
-									alt={category.name}
-								/>} {category.name} <Label>{category.num_graphgists}</Label>
-							</Dropdown.Item>;
-						})}
-					</Dropdown.Menu>
-				</Dropdown>
-				<Dropdown item text='Challenges'>
-					<Dropdown.Menu className="categoriesList">
-						{challenges.map((category) => {
-							const category_image = getImage(category.image);
-							return <Dropdown.Item key={category.slug} as={NavLink} to={`/challenges/${category.slug}`}>
-								{category_image && <img
-									src={category_image}
-									width="30"
-									alt={category.name}
-								/>} {category.name} <Label>{category.num_graphgists}</Label>
-							</Dropdown.Item>;
-						})}
-					</Dropdown.Menu>
-				</Dropdown>
+        <Dropdown item text="Use Cases">
+          <Dropdown.Menu className="categoriesList">
+            {useCases.map((category) => {
+              const category_image = getImage(category.image);
+              return (
+                <Dropdown.Item
+                  key={category.slug}
+                  as={NavLink}
+                  to={`/use_cases/${category.slug}`}
+                >
+                  {category_image && (
+                    <img src={category_image} width="30" alt={category.name} />
+                  )}{" "}
+                  {category.name} <Label>{category.num_graphgists}</Label>
+                </Dropdown.Item>
+              );
+            })}
+          </Dropdown.Menu>
+        </Dropdown>
+        <Dropdown item text="Industries">
+          <Dropdown.Menu className="categoriesList">
+            {industries.map((category) => {
+              const category_image = getImage(category.image);
+              return (
+                <Dropdown.Item
+                  key={category.slug}
+                  as={NavLink}
+                  to={`/industries/${category.slug}`}
+                >
+                  {category_image && (
+                    <img src={category_image} width="30" alt={category.name} />
+                  )}{" "}
+                  {category.name} <Label>{category.num_graphgists}</Label>
+                </Dropdown.Item>
+              );
+            })}
+          </Dropdown.Menu>
+        </Dropdown>
+        <Dropdown item text="Challenges">
+          <Dropdown.Menu className="categoriesList">
+            {challenges.map((category) => {
+              const category_image = getImage(category.image);
+              return (
+                <Dropdown.Item
+                  key={category.slug}
+                  as={NavLink}
+                  to={`/challenges/${category.slug}`}
+                >
+                  {category_image && (
+                    <img src={category_image} width="30" alt={category.name} />
+                  )}{" "}
+                  {category.name} <Label>{category.num_graphgists}</Label>
+                </Dropdown.Item>
+              );
+            })}
+          </Dropdown.Menu>
+        </Dropdown>
         <Menu.Item as={NavLink} to="/graph_guides">
           Graph Guides
         </Menu.Item>
@@ -229,9 +242,18 @@ function App() {
           <Route exact path="/graph_guides" component={GraphGuides} />
           <Route exact path="/challenges" component={ChallengesList} />
           <Route exact path="/challenges/new" component={ChallengeCreate} />
+          <Route
+            exact
+            path="/challenges/:id/edit"
+            component={ChallengeUpdate}
+          />
           <Route exact path="/submit_graphgist" component={GraphGistCreate} />
           <Route exact path="/graph_gists/:id" component={GraphGistPage} />
-          <Route exact path="/(challenges|industries|use_cases)/:categorySlug" component={CategoryPage} />
+          <Route
+            exact
+            path="/(challenges|industries|use_cases)/:categorySlug"
+            component={CategoryPage}
+          />
           <Route
             exact
             path="/graph_gists/:id/source"
