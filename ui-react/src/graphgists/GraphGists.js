@@ -63,17 +63,14 @@ function GraphGists() {
     <Grid columns={2}>
       <Helmet title="Graph Gists" />
       <Grid.Row>
-        <Grid.Column columns={9}>
+        <Grid.Column columns={12}>
           <SearchAutoComplete />
-        </Grid.Column>
-        <Grid.Column columns={3}>
           <Checkbox
             checked={useFeatured}
             onChange={() => {
               setUseFeatured((prevState) => !prevState);
             }}
             label="Show featured only"
-            style={{ float: "right" }}
           />
         </Grid.Column>
       </Grid.Row>
