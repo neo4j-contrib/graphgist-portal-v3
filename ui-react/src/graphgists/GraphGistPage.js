@@ -19,6 +19,9 @@ const GET_GRAPHGIST = gql`
       raw_html
       cached
       my_perms
+      my_rating {
+        level
+      }
       is_candidate_updated
       is_guide
       author {

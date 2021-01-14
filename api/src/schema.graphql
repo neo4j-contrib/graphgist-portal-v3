@@ -83,6 +83,7 @@ type Mutation {
   DisableGraphGist(uuid: ID!): GraphGist
   CreateChallenge(challenge: ChallengeInput!): Challenge
   UpdateChallenge(uuid: ID!, challenge: ChallengeInput!): Challenge
+  Rate(to: ID!, level: Int!): Rating
 }
 
 type User {
@@ -297,6 +298,7 @@ type GraphGist implements GraphGistInterface & Asset {
       """
     )
   my_perms: [String]
+  my_rating: Rating
   candidate: GraphGistCandidate @relation(name: "IS_VERSION", direction: "IN")
 }
 
@@ -353,6 +355,13 @@ type GraphGistCandidate implements GraphGistInterface & Asset {
       """
     )
   my_perms: [String]
+}
+
+type Rating @relation(name: "RATES") {
+  from: User!
+  to: Asset!
+  level: Int!
+  rated_at: DateTime!
 }
 
 input GraphGistInput {

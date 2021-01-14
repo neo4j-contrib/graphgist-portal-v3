@@ -18,6 +18,7 @@ import { createUseStyles } from "react-jss";
 import SimpleFormat from "../components/SimpleFormat.js";
 import GraphGistRenderer from "./render/GraphGistRenderer.js";
 import PageLoading from "../components/PageLoading.js";
+import AddRating from "./components/AddRating.js";
 
 import "./GraphGistPage.scss";
 import { FacebookShareButton, TwitterShareButton } from "react-share";
@@ -367,7 +368,9 @@ function AssetExtraButtons({ graphGist, candidate, slug, refetch }) {
           <Item>
             <Item.Content>
               <Divider horizontal>Rating</Divider>
-              <Item.Description>{graphGist.avg_rating}</Item.Description>
+              <Item.Description>
+                <AddRating to={uuid} my_rating={graphGist.my_rating} />
+              </Item.Description>
             </Item.Content>
           </Item>
         )}

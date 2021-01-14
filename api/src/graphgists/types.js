@@ -25,6 +25,29 @@ export const GraphGist = {
   raw_html: (obj, args, context, info) => {
     return renderMathJax(obj.raw_html);
   },
+  my_rating: async (obj, args, context, info) => {
+    const session = context.driver.session();
+    const current_user = context.user;
+
+    if (!current_user || !current_user.uuid) {
+      return null;
+    }
+
+    const rating = await session.readTransaction(async txc => {
+      const asset_result = await txc.run(
+        `
+        MATCH (a {uuid: $to})<-[r:RATES]-(u:User {uuid: $user})
+        RETURN r
+      `, { to: obj.uuid, user: current_user.uuid }
+      );
+      const rate = asset_result.records[0];
+      if (rate) {
+        return rate.get("r").properties;
+      }
+    });
+
+    return rating;
+  }
 };
 
 export const GraphGistCandidate = {

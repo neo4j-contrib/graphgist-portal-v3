@@ -5,6 +5,7 @@ import {
 } from "./utils";
 import S3 from "../images/s3";
 import _ from "lodash";
+import { AuthenticationError } from "apollo-server";
 
 export const PreviewGraphGist = async (root, args, context, info) => {
   return renderMathJax(await convertAsciiDocToHtml(args.asciidoc));
@@ -439,3 +440,40 @@ export const FlagGraphGistAsGuide = async (root, args, context, info) => {
   return null;
 };
 
+export const Rate = async (root, args, context, info) => {
+  const session = context.driver.session();
+  const current_user = context.user;
+  if (!current_user) {
+    throw new AuthenticationError("You must authenticate");
+  }
+
+  const asset = await session.readTransaction(async txc => {
+    const asset_result = await txc.run(
+      `
+      MATCH (a {uuid: $uuid})
+      RETURN a
+    `, { uuid: args.to }
+    );
+    return asset_result.records[0].get("a").properties;
+  });
+
+  if (asset) {
+    return await session.writeTransaction(async txc => {
+      const result = await txc.run(
+        `
+        MERGE (a {uuid: $to})<-[r:RATES]-(u:User {uuid: $user})
+        SET r.level = $level
+        SET r.rated_at = datetime($rated_at)
+        RETURN r
+        `,
+        {
+          to: args.to,
+          user: current_user.uuid,
+          level: args.level,
+          rated_at: new Date().toISOString(),
+        }
+      );
+      return result.records[0].get("r").properties;
+    });
+  }
+};
