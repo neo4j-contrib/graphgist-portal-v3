@@ -8,10 +8,6 @@ import { createUseStyles } from "react-jss";
 import missingImg from "../assets/missing.png";
 
 const useStyles = createUseStyles({
-  categoryIcon: {
-    width: "1.7em",
-    height: "1.7em",
-  },
   cardFooter: {
     flexGrow: "0 !important",
   },
@@ -20,6 +16,15 @@ const useStyles = createUseStyles({
     marginBottom: "2px !important",
     marginLeft: "0 !important",
     marginRight: "5px !important",
+    paddingLeft: "35px !important",
+    position: "relative",
+  },
+  categoryIcon: {
+    width: "1.7em",
+    height: "1.7em",
+    marginLeft: "-35px !important",
+    marginRight: "0 !important",
+    position: "absolute !important",
   },
 });
 
