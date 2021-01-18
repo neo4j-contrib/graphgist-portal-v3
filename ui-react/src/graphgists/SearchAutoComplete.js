@@ -3,6 +3,7 @@ import { useLazyQuery } from "@apollo/client";
 import gql from "graphql-tag";
 import { useHistory } from "react-router";
 import { Search } from "semantic-ui-react";
+import { createUseStyles } from "react-jss";
 import _ from "lodash";
 
 const SEARCH_GISTS = gql`
@@ -18,7 +19,15 @@ const SEARCH_GISTS = gql`
   }
 `;
 
+const useStyles = createUseStyles({
+  container: {
+    display: "inline-block",
+    marginRight: 20,
+  },
+});
+
 function GraphGists() {
+  const classes = useStyles();
   const history = useHistory();
   const [searchString, setSearchString] = React.useState("");
   const [results, setResults] = React.useState([]);
@@ -51,19 +60,18 @@ function GraphGists() {
   }
 
   return (
-    <div>
-      <Search
-        placeholder="Search..."
-        margin="normal"
-        loading={loading}
-        value={searchString}
-        onSearchChange={handleChange}
-        results={results}
-        onResultSelect={(e, data) => {
-          history.push(data.result.url);
-        }}
-      />
-    </div>
+    <Search
+      placeholder="Search..."
+      margin="normal"
+      loading={loading}
+      value={searchString}
+      onSearchChange={handleChange}
+      results={results}
+      className={classes.container}
+      onResultSelect={(e, data) => {
+        history.push(data.result.url);
+      }}
+    />
   );
 }
 
