@@ -2,6 +2,15 @@
   "name": "graphgists-portal-v3",
   "version": "0.0.1",
   "description": "GraphGists Portal v3",
+  "neo4jDesktop": {
+    "apiVersion": "^1.4.0"
+  },
+  "icons": [
+    {
+      "src": "./icon.png",
+      "type": "png"
+    }
+  ],
   "dependencies": {
     "@apollo/client": "^3.2.0",
     "@auth0/auth0-react": "^1.0.0",
