@@ -114,10 +114,15 @@ const server = new ApolloServer({
   introspection: true,
   playground: true,
   formatError: (error) => ({
-    message: error.message,
+    ...error,
     state: error.originalError && error.originalError.state,
-    locations: error.locations,
-    path: error.path,
+    extensions: {
+      ...error.extensions,
+      exception: {
+      ...error.extensions.exception,
+        stacktrace: process.env.NODE_ENV !== "production" ? error.extensions.exception.stacktrace : undefined
+      }
+    }
   }),
 });
 
