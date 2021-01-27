@@ -120,6 +120,9 @@ function App() {
 
   const messages = _.get(location.state, "messages", []);
 
+  const isLoginEnabled =
+    typeof window !== "undefined" && !window.neo4jDesktopApi;
+
   return (
     <React.Fragment>
       <Helmet
@@ -204,29 +207,31 @@ function App() {
         <Menu.Item as={NavLink} to="/graph_guides">
           Graph Guides
         </Menu.Item>
-        <Menu.Menu position="right">
-          {me && (
-            <React.Fragment>
-              <Menu.Item style={{ paddingRight: 50 }}>
-                Logged in as&nbsp;<Link to="/users/edit">{me.name}</Link>
-                <img
-                  className="ui mini circular image"
-                  src={me.image}
-                  style={{
-                    marginLeft: 8,
-                    position: "absolute",
-                    top: 5,
-                    right: 10,
-                    width: 30,
-                  }}
-                  alt={me.name}
-                />
-              </Menu.Item>
-              <Menu.Item onClick={handleLogout}>Sign out</Menu.Item>
-            </React.Fragment>
-          )}
-          {!me && <Menu.Item onClick={loginWithRedirect}>Sign in</Menu.Item>}
-        </Menu.Menu>
+        {isLoginEnabled && (
+          <Menu.Menu position="right">
+            {me && (
+              <React.Fragment>
+                <Menu.Item style={{ paddingRight: 50 }}>
+                  Logged in as&nbsp;<Link to="/users/edit">{me.name}</Link>
+                  <img
+                    className="ui mini circular image"
+                    src={me.image}
+                    style={{
+                      marginLeft: 8,
+                      position: "absolute",
+                      top: 5,
+                      right: 10,
+                      width: 30,
+                    }}
+                    alt={me.name}
+                  />
+                </Menu.Item>
+                <Menu.Item onClick={handleLogout}>Sign out</Menu.Item>
+              </React.Fragment>
+            )}
+            {!me && <Menu.Item onClick={loginWithRedirect}>Sign in</Menu.Item>}
+          </Menu.Menu>
+        )}
       </Menu>
       <Container className={classes.container} id="main">
         {messages.map((message, i) => (
