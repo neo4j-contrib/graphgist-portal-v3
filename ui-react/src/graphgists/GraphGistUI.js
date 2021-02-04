@@ -240,7 +240,7 @@ function AssetExtraButtons({ graphGist, candidate, slug, refetch }) {
           labelPosition="left"
           color="teal"
           as="a"
-          href={`neo4j://graphapps/neo4j-browser?cmd=play&arg=${playUrl}`}
+          href={`neo4j-desktop://graphapps/neo4j-browser?cmd=play&arg=${playUrl}`}
         >
           <Icon name="play" />
           Play as Browser Guide

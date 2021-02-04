@@ -126,7 +126,7 @@ function GraphGistCard(props) {
         <Button
           as="a"
           color="primary"
-          href={`neo4j://graphapps/neo4j-browser?cmd=play&arg=${playUrl}`}
+          href={`neo4j-desktop://graphapps/neo4j-browser?cmd=play&arg=${playUrl}`}
           onClick={(e) => {
             e.stopPropagation();
           }}
