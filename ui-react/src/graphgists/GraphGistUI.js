@@ -202,6 +202,11 @@ function AssetExtraButtons({ graphGist, candidate, slug, refetch }) {
     `https://guides.neo4j.com/graph-examples/${graphGist.slug}/graph_guide`
   );
 
+  const shareUrl = `https://portal.graphgist.org/graph_gists/${graphGist.slug}`;
+
+  const isLoginEnabled =
+    typeof window !== "undefined" && !window.neo4jDesktopApi;
+
   return (
     <React.Fragment>
       {graphGist.my_perms.indexOf("admin") >= 0 && (
@@ -364,7 +369,7 @@ function AssetExtraButtons({ graphGist, candidate, slug, refetch }) {
             </Item.Description>
           </Item.Content>
         </Item>
-        {!candidate && (
+        {isLoginEnabled && !candidate && (
           <Item>
             <Item.Content>
               <Divider horizontal>Rating</Divider>
@@ -382,31 +387,33 @@ function AssetExtraButtons({ graphGist, candidate, slug, refetch }) {
             </Item.Description>
           </Item.Content>
         </Item>
-        <Item>
-          <Item.Content>
-            <Divider horizontal>Share</Divider>
-            <TwitterShareButton
-              url={window.location.href}
-              title={"Check out this graph gist! " + graphGist.title}
-              style={{ width: "100%", height: 40 }}
-            >
-              <Button primary style={{ width: "100%", height: "100%" }}>
-                Twitter
-              </Button>
-            </TwitterShareButton>
+        {!candidate && (
+          <Item>
+            <Item.Content>
+              <Divider horizontal>Share</Divider>
+              <TwitterShareButton
+                url={shareUrl}
+                title={"Check out this graph gist! " + graphGist.title}
+                style={{ width: "100%", height: 40 }}
+              >
+                <Button primary style={{ width: "100%", height: "100%" }}>
+                  Twitter
+                </Button>
+              </TwitterShareButton>
 
-            <FacebookShareButton
-              url={window.location.href}
-              hashtag="graphgist"
-              quote={"Check out this graph gist! " + graphGist.title}
-              style={{ width: "100%", height: 40, marginTop: 10 }}
-            >
-              <Button secondary style={{ width: "100%", height: "100%" }}>
-                Facebook
-              </Button>
-            </FacebookShareButton>
-          </Item.Content>
-        </Item>
+              <FacebookShareButton
+                url={shareUrl}
+                hashtag="graphgist"
+                quote={"Check out this graph gist! " + graphGist.title}
+                style={{ width: "100%", height: 40, marginTop: 10 }}
+              >
+                <Button secondary style={{ width: "100%", height: "100%" }}>
+                  Facebook
+                </Button>
+              </FacebookShareButton>
+            </Item.Content>
+          </Item>
+        )}
       </Item.Group>
     </React.Fragment>
   );

@@ -1,8 +1,22 @@
 import React, { useEffect } from "react";
 import gql from "graphql-tag";
 import { useQuery } from "@apollo/client";
-import { Switch, Route, NavLink, Link, useLocation } from "react-router-dom";
-import { Menu, Container, Message, Dropdown, Label } from "semantic-ui-react";
+import {
+  Switch,
+  Route,
+  NavLink,
+  Link,
+  useLocation,
+  useHistory,
+} from "react-router-dom";
+import {
+  Menu,
+  Container,
+  Message,
+  Dropdown,
+  Label,
+  Icon,
+} from "semantic-ui-react";
 import { createUseStyles } from "react-jss";
 import { useAuth0 } from "@auth0/auth0-react";
 import { useState as hookUseState } from "@hookstate/core";
@@ -82,6 +96,7 @@ const GET_TOOLBAR = gql`
 `;
 
 function App() {
+  const history = useHistory();
   const location = useLocation();
   const classes = useStyles();
   const { loginWithRedirect, logout, getIdTokenClaims } = useAuth0();
@@ -131,6 +146,15 @@ function App() {
       />
       <ScrollToTop />
       <Menu pointing fixed="top">
+        {!isLoginEnabled && (
+          <Menu.Item
+            onClick={() => {
+              history.goBack();
+            }}
+          >
+            <Icon name="arrow left" />
+          </Menu.Item>
+        )}
         <Menu.Item as={NavLink} exact to="/">
           Home
         </Menu.Item>
