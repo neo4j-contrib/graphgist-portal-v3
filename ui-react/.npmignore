@@ -13,3 +13,4 @@ static.json
 .env-example
 Dockerfile
 release.sh
+*.config.js

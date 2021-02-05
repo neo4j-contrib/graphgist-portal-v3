@@ -24,3 +24,5 @@ yarn-error.log*
 *~
 *.swp
 .idea*
+
+ui-react/package
