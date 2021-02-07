@@ -264,7 +264,6 @@ function App() {
           </Message>
         ))}
         <Switch>
-          <Route exact path="/" component={Home} />
           <Route exact path="/graph_gists" component={GraphGists} />
           <Route exact path="/people/:slug" component={PersonGraphGists} />
           <Route exact path="/my_graphgists" component={MyGraphGists} />
@@ -305,6 +304,7 @@ function App() {
           />
           <Route exact path="/users/edit" component={EditProfile} />
           <Route exact path="/authorize" component={AuthCallbackPage} />
+          <Route exact path="*" component={Home} />
         </Switch>
       </Container>
     </React.Fragment>

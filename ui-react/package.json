@@ -1,7 +1,7 @@
 {
-  "name": "graphgists-portal-v3",
-  "version": "0.0.1",
-  "description": "GraphGists Portal v3",
+  "name": "graph-gallery",
+  "version": "0.2.0",
+  "description": "GraphGists Portal",
   "neo4jDesktop": {
     "apiVersion": "^1.4.0"
   },
@@ -48,9 +48,11 @@
     "build-render": "craco build --config ./craco-render.config.js",
     "test": "react-scripts test --env=jsdom",
     "eject": "react-scripts eject",
-    "prettier": "prettier --write"
+    "prettier": "prettier --write",
+    "build:graphapp": "PUBLIC_URL=./ REACT_APP_GRAPHQL_URI=https://graphgist-v3-api.herokuapp.com/graphql npm run build && mv build dist"
   },
   "devDependencies": {
+    "@neo4j/code-signer": "^1.1.3",
     "husky": "^2.7.0",
     "lint-staged": "^8.2.1",
     "prettier": "^2.2.1"

@@ -1,0 +1,16 @@
+public
+src
+.env
+.gitignore
+tsconfig.json
+yarn.lock
+node_modules
+*.tgz
+img
+app.json
+static.json
+.dockerignore
+.env-example
+Dockerfile
+release.sh
+*.config.js

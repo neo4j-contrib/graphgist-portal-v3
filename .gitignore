@@ -8,6 +8,8 @@ node_modules/
 
 # production
 build
+dist
+*.tgz
 
 # misc
 .DS_Store
@@ -22,3 +24,5 @@ yarn-error.log*
 *~
 *.swp
 .idea*
+
+ui-react/package
