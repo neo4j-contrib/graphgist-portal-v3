@@ -1,5 +1,5 @@
 import React from "react";
-import { useQuery, useMutation } from "@apollo/client";
+import { useMutation } from "@apollo/client";
 import { Link, useHistory } from "react-router-dom";
 import gql from "graphql-tag";
 import {
@@ -10,7 +10,6 @@ import {
   Loader,
   Dimmer,
   Segment,
-  Select,
 } from "semantic-ui-react";
 import _ from "lodash";
 import { Helmet } from "react-helmet";
@@ -22,16 +21,6 @@ import IndustriesSelect from "./components/IndustriesSelect";
 import UseCasesSelect from "./components/UseCasesSelect";
 import ChallengesSelect from "./components/ChallengesSelect";
 import GraphGistRenderer from "./render/GraphGistRenderer.js";
-
-const GET_SELECT_DATA = gql`
-  query graphGistChoices {
-    statusChoices: __type(name: "GraphGistStatus") {
-      enumValues {
-        name
-      }
-    }
-  }
-`;
 
 const PREVIEW = gql`
   mutation Preview($asciidoc: String!) {
@@ -71,10 +60,6 @@ const useStyles = createUseStyles({
 function GraphGistCreate() {
   const classes = useStyles();
   const history = useHistory();
-
-  const { data } = useQuery(GET_SELECT_DATA, {
-    fetchPolicy: "cache-and-network",
-  });
 
   const showApiError = (data) => {
     history.push("/submit_graphgist", {
@@ -117,13 +102,6 @@ function GraphGistCreate() {
     ""
   );
 
-  const statusChoices = _.get(data, "statusChoices.enumValues", []).map(
-    (item) => ({
-      value: item.name,
-      text: item.name,
-    })
-  );
-
   return (
     <React.Fragment>
       <Helmet title="Submit a GraphGist" />
@@ -150,7 +128,7 @@ function GraphGistCreate() {
           asciidoc: "",
           author: "",
           summary: "",
-          status: "candidate",
+          status: "draft",
           industries: [],
           challenges: [],
           use_cases: [],
@@ -168,12 +146,6 @@ function GraphGistCreate() {
         }}
       >
         {({ values, handleChange, handleSubmit }) => {
-          const handleChangeSelect = (e, { value, name }) => {
-            e.target.name = name;
-            e.target.value = value;
-            handleChange(e);
-          };
-
           return (
             <Form className={classes.form} onSubmit={handleSubmit}>
               {/*<div className={classes.imagesContainer}>
@@ -271,18 +243,6 @@ function GraphGistCreate() {
                   name="summary"
                   value={values.summary}
                   onChange={handleChange}
-                />
-              </Form.Field>
-
-              <Form.Field required>
-                <label>Status</label>
-                <Select
-                  options={statusChoices}
-                  name="status"
-                  value={values.status}
-                  onChange={handleChangeSelect}
-                  required
-                  fluid
                 />
               </Form.Field>
 

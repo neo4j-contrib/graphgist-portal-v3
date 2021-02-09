@@ -67,6 +67,7 @@ const GET_TOOLBAR = gql`
       uuid
       name
       image
+      my_perms
     }
     useCases: UseCase {
       slug
@@ -94,6 +95,10 @@ const GET_TOOLBAR = gql`
     }
   }
 `;
+
+function has_perm(user, perm) {
+  return user && user.my_perms.indexOf(perm) >= 0;
+}
 
 function App() {
   const history = useHistory();
@@ -231,6 +236,11 @@ function App() {
         <Menu.Item as={NavLink} to="/graph_guides">
           Graph Guides
         </Menu.Item>
+        {has_perm(me, "review_candidates") && (
+          <Menu.Item as={NavLink} to="/candidates/waiting_review">
+            Candidates
+          </Menu.Item>
+        )}
         {isLoginEnabled && (
           <Menu.Menu position="right">
             {me && (
