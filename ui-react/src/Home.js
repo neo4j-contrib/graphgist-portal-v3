@@ -25,14 +25,19 @@ const list_graphql = gql`
 function Home() {
   const classes = useStyles();
 
+  const isLoginEnabled =
+    typeof window !== "undefined" && !window.neo4jDesktopApi;
+
   return (
     <div className={classes.root}>
       <h1>About the GraphGist Portal</h1>
 
-      <p>
-        Already know what a graphgist is?{" "}
-        <Link to="/submit_graphgist">Start yours now</Link>.
-      </p>
+      {isLoginEnabled && (
+        <p>
+          Already know what a graphgist is?{" "}
+          <Link to="/submit_graphgist">Start yours now</Link>.
+        </p>
+      )}
 
       <h2>What is a GraphGist</h2>
 

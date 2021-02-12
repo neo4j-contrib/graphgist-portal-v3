@@ -1,6 +1,6 @@
 {
   "name": "graph-gallery",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "description": "GraphGists Portal",
   "neo4jDesktop": {
     "apiVersion": "^1.4.0"
