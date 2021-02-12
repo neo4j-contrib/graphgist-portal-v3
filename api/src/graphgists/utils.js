@@ -22,6 +22,17 @@ export async function getGraphGistByUUID(txc, uuid) {
   }
 }
 
+export async function getCandidateByUUID(txc, uuid) {
+  const result = await txc.run(
+    `MATCH (g:GraphGistCandidate) WHERE g.uuid = $uuid RETURN g`,
+    { uuid }
+  );
+
+  if (result.records.length >= 1) {
+    return result.records[0].get("g").properties;
+  }
+}
+
 export async function getGraphGistBySlug(txc, slug) {
   const result = await txc.run(
     `MATCH (g:GraphGist) WHERE g.slug = $slug RETURN g`,

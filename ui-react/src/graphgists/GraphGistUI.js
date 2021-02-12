@@ -50,6 +50,15 @@ const FLAG_GRAPHGIST_AS_GUIDE = gql`
   }
 `;
 
+const SUBMIT_FOR_APPROVAL_GRAPHGIST_GRAPHGIST = gql`
+  mutation submitForApprovalGraphGistMutation($uuid: ID!) {
+    SubmitForApprovalGraphGist(uuid: $uuid) {
+      uuid
+      status
+    }
+  }
+`;
+
 const useStyles = createUseStyles({
   sidebarImg: {
     maxWidth: "100%",
@@ -198,6 +207,20 @@ function AssetExtraButtons({ graphGist, candidate, slug, refetch }) {
     disableGraphGistMutation({ variables: { uuid } });
   };
 
+  const [
+    submitForApprovalGraphGistMutation,
+    { loading: isSubmittingForApproval },
+  ] = useMutation(SUBMIT_FOR_APPROVAL_GRAPHGIST_GRAPHGIST, {
+    onCompleted: () => {
+      refetch();
+      history.push(`/graph_gists/${slug}`);
+    },
+  });
+
+  const handleSubmitForApproval = () => {
+    submitForApprovalGraphGistMutation({ variables: { uuid } });
+  };
+
   const playUrl = encodeURI(
     `https://guides.neo4j.com/graph-examples/${graphGist.slug}/graph_guide`
   );
@@ -282,39 +305,36 @@ function AssetExtraButtons({ graphGist, candidate, slug, refetch }) {
         </React.Fragment>
       )}
 
-      {/*
-	- if @asset.persisted?
-    - if @access_level == 'write'
-      .ui.divider
-      div
-        a.ui.labeled.icon.button href="#{graph_edit_by_owner_path(id: asset.is_a?(GraphGist) ? @asset.id : @asset.graphgist.id)}"
-          i.edit.icon
-          | Edit Graphgist
-      - if asset.is_guide == false
-        .ui.divider
-        = form_tag make_graphgist_as_guide_path(id: asset.is_a?(GraphGistCandidate) ? asset.graphgist.id : asset.id)
-          button.ui.button type="submit"
-            | Optimized as Guide
-      - if asset.is_guide == true
-        .ui.divider
-        p
-          | This is optimized as Guide
-        = form_tag make_graphgist_not_guide_path(id: asset.is_a?(GraphGistCandidate) ? asset.graphgist.id : asset.id)
-          button.ui.button type="submit"
-            | Remove from guides
-      - if asset.status == 'draft'
-        .ui.divider
-        = form_tag make_graphgist_candidate_path(id: asset.is_a?(GraphGistCandidate) ? asset.graphgist.id : asset.id)
-          button.ui.button type="submit"
-            | Submit for Approval
-      - if asset.status == 'candidate'
-        .ui.divider
-        div
-          | Submitted for approval
-      .ui.divider
-      div
-        | If approved, your graphgist will appear on the Neo4j.com/graphgists. You can make edits at any time, and when you are ready for the edits to appear on the Neo4j.com/graphgists you can submit again
-*/}
+      {graphGist.my_perms.indexOf("edit") >= 0 &&
+        uuid &&
+        graphGist.status === "draft" && (
+          <React.Fragment>
+            <Divider />
+            <Button
+              fluid
+              loading={isSubmittingForApproval}
+              onClick={handleSubmitForApproval}
+            >
+              Submit for Approval
+            </Button>
+            <Divider />
+            <div>
+              If approved, your graphgist will appear on the
+              Neo4j.com/graphgists. You can make edits at any time, and when you
+              are ready for the edits to appear on the Neo4j.com/graphgists you
+              can submit again
+            </div>
+          </React.Fragment>
+        )}
+
+      {graphGist.my_perms.indexOf("edit") >= 0 &&
+        uuid &&
+        graphGist.status === "candidate" && (
+          <React.Fragment>
+            <Divider />
+            <div>Submitted for Approval</div>
+          </React.Fragment>
+        )}
 
       {slug && (
         <>
@@ -396,7 +416,11 @@ function AssetExtraButtons({ graphGist, candidate, slug, refetch }) {
                 title={"Check out this graph gist! " + graphGist.title}
                 style={{ width: "100%", height: 40 }}
               >
-                <Button primary style={{ width: "100%", height: "100%" }}>
+                <Button
+                  primary
+                  style={{ width: "100%", height: "100%" }}
+                  as="div"
+                >
                   Twitter
                 </Button>
               </TwitterShareButton>
@@ -407,7 +431,11 @@ function AssetExtraButtons({ graphGist, candidate, slug, refetch }) {
                 quote={"Check out this graph gist! " + graphGist.title}
                 style={{ width: "100%", height: 40, marginTop: 10 }}
               >
-                <Button secondary style={{ width: "100%", height: "100%" }}>
+                <Button
+                  secondary
+                  style={{ width: "100%", height: "100%" }}
+                  as="div"
+                >
                   Facebook
                 </Button>
               </FacebookShareButton>

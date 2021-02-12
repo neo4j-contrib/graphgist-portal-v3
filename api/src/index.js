@@ -18,6 +18,7 @@ import { typeDefs } from "./graphql-schema";
 
 import * as usersMutations from "./users/mutations";
 import * as usersQueries from "./users/queries";
+import * as usersTypes from "./users/types";
 
 import * as graphgistsMutations from "./graphgists/mutations";
 import * as graphgistsQueries from "./graphgists/queries";
@@ -83,6 +84,7 @@ export const schema = makeAugmentedSchema({
       ...usersQueries,
       ...graphgistsQueries,
     },
+    ...usersTypes,
     ...graphgistsTypes,
     ...categoriesTypes,
     ...imagesTypes,

@@ -84,6 +84,7 @@ type Mutation {
   CreateChallenge(challenge: ChallengeInput!): Challenge
   UpdateChallenge(uuid: ID!, challenge: ChallengeInput!): Challenge
   Rate(to: ID!, level: Int!): Rating
+  SubmitForApprovalGraphGist(uuid: ID!): GraphGist
 }
 
 type User {
@@ -94,6 +95,7 @@ type User {
   image: String
   twitter_username: String
   person: Person @relation(name: "IS_PERSON", direction: "OUT")
+  my_perms: [String]
 }
 
 interface Asset {

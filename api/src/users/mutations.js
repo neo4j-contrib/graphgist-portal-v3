@@ -6,6 +6,7 @@ import { auth0Verify } from "../auth";
 export const UpdateUser = async (obj, args, context, info) => {
   const session = context.driver.session();
   const txc = session.beginTransaction();
+
   try {
     const profile = args.user;
     const user = context.user;

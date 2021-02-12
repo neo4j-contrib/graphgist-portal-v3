@@ -6,6 +6,9 @@ import {
 import S3 from "../images/s3";
 import _ from "lodash";
 import { AuthenticationError } from "apollo-server";
+import ejs from "ejs";
+import { neo4jgraphql } from "neo4j-graphql-js";
+import { sendEmail } from "../mailer.js";
 
 export const PreviewGraphGist = async (root, args, context, info) => {
   return renderMathJax(await convertAsciiDocToHtml(args.asciidoc));
@@ -27,7 +30,7 @@ export const CreateGraphGist = async (root, args, context, info) => {
 
     const graphgist_post = {
       ...proprieties,
-      status: "candidate",
+      status: "draft",
       raw_html: renderMathJax(
         await convertAsciiDocToHtml(proprieties.asciidoc)
       ),
@@ -52,12 +55,12 @@ export const CreateGraphGist = async (root, args, context, info) => {
     const candidate = result.records[0].get("gc").properties;
 
     const current_user = context.user;
-    await txc.run(
+    const authorResult = await txc.run(
       `
       MATCH (g:GraphGist {uuid: $uuid}), (gc:GraphGistCandidate {uuid: $candidateUuid}), (User {uuid: $authorUuid})-[:IS_PERSON]->(p:Person)
       CREATE (gc)<-[r:WROTE]-(p)
       CREATE (g)<-[rr:WROTE]-(p)
-      RETURN r, rr
+      RETURN r, rr, p
       `,
       {
         uuid: graphgist.uuid,
@@ -65,6 +68,7 @@ export const CreateGraphGist = async (root, args, context, info) => {
         authorUuid: current_user.uuid,
       }
     );
+    const authorPerson = authorResult.records[0].get("p").properties;
 
     var categoryUuid;
 
@@ -138,6 +142,31 @@ export const CreateGraphGist = async (root, args, context, info) => {
       );
     }
 
+    ejs.renderFile(`${__dirname}/notify_admins_about_creation.ejs`, {
+      FRONTEND_URL: process.env.FRONTEND_URL,
+      candidate: candidate,
+      graphgist: graphgist,
+      author: authorPerson,
+    }, {} ,  async (err, htmlBody) => {
+      if (err) {
+        console.error(err, err.stack);
+      } else {
+        const adminsResult = await txc.run(
+          `
+          MATCH (u:User {admin: true})
+          WHERE EXISTS (u.email)
+          RETURN u.email
+          `
+        );
+        const adminEmails = adminsResult.records.map(record => record.get('u.email')).filter(item => !!item)
+        sendEmail({
+          to: adminEmails,
+          subject: `[New GraphGist] ${graphgist.title}`,
+          htmlBody
+        });
+      }
+    });
+
     await txc.commit();
     return candidate;
   } catch (error) {
@@ -151,12 +180,45 @@ export const CreateGraphGist = async (root, args, context, info) => {
   return null;
 };
 
+export const SubmitForApprovalGraphGist = async (root, args, context, info) => {
+  const session = context.driver.session();
+
+  const current_user = context.user;
+  if (!current_user || !current_user.admin) {
+    throw new AuthenticationError("You must be an admin");
+  }
+
+  return await session.readTransaction(async txc => {
+    try {
+      const result = await txc.run(
+        `
+        MATCH (g:GraphGist {uuid: $uuid})<-[:IS_VERSION]-(gc:GraphGistCandidate)
+        SET g.status = "candidate"
+        SET gc.status = "candidate"
+        RETURN g
+        `, { uuid: args.uuid }
+      );
+      return result.records[0].get("g").properties;
+    } catch (error) {
+      console.error(error);
+      await txc.rollback();
+      throw error;
+    }
+  })
+};
+
 export const UpdateGraphGist = async (root, args, context, info) => {
   const session = context.driver.session();
   const txc = session.beginTransaction();
 
+  const current_user = context.user;
+  if (!current_user) {
+    throw new AuthenticationError("You must be authenticated");
+  }
+
   try {
     const graphGist = await getGraphGistByUUID(txc, args.uuid);
+
     const {
       industries,
       use_cases,
@@ -169,18 +231,30 @@ export const UpdateGraphGist = async (root, args, context, info) => {
     if (typeof rawHtml === "object") {
       throw rawHtml;
     }
-    const result = await txc.run(
-      `
+
+    let graphGistUpgateCypher = `
       MATCH (g:GraphGist {uuid: $uuid})<-[:IS_VERSION]-(gc:GraphGistCandidate)
       SET gc += $graphgist
       SET g += { is_candidate_updated: TRUE, has_errors: FALSE }
       RETURN gc
-      `,
+    `;
+    if (graphGist.status === "draft" || graphGist.status === "candidate") {
+      graphGistUpgateCypher = `
+        MATCH (g:GraphGist {uuid: $uuid})<-[:IS_VERSION]-(gc:GraphGistCandidate)
+        SET g += $graphgist
+        SET gc += $graphgist
+        SET g += { is_candidate_updated: TRUE, has_errors: FALSE }
+        RETURN gc
+      `;
+    }
+
+    const result = await txc.run(
+      graphGistUpgateCypher,
       {
         uuid: args.uuid,
         graphgist: {
           ...properties,
-          status: "candidate",
+          status: "draft",
           raw_html: rawHtml,
           has_errors: false,
         },
@@ -286,6 +360,12 @@ export const UpdateGraphGist = async (root, args, context, info) => {
 export const PublishGraphGistCandidate = async (root, args, context, info) => {
   const session = context.driver.session();
   const txc = session.beginTransaction();
+
+  const current_user = context.user;
+  if (!current_user || !current_user.admin) {
+    throw new AuthenticationError("You must be an admin");
+  }
+
   const { uuid } = args;
 
   try {
@@ -381,6 +461,11 @@ export const DisableGraphGist = async (root, args, context, info) => {
   const session = context.driver.session();
   const txc = session.beginTransaction();
 
+  const current_user = context.user;
+  if (!current_user || !current_user.admin) {
+    throw new AuthenticationError("You must be an admin");
+  }
+
   try {
     const result = await txc.run(
       `
@@ -411,6 +496,11 @@ export const DisableGraphGist = async (root, args, context, info) => {
 export const FlagGraphGistAsGuide = async (root, args, context, info) => {
   const session = context.driver.session();
   const txc = session.beginTransaction();
+
+  const current_user = context.user;
+  if (!current_user || !current_user.admin) {
+    throw new AuthenticationError("You must be an admin");
+  }
 
   try {
     const result = await txc.run(
@@ -443,6 +533,7 @@ export const FlagGraphGistAsGuide = async (root, args, context, info) => {
 export const Rate = async (root, args, context, info) => {
   const session = context.driver.session();
   const current_user = context.user;
+
   if (!current_user) {
     throw new AuthenticationError("You must authenticate");
   }
