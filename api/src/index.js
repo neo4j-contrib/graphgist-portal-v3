@@ -148,6 +148,7 @@ app.get("/graph_gists/:slug/graph_guide", function (req, res) {
       title: graph.title,
       html: adoc.convert(graph.asciidoc, {
         attributes: {
+          "graphGist": graph,
           "env-guide": true,
           "experimental": true
         },

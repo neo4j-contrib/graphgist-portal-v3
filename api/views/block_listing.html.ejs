@@ -1,0 +1,57 @@
+<%#encoding:UTF-8%>
+
+<%
+var nowrap = node.getAttribute('nowrap') || opts.nowrap;
+var graphGist = node.getDocument().getAttribute('graphgist');
+var {uuid} = graphGist;
+var {style, language, sourceHighter, title} = node.getAttributes();
+%>
+
+<div id="<%= uuid && uuid %>" class="listingblock">
+  <% if (title) { %>
+    <div class="title"><%= title %></div>
+  <% } %>
+  <div class="content">
+    <% if (style == 'source') { %>
+      <%
+        var code_class = language ? [language, `language-${language}`] : [];
+        var pre_class = ['highlight'];
+        var pre_lang = null;
+
+        switch (sourceHighter) {
+          case 'coderay':
+            pre_class = ['CodeRay']
+          break;
+          case 'pygments':
+            pre_class.push('pygments')
+          break;
+          case 'prettify':
+            pre_class = ['prettyprint']
+            var linenums = node.getAttribute('linenums')
+            if (linenums) {
+              pre_class.push('linenums')
+            }
+            if (language) {
+              pre_class.push('language')
+              pre_class.push(`language-${language}`)
+            }
+            code_class = []
+          break;
+          case 'html-pipeline':
+            pre_lang = language
+            pre_class = code_class = []
+            nowrap = false
+          break;
+        }
+
+        pre_class.push('pre-scrollable code runnable standalone-example ng-binding')
+        if (nowrap) {
+          pre_class.push('nowrap')
+        }
+      %>
+      <pre mode="cypher" class="<%= pre_class.join(' ') %>" lang="<%= pre_lang %>"><code class="<%= code_class.join(' ') %>"><%= node.getContent() %></code></pre>
+    <% } else { %>
+      <pre class="<%= nowrap && 'nowrap' %>"><%= content %></pre>
+    <% } %>
+  </div>
+</div>
