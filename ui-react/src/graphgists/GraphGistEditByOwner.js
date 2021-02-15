@@ -335,29 +335,31 @@ function GraphGistEditByOwner() {
                   onChange={handleChange}
                 />
               </Form.Field>
+              {graphGistCandidate.my_perms.indexOf("admin") >= 0 && (
+                <React.Fragment>
+                  <Form.Field>
+                    <label>Status</label>
+                    <Select
+                      options={statusChoices}
+                      name="status"
+                      value={values.status}
+                      onChange={handleChangeSelect}
+                      required
+                      fluid
+                    />
+                  </Form.Field>
 
-              <Form.Field>
-                <label>Status</label>
-                <Select
-                  options={statusChoices}
-                  name="status"
-                  value={values.status}
-                  onChange={handleChangeSelect}
-                  required
-                  fluid
-                />
-              </Form.Field>
-
-              <Form.Field>
-                <label>Author</label>
-                <AuthorsSelect
-                  name="author"
-                  value={values.author}
-                  onChange={handleChange}
-                  fluid
-                />
-              </Form.Field>
-
+                  <Form.Field>
+                    <label>Author</label>
+                    <AuthorsSelect
+                      name="author"
+                      value={values.author}
+                      onChange={handleChange}
+                      fluid
+                    />
+                  </Form.Field>
+                </React.Fragment>
+              )}
               <Form.Field>
                 <label>Industries</label>
                 <IndustriesSelect
