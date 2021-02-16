@@ -552,7 +552,9 @@ export const Rate = async (root, args, context, info) => {
     return await session.writeTransaction(async txc => {
       const result = await txc.run(
         `
-        MERGE (a {uuid: $to})<-[r:RATES]-(u:User {uuid: $user})
+        MATCH (u:User {uuid: $user})
+        MATCH (a {uuid: $to})
+        MERGE (a)<-[r:RATES]-(u)
         SET r.level = $level
         SET r.rated_at = datetime($rated_at)
         RETURN r
