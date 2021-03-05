@@ -30,14 +30,6 @@ import * as categoriesTypes from "./categories/types";
 import * as imagesTypes from "./images/types";
 import { getGraphGistBySlug, getGraphGistByUUID } from "./graphgists/utils";
 
-Sentry.init({
-  dsn: process.env.SENTRY_DSN,
-  tracesSampleRate: 1.0,
-  integrations: [
-    new Sentry.Integrations.Http({ tracing: true }),
-  ],
-});
-
 /*
  * Create a Neo4j driver instance to connect to the database
  * using credentials specified as environment variables
@@ -56,8 +48,19 @@ export const driver = neo4j.driver(
 
 const app = express();
 
-// The request handler must be the first middleware on the app
+Sentry.init({
+  dsn: process.env.SENTRY_DSN,
+  tracesSampleRate: 1.0,
+  integrations: [
+    new Sentry.Integrations.Http({ tracing: true }),
+    new Tracing.Integrations.Express({
+      app,
+    }),
+  ],
+});
+
 app.use(Sentry.Handlers.requestHandler());
+app.use(Sentry.Handlers.tracingHandler());
 
 app.use(express.json({ limit: "50mb" }));
 app.use(express.urlencoded({ limit: "50mb", extended: true }));
@@ -165,7 +168,6 @@ app.get("/graph_gists/:slug/graph_guide", function (req, res) {
   });
 });
 
-// The error handler must be before any other error middleware and after all controllers
 app.use(Sentry.Handlers.errorHandler());
 
 app.listen({ port, path }, () => {
