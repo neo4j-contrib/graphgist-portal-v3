@@ -1,9 +1,17 @@
 import React from "react";
 import ReactDOM from "react-dom";
-import { ApolloClient, ApolloLink, ApolloProvider, InMemoryCache, concat } from "@apollo/client";
+import {
+  ApolloClient,
+  ApolloLink,
+  ApolloProvider,
+  InMemoryCache,
+  concat,
+} from "@apollo/client";
 import { BrowserRouter } from "react-router-dom";
 import { Auth0Provider } from "@auth0/auth0-react";
 import { createUploadLink } from "apollo-upload-client";
+import * as Sentry from "@sentry/react";
+import { Integrations } from "@sentry/tracing";
 import App from "./App";
 import "./index.css";
 
@@ -24,9 +32,18 @@ const authMiddleware = new ApolloLink((operation, forward) => {
 
 const client = new ApolloClient({
   cache: new InMemoryCache(),
-  link: concat(authMiddleware, createUploadLink({
-    uri: process.env.REACT_APP_GRAPHQL_URI,
-  })),
+  link: concat(
+    authMiddleware,
+    createUploadLink({
+      uri: process.env.REACT_APP_GRAPHQL_URI,
+    })
+  ),
+});
+
+Sentry.init({
+  dsn: process.env.REACT_APP_SENTRY_DSN,
+  integrations: [new Integrations.BrowserTracing()],
+  tracesSampleRate: 1.0,
 });
 
 const Main = () => (

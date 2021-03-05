@@ -16,6 +16,8 @@
     "@auth0/auth0-react": "^1.0.0",
     "@craco/craco": "^5.8.0",
     "@hookstate/core": "^3.0.1",
+    "@sentry/react": "^6.2.1",
+    "@sentry/tracing": "^6.2.1",
     "apollo-upload-client": "^14.1.2",
     "classnames": "^2.2.6",
     "codemirror": "^5.16.0",
