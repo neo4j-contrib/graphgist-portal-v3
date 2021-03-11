@@ -49,9 +49,9 @@ var {style, language, sourceHighter, title} = node.getAttributes();
           pre_class.push('nowrap')
         }
       %>
-      <pre mode="cypher" class="<%= pre_class.join(' ') %>" lang="<%= pre_lang %>"><code class="<%= code_class.join(' ') %>"><%= node.getContent() %></code></pre>
+      <pre mode="cypher" class="<%= pre_class.join(' ') %>" lang="<%= pre_lang %>"><code class="<%= code_class.join(' ') %>"><%- node.getContent() %></code></pre>
     <% } else { %>
-      <pre class="<%= nowrap && 'nowrap' %>"><%= content %></pre>
+      <pre class="<%- nowrap && 'nowrap' %>"><%- content %></pre>
     <% } %>
   </div>
 </div>
