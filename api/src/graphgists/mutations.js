@@ -182,29 +182,32 @@ export const CreateGraphGist = async (root, args, context, info) => {
 
 export const SubmitForApprovalGraphGist = async (root, args, context, info) => {
   const session = context.driver.session();
+  const txc = session.beginTransaction();
 
   const current_user = context.user;
   if (!current_user || !current_user.admin) {
     throw new AuthenticationError("You must be an admin");
   }
 
-  return await session.readTransaction(async txc => {
-    try {
-      const result = await txc.run(
-        `
-        MATCH (g:GraphGist {uuid: $uuid})<-[:IS_VERSION]-(gc:GraphGistCandidate)
-        SET g.status = "candidate"
-        SET gc.status = "candidate"
-        RETURN g
-        `, { uuid: args.uuid }
-      );
-      return result.records[0].get("g").properties;
-    } catch (error) {
-      console.error(error);
-      await txc.rollback();
-      throw error;
-    }
-  })
+  try {
+    const result = await txc.run(
+      `
+      MATCH (g:GraphGist {uuid: $uuid})<-[:IS_VERSION]-(gc:GraphGistCandidate)
+      SET g.status = "candidate"
+      SET gc.status = "candidate"
+      RETURN g
+      `, { uuid: args.uuid }
+    );
+    return result.records[0].get("g").properties;
+  } catch (error) {
+    console.error(error);
+    await txc.rollback();
+    throw error;
+  } finally {
+    await session.close();
+  }
+
+  return null;
 };
 
 export const UpdateGraphGist = async (root, args, context, info) => {
