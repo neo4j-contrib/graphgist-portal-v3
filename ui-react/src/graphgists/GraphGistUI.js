@@ -145,6 +145,9 @@ function GraphGistPage({ graphGist, loading, error, candidate, refetch }) {
                   </Label>
 
                   <Divider />
+                  <Label>{graphGist.neo4j_version}</Label>
+
+                  <Divider />
                 </>
               )}
 

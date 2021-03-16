@@ -40,6 +40,7 @@ const GET_GRAPHGIST = gql`
       summary
       asciidoc
       cached
+      neo4j_version
       author {
         uuid
         name
@@ -214,6 +215,7 @@ function GraphGistEditByOwner() {
           author: graphGistCandidate.author.uuid,
           summary: graphGistCandidate.summary,
           status: graphGistCandidate.status,
+          neo4j_version: graphGistCandidate.neo4j_version,
           images: graphGistCandidate.images || [],
           industries: graphGistCandidate.industries.map((i) => i.uuid),
           challenges: graphGistCandidate.challenges.map((i) => i.uuid),
@@ -348,7 +350,14 @@ function GraphGistEditByOwner() {
                       fluid
                     />
                   </Form.Field>
-
+                  <Form.Field>
+                    <label>Neo4j Version (3.5 is default)</label>
+                    <input
+                      name="neo4j_version"
+                      value={values.neo4j_version}
+                      onChange={handleChange}
+                    />
+                  </Form.Field>
                   <Form.Field>
                     <label>Author</label>
                     <AuthorsSelect

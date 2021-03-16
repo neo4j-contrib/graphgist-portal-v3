@@ -19,6 +19,7 @@ const GET_GRAPHGIST = gql`
       raw_html
       cached
       my_perms
+      neo4j_version
       my_rating {
         level
       }
