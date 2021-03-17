@@ -8,7 +8,7 @@ import { createUseStyles } from "react-jss";
 import missingImg from "../assets/missing.png";
 
 const useStyles = createUseStyles({
-  cardFooter: {
+  content: {
     flexGrow: "0 !important",
   },
   categoryLabel: {
@@ -49,7 +49,7 @@ function GraphGistCard(props) {
 
   return (
     <Card key={graphGist.uuid} onClick={onCardClick} as="div" fluid link>
-      <Card.Content>
+      <Card.Content className={classes.content}>
         <Card.Header>
           <Link to={graphGistUrl}>{graphGist.title}</Link>
         </Card.Header>
@@ -65,7 +65,7 @@ function GraphGistCard(props) {
       />
 
       {graphGist.featured && (
-        <Card.Content>
+        <Card.Content className={classes.content}>
           <Icon name="thumbs up" size="large" style={{ paddingRight: 0 }} />
           Featured by Neo Team
         </Card.Content>
@@ -85,7 +85,7 @@ function GraphGistCard(props) {
               </List.Item>
             )}
 
-            {graphGist.categories.length > 2 && (
+            {graphGist.categories.length > 0 && (
               <List.Item>
                 <List.Content>
                   {graphGist.categories.slice(0, 2).map((category, index) => {
@@ -122,7 +122,7 @@ function GraphGistCard(props) {
           </List>
         </Card.Description>
       </Card.Content>
-      <Card.Content className={classes.cardFooter}>
+      <Card.Content className={classes.content}>
         <Button
           as="a"
           color="primary"
