@@ -1,5 +1,6 @@
 import { getGraphGistByUUID } from "./utils";
 import { neo4jgraphql } from "neo4j-graphql-js";
+import { createDatabase, runCypherOnDatabase }  from "neo4j-temp-db";
 
 import fetch from "node-fetch";
 import { v4 as uuidv4 } from "uuid";
@@ -113,22 +114,16 @@ const console_request = async (type, neo4j_version, cypher, session_id) => {
 };
 
 export const getConsoleSessionId = async (obj, args, context, info) => {
-  const session_id = uuidv4();
-  const result = await console_request(
-    "init",
-    args.neo4j_version,
-    '{"init":"none"}',
-    session_id
-  );
-  return session_id;
+  const tempDatabase = await createDatabase();
+  return tempDatabase;
 };
 
 export const queryConsole = async (obj, args, context, info) => {
-  const result = await console_request(
-    "cypher",
-    args.neo4j_version,
-    args.cypher,
-    args.session_id
-  );
-  return await result.text();
+  const allowed_versions = ["3.5", "4.1", "4.2"];
+  let neo4j_version = args.neo4j_version || "3.5";
+  if (allowed_versions.indexOf("neo4j_version") < 0) {
+    neo4j_version = allowed_versions[0];
+  }
+  const result = await runCypherOnDatabase(args.cypher, args.session_id, neo4j_version)
+  return JSON.stringify(result);
 };
