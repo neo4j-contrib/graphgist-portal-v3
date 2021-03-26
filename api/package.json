@@ -37,6 +37,7 @@
     "mkdirp": "^1.0.4",
     "neo4j-driver": "^4.2.3",
     "neo4j-graphql-js": "^2.19.4",
+    "neo4j-temp-db": "git+https://github.com/silverlogic/neo4j-temp-db.git#v0.1.0",
     "node-fetch": "^2.6.1",
     "sharp": "^0.26.1",
     "shortid": "^2.2.15",
