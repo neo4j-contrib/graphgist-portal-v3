@@ -11,7 +11,8 @@
     "start-dev": "./node_modules/.bin/nodemon --watch src --ext js,graphql --exec babel-node  src/index.js",
     "build": "babel src -d build && shx cp .env-example build && shx cp src/schema.graphql build && shx cp src/graphgists/notify_admins_about_creation.ejs build/graphgists/notify_admins_about_creation.ejs",
     "start": "npm run build && node build/index.js",
-    "prettier": "prettier --write"
+    "prettier": "prettier --write",
+    "clean-temp-dbs": "babel-node src/clean_temp_dbs.js"
   },
   "license": "MIT",
   "dependencies": {
