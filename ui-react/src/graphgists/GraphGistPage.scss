@@ -400,6 +400,15 @@ pre {
   position: relative;
 }
 
+.loading-img {
+  display: inline-block;
+  background: url(../assets/loading.gif);
+  width: 16px;
+  height: 16px;
+  margin-left: 15px;
+  vertical-align: middle;
+}
+
 // End of code from prism.js theme
 
 // styles to match blog //
