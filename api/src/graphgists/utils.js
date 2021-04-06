@@ -62,7 +62,7 @@ export function renderMathJax(raw_html) {
   return adaptor.innerHTML(html.document.body);
 }
 
-const loading_image_tag = '<img src="/images/loading.gif" style="width: 30px">';
+const loading_image_tag = '<span class="loading-img"></span>';
 
 const COMMENT_REPLACEMENTS = {
   console: '<p class="console"><span class="loading">' + loading_image_tag + ' Running queries, preparing the console!</span></p>',

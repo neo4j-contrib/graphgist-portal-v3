@@ -380,6 +380,7 @@ export const PublishGraphGistCandidate = async (root, args, context, info) => {
       SET g.raw_html = gc.raw_html
       SET g.title = gc.title
       SET g.url = gc.url
+      SET g.neo4j_version = gc.neo4j_version
       SET g.is_guide = gc.is_guide
       SET g.is_candidate_updated = false
       SET g.status = "live"
