@@ -29,7 +29,6 @@ import * as categoriesTypes from "./categories/types";
 
 import * as imagesTypes from "./images/types";
 import { getGraphGistBySlug, getGraphGistByUUID } from "./graphgists/utils";
-import { neo4j_system_driver } from "neo4j-temp-db";
 
 /*
  * Create a Neo4j driver instance to connect to the database
@@ -138,7 +137,6 @@ const server = new ApolloServer({
       return {
         async serverWillStop() {
           await driver.close();
-          await neo4j_system_driver.close();
         }
       }
     }

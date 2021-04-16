@@ -1,13 +1,18 @@
+import Neo4jTempDB from "neo4j-temp-db";
+import neo4j from "neo4j-driver";
+
 import dotenv from "dotenv";
+dotenv.config();
+
+const tempDb = new Neo4jTempDB(
+  process.env.CONSOLE_NEO4J_URI,
+  neo4j.auth.basic(
+    process.env.CONSOLE_NEO4J_USER,
+    process.env.CONSOLE_NEO4J_PASSWORD
+  )
+);
 
 (async function() {
-  dotenv.config();
-  const temp = require("neo4j-temp-db");
-
-  const session = temp.neo4j_system_driver.session({ database: "system" });
-  const result = await session.run("SHOW DATABASES");
-  console.log("Total DBs: ", result.records.length);
-  // await temp.removeDatabasesOlderThan(60 * 60 * 24); // 24h
-  await temp.neo4j_system_driver.close();
+  await tempDb.cleanDatabasesOlderThan(60 * 20); // 20 minutes
   process.exit();
 })();
