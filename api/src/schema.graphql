@@ -80,6 +80,7 @@ type Mutation {
   UpdateUser(user: UserInput!): User
   PublishGraphGistCandidate(uuid: ID!): GraphGist
   FlagGraphGistAsGuide(uuid: ID!, is_guide: Boolean!): GraphGist
+  FlagGraphGistAsFeatured(uuid: ID!, featured: Boolean!): GraphGist
   DisableGraphGist(uuid: ID!): GraphGist
   CreateChallenge(challenge: ChallengeInput!): Challenge
   UpdateChallenge(uuid: ID!, challenge: ChallengeInput!): Challenge
