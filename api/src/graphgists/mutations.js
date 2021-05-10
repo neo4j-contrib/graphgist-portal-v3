@@ -7,7 +7,6 @@ import S3 from "../images/s3";
 import _ from "lodash";
 import { AuthenticationError } from "apollo-server";
 import ejs from "ejs";
-import { neo4jgraphql } from "neo4j-graphql-js";
 import { sendEmail } from "../mailer.js";
 
 export const PreviewGraphGist = async (root, args, context, info) => {
@@ -517,6 +516,43 @@ export const FlagGraphGistAsGuide = async (root, args, context, info) => {
       {
         uuid: args.uuid,
         is_guide: args.is_guide,
+      }
+    );
+    const graphGist = result.records[0].get("g").properties;
+
+    await txc.commit();
+    return graphGist;
+  } catch (error) {
+    console.error(error);
+    await txc.rollback();
+    throw error;
+  } finally {
+    await session.close();
+  }
+
+  return null;
+};
+
+export const FlagGraphGistAsFeatured = async (root, args, context, info) => {
+  const session = context.driver.session();
+  const txc = session.beginTransaction();
+
+  const current_user = context.user;
+  if (!current_user || !current_user.admin) {
+    throw new AuthenticationError("You must be an admin");
+  }
+
+  try {
+    const result = await txc.run(
+      `
+      MATCH (g:GraphGist {uuid: $uuid})<-[:IS_VERSION]-(gc:GraphGistCandidate)
+      SET gc.featured = $featured
+      SET g.featured = $featured
+      RETURN g, gc
+    `,
+      {
+        uuid: args.uuid,
+        featured: args.featured,
       }
     );
     const graphGist = result.records[0].get("g").properties;

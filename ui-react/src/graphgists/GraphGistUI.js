@@ -50,6 +50,15 @@ const FLAG_GRAPHGIST_AS_GUIDE = gql`
   }
 `;
 
+const FLAG_GRAPHGIST_AS_FEATURED = gql`
+  mutation flagGraphGistAsFeaturedMutation($uuid: ID!, $featured: Boolean!) {
+    FlagGraphGistAsFeatured(uuid: $uuid, featured: $featured) {
+      uuid
+      featured
+    }
+  }
+`;
+
 const SUBMIT_FOR_APPROVAL_GRAPHGIST_GRAPHGIST = gql`
   mutation submitForApprovalGraphGistMutation($uuid: ID!) {
     SubmitForApprovalGraphGist(uuid: $uuid) {
@@ -192,8 +201,23 @@ function AssetExtraButtons({ graphGist, candidate, slug, refetch }) {
     }
   );
 
+  const [flagAsFeaturedMutation, { loading: isSavingAsFeatured }] = useMutation(
+    FLAG_GRAPHGIST_AS_FEATURED,
+    {
+      onCompleted: () => {
+        refetch();
+      },
+    }
+  );
+
   const handleMarkAsGuide = () => {
     flagAsGuideMutation({ variables: { uuid, is_guide: !graphGist.is_guide } });
+  };
+
+  const handleMarkAsFeatured = () => {
+    flagAsFeaturedMutation({
+      variables: { uuid, featured: !graphGist.featured },
+    });
   };
 
   const [disableGraphGistMutation, { loading: isDisabling }] = useMutation(
@@ -280,6 +304,16 @@ function AssetExtraButtons({ graphGist, candidate, slug, refetch }) {
 
       {!candidate && graphGist.my_perms.indexOf("admin") >= 0 && (
         <React.Fragment>
+          <Divider />
+          <Button
+            icon
+            labelPosition="left"
+            fluid
+            loading={isSavingAsFeatured}
+            onClick={handleMarkAsFeatured}
+          >
+            {graphGist.featured ? "Remove from featured" : "Add to featured"}
+          </Button>
           <Divider />
           <Button
             icon
