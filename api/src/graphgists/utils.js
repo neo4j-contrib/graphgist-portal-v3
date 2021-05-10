@@ -110,37 +110,47 @@ export async function convertAsciiDocToHtml(asciidoc) {
   if (matches.length === 0) {
     return rawHtml;
   } else {
-    for (const localMatch of matches) {
-      for (let index = 0; index < localMatch.length; index++) {
-        const match = localMatch[index];
-        if (!match.includes("href") && !match.includes("src")) {
-          try {
-            const response = await fetch(match);
-            if (!response.ok) {
-              throw new ValidationError(
-                [
-                  {
-                    key: "asciidoc",
-                    message:
-                      "We could not verify that " + match + " is a correct url",
-                  },
-                ],
-                "We could not verify that " + match + " is a correct url"
-              );
-            }
-          } catch (error) {
-            throw new ValidationError(
-              [
-                {
-                  key: "asciidoc",
-                  message:
-                    "We could not verify that " + match + " is a correct url",
-                },
-              ],
-              "We could not verify that " + match + " is a correct url"
-            );
-          }
+    for (const match of matches) {
+      const htmlProp = match[0];
+      const url = match[1];
+      if (htmlProp.indexOf("src=") === 0 && url.indexOf("https") != 0) {
+        throw new ValidationError(
+          [
+            {
+              key: "asciidoc",
+              message:
+                "Please change your http URLs to https",
+            },
+          ],
+          "Please change your http URLs to https"
+        );
+      }
+
+      try {
+        const response = await fetch(url);
+        if (!response.ok) {
+          throw new ValidationError(
+            [
+              {
+                key: "asciidoc",
+                message:
+                  "We could not verify that " + url + " is a correct url",
+              },
+            ],
+            "We could not verify that " + url + " is a correct url"
+          );
         }
+      } catch (error) {
+        throw new ValidationError(
+          [
+            {
+              key: "asciidoc",
+              message:
+                "We could not verify that " + url + " is a correct url",
+            },
+          ],
+          "We could not verify that " + url + " is a correct url"
+        );
       }
     }
   }
