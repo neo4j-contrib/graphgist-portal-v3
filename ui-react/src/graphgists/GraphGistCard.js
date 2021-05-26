@@ -10,6 +10,7 @@ import missingImg from "../assets/missing.png";
 const useStyles = createUseStyles({
   content: {
     flexGrow: "0 !important",
+    height: "70px",
   },
   categoryLabel: {
     marginTop: "2px !important",
@@ -25,6 +26,20 @@ const useStyles = createUseStyles({
     marginLeft: "-35px !important",
     marginRight: "0 !important",
     position: "absolute !important",
+  },
+  card: {
+    boxShadow:
+      "0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)",
+    borderRadius: "5px",
+    display: "grid",
+    gridTemplateRows: "70px 250px 2fr 1fr",
+    height: "600px",
+  },
+  image: {
+    height: "250px",
+    alignSelf: "center",
+    justifySelf: "center",
+    objectFit: "cover",
   },
 });
 
@@ -48,7 +63,14 @@ function GraphGistCard(props) {
   }
 
   return (
-    <Card key={graphGist.uuid} onClick={onCardClick} as="div" fluid link>
+    <Card
+      key={graphGist.uuid}
+      onClick={onCardClick}
+      as="div"
+      fluid
+      link
+      className={classes.card}
+    >
       <Card.Content className={classes.content}>
         <Card.Header>
           <Link to={graphGistUrl}>{graphGist.title}</Link>
@@ -56,6 +78,7 @@ function GraphGistCard(props) {
       </Card.Content>
 
       <Image
+        className={classes.image}
         width="100%"
         src={
           graphGist.image.length > 0
