@@ -95,13 +95,13 @@ type User {
   name: String
   image: String
   twitter_username: String
-  person: Person @relation(name: "IS_PERSON", direction: "OUT")
+  person: Person @relation(name: "IS_PERSON", direction: OUT)
   my_perms: [String]
 }
 
 interface Asset {
   uuid: ID!
-  image: [Image] @relation(name: "HAS_IMAGE", direction: "OUT")
+  image: [Image] @relation(name: "HAS_IMAGE", direction: OUT)
   name: String
   slug: String
   summary: String
@@ -109,7 +109,7 @@ interface Asset {
 
 type Person implements Asset {
   uuid: ID!
-  image: [Image] @relation(name: "HAS_IMAGE", direction: "OUT")
+  image: [Image] @relation(name: "HAS_IMAGE", direction: OUT)
   name: String
   slug: String
   summary: String
@@ -124,9 +124,9 @@ type Person implements Asset {
   tshirt_size: String
   tshirt_size_other: String
 
-  authored_gists: [GraphGist] @relation(name: "WROTE", direction: "OUT")
+  authored_gists: [GraphGist] @relation(name: "WROTE", direction: OUT)
 
-  user: User @relation(name: "IS_PERSON", direction: "IN")
+  user: User @relation(name: "IS_PERSON", direction: IN)
 }
 
 type Image {
@@ -149,38 +149,38 @@ type Image {
 
 type Industry implements Asset {
   uuid: ID!
-  image: [Image] @relation(name: "HAS_IMAGE", direction: "OUT")
+  image: [Image] @relation(name: "HAS_IMAGE", direction: OUT)
   name: String
   slug: String
   summary: String
 
-  graphgist: GraphGist @relation(name: "FOR_INDUSTRY", direction: "IN")
+  graphgist: GraphGist @relation(name: "FOR_INDUSTRY", direction: IN)
   num_graphgists: Int @cypher(statement: "RETURN this")
   my_perms: [String]
 }
 
 type UseCase implements Asset {
   uuid: ID!
-  image: [Image] @relation(name: "HAS_IMAGE", direction: "OUT")
+  image: [Image] @relation(name: "HAS_IMAGE", direction: OUT)
   name: String
   slug: String
   summary: String
 
-  graphgist: GraphGist @relation(name: "FOR_USE_CASE", direction: "IN")
+  graphgist: GraphGist @relation(name: "FOR_USE_CASE", direction: IN)
   num_graphgists: Int @cypher(statement: "RETURN this")
   my_perms: [String]
 }
 
 type Challenge implements Asset {
   uuid: ID!
-  image: [Image] @relation(name: "HAS_IMAGE", direction: "OUT")
+  image: [Image] @relation(name: "HAS_IMAGE", direction: OUT)
   name: String
   slug: String
   summary: String
 
   start_date: DateTime
   end_date: DateTime
-  graphgist: GraphGist @relation(name: "FOR_CHALLENGE", direction: "IN")
+  graphgist: GraphGist @relation(name: "FOR_CHALLENGE", direction: IN)
   num_graphgists: Int @cypher(statement: "RETURN this")
   my_perms: [String]
 }
@@ -194,12 +194,12 @@ enum GraphGistStatus {
 
 interface GraphGistInterface {
   uuid: ID!
-  image: [Image] @relation(name: "HAS_IMAGE", direction: "OUT")
+  image: [Image] @relation(name: "HAS_IMAGE", direction: OUT)
   name: String
   slug: String
   summary: String
 
-  author: Person @relation(name: "WROTE", direction: "IN")
+  author: Person @relation(name: "WROTE", direction: IN)
 
   is_guide: Boolean
 
@@ -229,21 +229,21 @@ interface GraphGistInterface {
 
   render_id: String
 
-  industries: [Industry] @relation(name: "FOR_INDUSTRY", direction: "OUT")
-  use_cases: [UseCase] @relation(name: "FOR_USE_CASE", direction: "OUT")
-  challenges: [Challenge] @relation(name: "FOR_CHALLENGE", direction: "OUT")
+  industries: [Industry] @relation(name: "FOR_INDUSTRY", direction: OUT)
+  use_cases: [UseCase] @relation(name: "FOR_USE_CASE", direction: OUT)
+  challenges: [Challenge] @relation(name: "FOR_CHALLENGE", direction: OUT)
 }
 
 type GraphGist implements GraphGistInterface & Asset {
   uuid: ID!
-  image: [Image] @relation(name: "HAS_IMAGE", direction: "OUT")
+  image: [Image] @relation(name: "HAS_IMAGE", direction: OUT)
   name: String
   slug: String
   summary: String
 
   title: String
 
-  author: Person @relation(name: "WROTE", direction: "IN")
+  author: Person @relation(name: "WROTE", direction: IN)
 
   is_guide: Boolean
 
@@ -274,9 +274,9 @@ type GraphGist implements GraphGistInterface & Asset {
 
   render_id: String
 
-  industries: [Industry] @relation(name: "FOR_INDUSTRY", direction: "OUT")
-  use_cases: [UseCase] @relation(name: "FOR_USE_CASE", direction: "OUT")
-  challenges: [Challenge] @relation(name: "FOR_CHALLENGE", direction: "OUT")
+  industries: [Industry] @relation(name: "FOR_INDUSTRY", direction: OUT)
+  use_cases: [UseCase] @relation(name: "FOR_USE_CASE", direction: OUT)
+  challenges: [Challenge] @relation(name: "FOR_CHALLENGE", direction: OUT)
   categories: [Asset]
     @cypher(
       statement: """
@@ -302,19 +302,19 @@ type GraphGist implements GraphGistInterface & Asset {
     )
   my_perms: [String]
   my_rating: Rating
-  candidate: GraphGistCandidate @relation(name: "IS_VERSION", direction: "IN")
+  candidate: GraphGistCandidate @relation(name: "IS_VERSION", direction: IN)
 }
 
 type GraphGistCandidate implements GraphGistInterface & Asset {
   uuid: ID!
-  image: [Image] @relation(name: "HAS_IMAGE", direction: "OUT")
+  image: [Image] @relation(name: "HAS_IMAGE", direction: OUT)
   name: String
   slug: String
   summary: String
 
   title: String
 
-  author: Person @relation(name: "WROTE", direction: "IN")
+  author: Person @relation(name: "WROTE", direction: IN)
 
   is_guide: Boolean
 
@@ -345,11 +345,11 @@ type GraphGistCandidate implements GraphGistInterface & Asset {
 
   render_id: String
 
-  graphgist: GraphGist @relation(name: "IS_VERSION", direction: "OUT")
+  graphgist: GraphGist @relation(name: "IS_VERSION", direction: OUT)
 
-  industries: [Industry] @relation(name: "FOR_INDUSTRY", direction: "OUT")
-  use_cases: [UseCase] @relation(name: "FOR_USE_CASE", direction: "OUT")
-  challenges: [Challenge] @relation(name: "FOR_CHALLENGE", direction: "OUT")
+  industries: [Industry] @relation(name: "FOR_INDUSTRY", direction: OUT)
+  use_cases: [UseCase] @relation(name: "FOR_USE_CASE", direction: OUT)
+  challenges: [Challenge] @relation(name: "FOR_CHALLENGE", direction: OUT)
   categories: [Asset]
     @cypher(
       statement: """
