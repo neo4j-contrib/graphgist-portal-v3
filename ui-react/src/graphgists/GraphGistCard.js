@@ -85,7 +85,7 @@ function GraphGistCard(props) {
               </List.Item>
             )}
 
-            {graphGist.categories.length > 0 && (
+            {/*graphGist.categories.length > 0 && (
               <List.Item>
                 <List.Content>
                   {graphGist.categories.slice(0, 2).map((category, index) => {
@@ -111,7 +111,7 @@ function GraphGistCard(props) {
                   })}
                 </List.Content>
               </List.Item>
-            )}
+            )*/}
 
             {/*graphGist.categories.length > 2 && (
               <List.Item>
@@ -153,15 +153,6 @@ GraphGistCard.fragments = {
       }
       candidate {
         uuid
-      }
-      categories(first: 3) {
-        __typename
-        uuid
-        slug
-        name
-        image(first: 1) {
-          source_url
-        }
       }
       author {
         name
