@@ -52,13 +52,16 @@ function CategoryPage(props) {
   const category = _.get(data, "category", null);
   const isChallenge = _.get(category, "__typename") === "Challenge";
 
+  const canEditMetaData = () =>
+    isChallenge && category.my_perms.indexOf("edit") >= 0;
+
   return loading || !category ? (
     <Loader active inline="centered" />
   ) : (
     <div>
       <Header as="h2">{category && category.name}</Header>
       <Grid>
-        <Grid.Column width={13}>
+        <Grid.Column width={canEditMetaData() ? 13 : "100%"}>
           {category.summary && (
             <React.Fragment>
               <Divider horizontal>Summary</Divider>
@@ -70,8 +73,8 @@ function CategoryPage(props) {
             variables={{ slug: categorySlug }}
           />
         </Grid.Column>
-        <Grid.Column width={3}>
-          {isChallenge && category.my_perms.indexOf("edit") >= 0 && (
+        {canEditMetaData() && (
+          <Grid.Column width={3}>
             <Button
               icon
               labelPosition="left"
@@ -81,8 +84,8 @@ function CategoryPage(props) {
               <Icon name="edit" />
               Edit Metadata
             </Button>
-          )}
-        </Grid.Column>
+          </Grid.Column>
+        )}
       </Grid>
     </div>
   );
