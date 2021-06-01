@@ -2,12 +2,12 @@ import {
   convertAsciiDocToHtml,
   renderMathJax,
   getGraphGistByUUID,
-} from "./utils";
-import S3 from "../images/s3";
-import _ from "lodash";
-import { AuthenticationError } from "apollo-server";
-import ejs from "ejs";
-import { sendEmail } from "../mailer.js";
+} from './utils';
+import S3 from '../images/s3';
+import _ from 'lodash';
+import { AuthenticationError } from 'apollo-server';
+import ejs from 'ejs';
+import { sendEmail } from '../mailer.js';
 
 export const PreviewGraphGist = async (root, args, context, info) => {
   return renderMathJax(await convertAsciiDocToHtml(args.asciidoc));
@@ -29,7 +29,7 @@ export const CreateGraphGist = async (root, args, context, info) => {
 
     const graphgist_post = {
       ...proprieties,
-      status: "draft",
+      status: 'draft',
       raw_html: renderMathJax(
         await convertAsciiDocToHtml(proprieties.asciidoc)
       ),
@@ -50,8 +50,8 @@ export const CreateGraphGist = async (root, args, context, info) => {
         graphgist: graphgist_post,
       }
     );
-    const graphgist = result.records[0].get("g").properties;
-    const candidate = result.records[0].get("gc").properties;
+    const graphgist = result.records[0].get('g').properties;
+    const candidate = result.records[0].get('gc').properties;
 
     const current_user = context.user;
     const authorResult = await txc.run(
@@ -67,7 +67,7 @@ export const CreateGraphGist = async (root, args, context, info) => {
         authorUuid: current_user.uuid,
       }
     );
-    const authorPerson = authorResult.records[0].get("p").properties;
+    const authorPerson = authorResult.records[0].get('p').properties;
 
     var categoryUuid;
 
@@ -141,30 +141,37 @@ export const CreateGraphGist = async (root, args, context, info) => {
       );
     }
 
-    ejs.renderFile(`${__dirname}/notify_admins_about_creation.ejs`, {
-      FRONTEND_URL: process.env.FRONTEND_URL,
-      candidate: candidate,
-      graphgist: graphgist,
-      author: authorPerson,
-    }, {} ,  async (err, htmlBody) => {
-      if (err) {
-        console.error(err, err.stack);
-      } else {
-        const adminsResult = await txc.run(
-          `
+    ejs.renderFile(
+      `${__dirname}/notify_admins_about_creation.ejs`,
+      {
+        FRONTEND_URL: process.env.FRONTEND_URL,
+        candidate: candidate,
+        graphgist: graphgist,
+        author: authorPerson,
+      },
+      {},
+      async (err, htmlBody) => {
+        if (err) {
+          console.error(err, err.stack);
+        } else {
+          const adminsResult = await txc.run(
+            `
           MATCH (u:User {admin: true})
           WHERE EXISTS (u.email)
           RETURN u.email
           `
-        );
-        const adminEmails = adminsResult.records.map(record => record.get('u.email')).filter(item => !!item)
-        sendEmail({
-          to: adminEmails,
-          subject: `[New GraphGist] ${graphgist.title}`,
-          htmlBody
-        });
+          );
+          const adminEmails = adminsResult.records
+            .map((record) => record.get('u.email'))
+            .filter((item) => !!item);
+          sendEmail({
+            to: adminEmails,
+            subject: `[New GraphGist] ${graphgist.title}`,
+            htmlBody,
+          });
+        }
       }
-    });
+    );
 
     await txc.commit();
     return candidate;
@@ -175,8 +182,6 @@ export const CreateGraphGist = async (root, args, context, info) => {
   } finally {
     await session.close();
   }
-
-  return null;
 };
 
 export const SubmitForApprovalGraphGist = async (root, args, context, info) => {
@@ -185,19 +190,60 @@ export const SubmitForApprovalGraphGist = async (root, args, context, info) => {
 
   const current_user = context.user;
   if (!current_user || !current_user.admin) {
-    throw new AuthenticationError("You must be an admin");
+    throw new AuthenticationError('You must be an admin');
   }
 
   try {
     const result = await txc.run(
       `
-      MATCH (g:GraphGist {uuid: $uuid})<-[:IS_VERSION]-(gc:GraphGistCandidate)
+      MATCH (g:GraphGist {uuid: $uuid})<-[:IS_VERSION]-(gc:GraphGistCandidate)<-[r:WROTE]-(p)
       SET g.status = "candidate"
       SET gc.status = "candidate"
-      RETURN g
-      `, { uuid: args.uuid }
+      RETURN g, gc, p
+      `,
+      { uuid: args.uuid }
     );
-    return result.records[0].get("g").properties;
+
+    const graphgist = result.records[0].get('g').properties;
+    const candidate = result.records[0].get('gc').properties;
+    const authorPerson = result.records[0].get('p').properties;
+
+    const adminsResult = await txc.run(
+      `
+      MATCH (u:User {admin: true})
+      WHERE EXISTS (u.email)
+      RETURN u.email
+      `
+    );
+
+    await txc.commit();
+
+    ejs.renderFile(
+      `${__dirname}/notify_admins_about_submit_for_approval.ejs`,
+      {
+        FRONTEND_URL: process.env.FRONTEND_URL,
+        candidate: candidate,
+        graphgist: graphgist,
+        author: authorPerson,
+      },
+      {},
+      async (err, htmlBody) => {
+        if (err) {
+          console.error(err, err.stack);
+        } else {
+          const adminEmails = adminsResult.records
+            .map((record) => record.get('u.email'))
+            .filter((item) => !!item);
+          sendEmail({
+            to: adminEmails,
+            subject: `[New GraphGist] ${graphgist.title}`,
+            htmlBody,
+          });
+        }
+      }
+    );
+
+    return result.records[0].get('g').properties;
   } catch (error) {
     console.error(error);
     await txc.rollback();
@@ -205,8 +251,6 @@ export const SubmitForApprovalGraphGist = async (root, args, context, info) => {
   } finally {
     await session.close();
   }
-
-  return null;
 };
 
 export const UpdateGraphGist = async (root, args, context, info) => {
@@ -215,22 +259,16 @@ export const UpdateGraphGist = async (root, args, context, info) => {
 
   const current_user = context.user;
   if (!current_user) {
-    throw new AuthenticationError("You must be authenticated");
+    throw new AuthenticationError('You must be authenticated');
   }
 
   try {
     const graphGist = await getGraphGistByUUID(txc, args.uuid);
 
-    const {
-      industries,
-      use_cases,
-      challenges,
-      author,
-      images,
-      ...properties
-    } = args.graphgist;
+    const { industries, use_cases, challenges, author, images, ...properties } =
+      args.graphgist;
     const rawHtml = await convertAsciiDocToHtml(properties.asciidoc);
-    if (typeof rawHtml === "object") {
+    if (typeof rawHtml === 'object') {
       throw rawHtml;
     }
 
@@ -240,7 +278,7 @@ export const UpdateGraphGist = async (root, args, context, info) => {
       SET g += { is_candidate_updated: TRUE, has_errors: FALSE }
       RETURN gc
     `;
-    if (graphGist.status === "draft" || graphGist.status === "candidate") {
+    if (graphGist.status === 'draft' || graphGist.status === 'candidate') {
       graphGistUpgateCypher = `
         MATCH (g:GraphGist {uuid: $uuid})<-[:IS_VERSION]-(gc:GraphGistCandidate)
         SET g += $graphgist
@@ -250,19 +288,16 @@ export const UpdateGraphGist = async (root, args, context, info) => {
       `;
     }
 
-    const result = await txc.run(
-      graphGistUpgateCypher,
-      {
-        uuid: args.uuid,
-        graphgist: {
-          ...properties,
-          status: "draft",
-          raw_html: rawHtml,
-          has_errors: false,
-        },
-      }
-    );
-    const candidate = result.records[0].get("gc").properties;
+    const result = await txc.run(graphGistUpgateCypher, {
+      uuid: args.uuid,
+      graphgist: {
+        ...properties,
+        status: 'draft',
+        raw_html: rawHtml,
+        has_errors: false,
+      },
+    });
+    const candidate = result.records[0].get('gc').properties;
 
     await txc.run(
       `
@@ -355,8 +390,6 @@ export const UpdateGraphGist = async (root, args, context, info) => {
   } finally {
     await session.close();
   }
-
-  return null;
 };
 
 export const PublishGraphGistCandidate = async (root, args, context, info) => {
@@ -365,7 +398,7 @@ export const PublishGraphGistCandidate = async (root, args, context, info) => {
 
   const current_user = context.user;
   if (!current_user || !current_user.admin) {
-    throw new AuthenticationError("You must be an admin");
+    throw new AuthenticationError('You must be an admin');
   }
 
   const { uuid } = args;
@@ -388,8 +421,8 @@ export const PublishGraphGistCandidate = async (root, args, context, info) => {
     `,
       { uuid }
     );
-    const candidate = result.records[0].get("gc").properties;
-    const graphGist = result.records[0].get("g").properties;
+    const candidate = result.records[0].get('gc').properties;
+    const graphGist = result.records[0].get('g').properties;
 
     await txc.run(
       `
@@ -456,8 +489,6 @@ export const PublishGraphGistCandidate = async (root, args, context, info) => {
   } finally {
     await session.close();
   }
-
-  return null;
 };
 
 export const DisableGraphGist = async (root, args, context, info) => {
@@ -466,7 +497,7 @@ export const DisableGraphGist = async (root, args, context, info) => {
 
   const current_user = context.user;
   if (!current_user || !current_user.admin) {
-    throw new AuthenticationError("You must be an admin");
+    throw new AuthenticationError('You must be an admin');
   }
 
   try {
@@ -481,7 +512,7 @@ export const DisableGraphGist = async (root, args, context, info) => {
         uuid: args.uuid,
       }
     );
-    const graphGist = result.records[0].get("g").properties;
+    const graphGist = result.records[0].get('g').properties;
 
     await txc.commit();
     return graphGist;
@@ -492,8 +523,6 @@ export const DisableGraphGist = async (root, args, context, info) => {
   } finally {
     await session.close();
   }
-
-  return null;
 };
 
 export const FlagGraphGistAsGuide = async (root, args, context, info) => {
@@ -502,7 +531,7 @@ export const FlagGraphGistAsGuide = async (root, args, context, info) => {
 
   const current_user = context.user;
   if (!current_user || !current_user.admin) {
-    throw new AuthenticationError("You must be an admin");
+    throw new AuthenticationError('You must be an admin');
   }
 
   try {
@@ -518,7 +547,7 @@ export const FlagGraphGistAsGuide = async (root, args, context, info) => {
         is_guide: args.is_guide,
       }
     );
-    const graphGist = result.records[0].get("g").properties;
+    const graphGist = result.records[0].get('g').properties;
 
     await txc.commit();
     return graphGist;
@@ -529,8 +558,6 @@ export const FlagGraphGistAsGuide = async (root, args, context, info) => {
   } finally {
     await session.close();
   }
-
-  return null;
 };
 
 export const FlagGraphGistAsFeatured = async (root, args, context, info) => {
@@ -539,7 +566,7 @@ export const FlagGraphGistAsFeatured = async (root, args, context, info) => {
 
   const current_user = context.user;
   if (!current_user || !current_user.admin) {
-    throw new AuthenticationError("You must be an admin");
+    throw new AuthenticationError('You must be an admin');
   }
 
   try {
@@ -555,7 +582,7 @@ export const FlagGraphGistAsFeatured = async (root, args, context, info) => {
         featured: args.featured,
       }
     );
-    const graphGist = result.records[0].get("g").properties;
+    const graphGist = result.records[0].get('g').properties;
 
     await txc.commit();
     return graphGist;
@@ -566,8 +593,6 @@ export const FlagGraphGistAsFeatured = async (root, args, context, info) => {
   } finally {
     await session.close();
   }
-
-  return null;
 };
 
 export const Rate = async (root, args, context, info) => {
@@ -575,21 +600,22 @@ export const Rate = async (root, args, context, info) => {
   const current_user = context.user;
 
   if (!current_user) {
-    throw new AuthenticationError("You must authenticate");
+    throw new AuthenticationError('You must authenticate');
   }
 
-  const asset = await session.readTransaction(async txc => {
+  const asset = await session.readTransaction(async (txc) => {
     const asset_result = await txc.run(
       `
       MATCH (a {uuid: $uuid})
       RETURN a
-    `, { uuid: args.to }
+    `,
+      { uuid: args.to }
     );
-    return asset_result.records[0].get("a").properties;
+    return asset_result.records[0].get('a').properties;
   });
 
   if (asset) {
-    return await session.writeTransaction(async txc => {
+    return await session.writeTransaction(async (txc) => {
       const result = await txc.run(
         `
         MATCH (u:User {uuid: $user})
@@ -606,7 +632,7 @@ export const Rate = async (root, args, context, info) => {
           rated_at: new Date().toISOString(),
         }
       );
-      return result.records[0].get("r").properties;
+      return result.records[0].get('r').properties;
     });
   }
 };
