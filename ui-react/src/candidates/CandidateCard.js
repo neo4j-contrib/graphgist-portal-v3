@@ -4,6 +4,7 @@ import { useHistory } from 'react-router';
 import { Card, Image, List } from 'semantic-ui-react';
 import { Link } from 'react-router-dom';
 import { createUseStyles } from 'react-jss';
+import Clampy from '@clampy-js/react-clampy';
 
 import missingImg from '../assets/missing.png';
 
@@ -34,7 +35,9 @@ function GraphGistCandidateCard(props) {
     <Card key={graphGist.id} link onClick={onCardClick} as="div">
       <Card.Content>
         <Card.Header>
-          <Link to={graphGistUrl}>{graphGist.title}</Link>
+          <Link to={graphGistUrl}>
+            <Clampy clampSize="2">{graphGist.title}</Clampy>
+          </Link>
         </Card.Header>
       </Card.Content>
 

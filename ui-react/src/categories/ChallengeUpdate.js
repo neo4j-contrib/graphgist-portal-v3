@@ -8,6 +8,7 @@ import moment from 'moment';
 import { Helmet } from 'react-helmet';
 import { Formik, FieldArray } from 'formik';
 import { createUseStyles } from 'react-jss';
+import Clampy from '@clampy-js/react-clampy';
 import _ from 'lodash';
 
 const UPDATE_CHALLENGE = gql`
@@ -181,7 +182,11 @@ function ChallengeUpdate(props) {
                               {(image.title || image.description) && (
                                 <Card.Content>
                                   {image.title && (
-                                    <Card.Header>{image.title}</Card.Header>
+                                    <Card.Header>
+                                      <Clampy clampSize="2">
+                                        {image.title}
+                                      </Clampy>
+                                    </Card.Header>
                                   )}
                                   {image.description && (
                                     <Card.Meta>{image.description}</Card.Meta>

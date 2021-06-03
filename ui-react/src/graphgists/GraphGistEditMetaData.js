@@ -24,6 +24,7 @@ import IndustriesSelect from './components/IndustriesSelect';
 import UseCasesSelect from './components/UseCasesSelect';
 import ChallengesSelect from './components/ChallengesSelect';
 import GraphGistRenderer from './render/GraphGistRenderer.js';
+import Clampy from '@clampy-js/react-clampy';
 
 const GET_GRAPHGIST = gql`
   query graphGistPage($id: ID!) {
@@ -241,7 +242,10 @@ function GraphGistEditByOwner() {
                         {(image.title || image.description) && (
                           <Card.Content>
                             {image.title && (
-                              <Card.Header>{image.title}</Card.Header>
+                              <Card.Header>
+                                {' '}
+                                <Clampy clampSize="2">{image.title}</Clampy>
+                              </Card.Header>
                             )}
                             {image.description && (
                               <Card.Meta>{image.description}</Card.Meta>

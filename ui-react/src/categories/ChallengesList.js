@@ -83,7 +83,7 @@ function ChallengesList() {
       {error && !loading && <p>Error</p>}
       {data && !loading && !error && (
         <Grid.Row>
-          <Grid.Column width={13}>
+          <Grid.Column width={me ? 13 : '100%'}>
             <Card.Group itemsPerRow={3}>
               {data.Challenge.map((challenge) => (
                 <ChallengeCard key={challenge.uuid} challenge={challenge} />

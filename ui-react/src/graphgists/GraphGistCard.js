@@ -4,13 +4,17 @@ import { useHistory } from 'react-router';
 import { Card, Image, Icon, List, Button, Label } from 'semantic-ui-react';
 import { Link } from 'react-router-dom';
 import { createUseStyles } from 'react-jss';
+import Clampy from '@clampy-js/react-clampy';
 
 import missingImg from '../assets/missing.png';
 
 const useStyles = createUseStyles({
   content: {
     flexGrow: '0 !important',
-    height: '70px',
+    height: '60px',
+    position: 'relative',
+    overflow: 'hidden',
+    overflowWrap: 'break-word',
   },
   categoryLabel: {
     marginTop: '2px !important',
@@ -73,7 +77,9 @@ function GraphGistCard(props) {
     >
       <Card.Content className={classes.content}>
         <Card.Header>
-          <Link to={graphGistUrl}>{graphGist.title}</Link>
+          <Link to={graphGistUrl}>
+            <Clampy clampSize="2">{graphGist.title}</Clampy>
+          </Link>
         </Card.Header>
       </Card.Content>
 
