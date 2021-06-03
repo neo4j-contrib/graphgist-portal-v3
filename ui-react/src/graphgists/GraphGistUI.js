@@ -108,7 +108,7 @@ function GraphGistPage({ graphGist, loading, error, candidate, refetch }) {
             <Grid.Column width={3}>
               {!candidate && graphGist.status === 'live' && slug && (
                 <>
-                  <a href={`https://neo4j.com/graphgist/${slug}`}>
+                  <a href={`https://neo4j.com/graphgists/${slug}`}>
                     Live Version
                   </a>
                   <Divider />

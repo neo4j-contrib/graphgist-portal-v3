@@ -8,6 +8,7 @@ import { Helmet } from 'react-helmet';
 import { Formik, FieldArray } from 'formik';
 import { createUseStyles } from 'react-jss';
 import { DateTimeInput } from 'semantic-ui-calendar-react';
+import Clampy from '@clampy-js/react-clampy';
 
 const CREATE_CHALLENGE = gql`
   mutation CreateChallenge($challenge: ChallengeInput!) {
@@ -136,7 +137,11 @@ function ChallengeCreate() {
                               {(image.title || image.description) && (
                                 <Card.Content>
                                   {image.title && (
-                                    <Card.Header>{image.title}</Card.Header>
+                                    <Card.Header>
+                                      <Clampy clampSize="2">
+                                        {image.title}
+                                      </Clampy>
+                                    </Card.Header>
                                   )}
                                   {image.description && (
                                     <Card.Meta>{image.description}</Card.Meta>

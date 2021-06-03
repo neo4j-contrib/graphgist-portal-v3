@@ -4,6 +4,7 @@ import { useHistory } from 'react-router';
 import { Card, Image } from 'semantic-ui-react';
 import { Link } from 'react-router-dom';
 // import { createUseStyles } from "react-jss";
+import Clampy from '@clampy-js/react-clampy';
 
 import missingImg from '../assets/missing.png';
 
@@ -24,7 +25,9 @@ function ChallengeCard(props) {
     <Card key={challenge.id} link onClick={onCardClick} as="div">
       <Card.Content>
         <Card.Header>
-          <Link to={challengeUrl}>{challenge.name}</Link>
+          <Link to={challengeUrl}>
+            <Clampy clampSize="2">{challenge.name}</Clampy>
+          </Link>
         </Card.Header>
       </Card.Content>
 

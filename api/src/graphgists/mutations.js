@@ -430,7 +430,7 @@ export const PublishGraphGistCandidate = async (root, args, context, info) => {
       DELETE r
       `,
       { uuid }
-    )
+    );
 
     await txc.run(
       `

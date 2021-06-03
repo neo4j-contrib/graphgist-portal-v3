@@ -61,31 +61,33 @@ function CategoryPage(props) {
     <div>
       <Header as="h2">{category && category.name}</Header>
       <Grid>
-        <Grid.Column width={canEditMetaData() ? 13 : '100%'}>
-          {category.summary && (
-            <React.Fragment>
-              <Divider horizontal>Summary</Divider>
-              <SimpleFormat text={category.summary} />
-            </React.Fragment>
+        <Grid.Row width={'100%'}>
+          <Grid.Column width={canEditMetaData() ? 13 : '100%'}>
+            {category.summary && (
+              <React.Fragment>
+                <Divider horizontal>Summary</Divider>
+                <SimpleFormat text={category.summary} />
+              </React.Fragment>
+            )}
+          </Grid.Column>
+          {canEditMetaData() && (
+            <Grid.Column width={3}>
+              <Button
+                icon
+                labelPosition="left"
+                as={Link}
+                to={`/challenges/${category.slug}/edit`}
+              >
+                <Icon name="edit" />
+                Edit Metadata
+              </Button>
+            </Grid.Column>
           )}
           <GraphGistList
             graphql={list_graphql}
             variables={{ slug: categorySlug }}
           />
-        </Grid.Column>
-        {canEditMetaData() && (
-          <Grid.Column width={3}>
-            <Button
-              icon
-              labelPosition="left"
-              as={Link}
-              to={`/challenges/${category.slug}/edit`}
-            >
-              <Icon name="edit" />
-              Edit Metadata
-            </Button>
-          </Grid.Column>
-        )}
+        </Grid.Row>
       </Grid>
     </div>
   );
