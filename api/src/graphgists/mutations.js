@@ -428,8 +428,13 @@ export const PublishGraphGistCandidate = async (root, args, context, info) => {
       `
       MATCH (g:GraphGist {uuid: $uuid})<-[r:WROTE]-()
       DELETE r
-      WITH g
-      MATCH (g)<-[:IS_VERSION]-(gc:GraphGistCandidate)<-[:WROTE]-(p)
+      `,
+      { uuid }
+    )
+
+    await txc.run(
+      `
+      MATCH (g:GraphGist {uuid: $uuid})<-[:IS_VERSION]-(gc:GraphGistCandidate)<-[:WROTE]-(p)
       CREATE (g)<-[:WROTE]-(p)
       RETURN p
       `,
