@@ -415,7 +415,7 @@ function AssetExtraButtons({ graphGist, candidate, slug, refetch }) {
             </Item.Content>
           </Item>
         )}
-        <Item>
+        {graphGist.author && (<Item>
           <Item.Content>
             <Divider horizontal>Author</Divider>
             <Item.Description>
@@ -425,7 +425,7 @@ function AssetExtraButtons({ graphGist, candidate, slug, refetch }) {
               </Link>
             </Item.Description>
           </Item.Content>
-        </Item>
+        </Item>)}
         {isLoginEnabled && !candidate && (
           <Item>
             <Item.Content>
