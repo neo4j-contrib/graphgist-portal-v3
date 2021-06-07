@@ -6,13 +6,18 @@ module.exports = {
     configure: (webpackConfig, { env, paths }) => {
       return {
         ...webpackConfig,
-        entry: [path.join(__dirname, 'src/graphgists/render/GraphGistRendererOnExternal.js')],
+        entry: [
+          path.join(
+            __dirname,
+            'src/graphgists/render/GraphGistRendererOnExternal.js'
+          ),
+        ],
         output: {
           ...webpackConfig.output,
           filename: 'static/js/graphgist-render.js',
           libraryTarget: 'var',
           library: 'GraphGistRenderer',
-          libraryExport: 'default'
+          libraryExport: 'default',
         },
         optimization: {
           splitChunks: {
@@ -28,8 +33,8 @@ module.exports = {
             filename: 'static/css/graphgist-render.css',
           }),
           webpackConfig.plugins[7],
-        ]
+        ],
       };
-    }
-  }
+    },
+  },
 };

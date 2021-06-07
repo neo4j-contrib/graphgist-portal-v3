@@ -1,13 +1,13 @@
-import React from "react";
-import { useMutation } from "@apollo/client";
-import { useHistory } from "react-router-dom";
-import gql from "graphql-tag";
-import { Form, Button, Image, Card } from "semantic-ui-react";
-import moment from "moment";
-import { Helmet } from "react-helmet";
-import { Formik, FieldArray } from "formik";
-import { createUseStyles } from "react-jss";
-import { DateTimeInput } from "semantic-ui-calendar-react";
+import React from 'react';
+import { useMutation } from '@apollo/client';
+import { useHistory } from 'react-router-dom';
+import gql from 'graphql-tag';
+import { Form, Button, Image, Card } from 'semantic-ui-react';
+import moment from 'moment';
+import { Helmet } from 'react-helmet';
+import { Formik, FieldArray } from 'formik';
+import { createUseStyles } from 'react-jss';
+import { DateTimeInput } from 'semantic-ui-calendar-react';
 
 const CREATE_CHALLENGE = gql`
   mutation CreateChallenge($challenge: ChallengeInput!) {
@@ -35,10 +35,10 @@ function ChallengeCreate() {
   const history = useHistory();
 
   const showApiError = (data) => {
-    history.push("/challenges/new", {
+    history.push('/challenges/new', {
       messages: data.graphQLErrors.map((error) => ({
         body: error.message,
-        type: "negative",
+        type: 'negative',
       })),
     });
   };
@@ -62,10 +62,10 @@ function ChallengeCreate() {
       <Formik
         initialValues={{
           images: [],
-          name: "",
-          summary: "",
-          start_date: "",
-          end_date: "",
+          name: '',
+          summary: '',
+          start_date: '',
+          end_date: '',
         }}
         onSubmit={(values, e, a) => {
           let start_date = {};
@@ -73,13 +73,13 @@ function ChallengeCreate() {
           if (values.start_date) {
             start_date.formatted = moment(
               values.start_date,
-              "YYYY-MM-DD HH:mm"
+              'YYYY-MM-DD HH:mm'
             ).toISOString();
           }
           if (values.end_date) {
             end_date.formatted = moment(
               values.end_date,
-              "YYYY-MM-DD HH:mm"
+              'YYYY-MM-DD HH:mm'
             ).toISOString();
           }
 
@@ -196,7 +196,7 @@ function ChallengeCreate() {
                 <DateTimeInput
                   name="start_date"
                   placeholder="Format: YYYY-MM-DD HH:MM, always in UTC"
-                  dateTimeFormat={"YYYY-MM-DD HH:mm"}
+                  dateTimeFormat={'YYYY-MM-DD HH:mm'}
                   value={values.start_date}
                   onChange={handleChangeSelect}
                 />
@@ -206,7 +206,7 @@ function ChallengeCreate() {
                 <DateTimeInput
                   name="end_date"
                   placeholder="Format: YYYY-MM-DD HH:MM, always in UTC"
-                  dateTimeFormat={"YYYY-MM-DD HH:mm"}
+                  dateTimeFormat={'YYYY-MM-DD HH:mm'}
                   value={values.end_date}
                   onChange={handleChangeSelect}
                 />

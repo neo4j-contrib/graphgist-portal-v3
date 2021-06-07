@@ -11,11 +11,11 @@
 
 const Base64 = {
   // private property
-  _keyStr: "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=",
+  _keyStr: 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=',
 
   // public method for encoding
   encode: function (input) {
-    var output = "";
+    var output = '';
     var chr1, chr2, chr3, enc1, enc2, enc3, enc4;
     var i = 0;
 
@@ -50,12 +50,12 @@ const Base64 = {
 
   // public method for decoding
   decode: function (input) {
-    var output = "";
+    var output = '';
     var chr1, chr2, chr3;
     var enc1, enc2, enc3, enc4;
     var i = 0;
 
-    input = input.replace(/[^A-Za-z0-9\+\/\=]/g, "");
+    input = input.replace(/[^A-Za-z0-9\+\/\=]/g, '');
 
     while (i < input.length) {
       enc1 = this._keyStr.indexOf(input.charAt(i++));
@@ -84,8 +84,8 @@ const Base64 = {
 
   // private method for UTF-8 encoding
   _utf8_encode: function (string) {
-    string = string.replace(/\r\n/g, "\n");
-    var utftext = "";
+    string = string.replace(/\r\n/g, '\n');
+    var utftext = '';
 
     for (var n = 0; n < string.length; n++) {
       var c = string.charCodeAt(n);
@@ -107,7 +107,7 @@ const Base64 = {
 
   // private method for UTF-8 decoding
   _utf8_decode: function (utftext) {
-    var string = "";
+    var string = '';
     var i = 0;
     var c = 0,
       c1 = 0,

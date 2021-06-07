@@ -1,14 +1,14 @@
-import React from "react";
-import { useMutation, useQuery } from "@apollo/client";
-import { useHistory } from "react-router-dom";
-import gql from "graphql-tag";
-import { Form, Button, Image, Card, Grid } from "semantic-ui-react";
-import { DateTimeInput } from "semantic-ui-calendar-react";
-import moment from "moment";
-import { Helmet } from "react-helmet";
-import { Formik, FieldArray } from "formik";
-import { createUseStyles } from "react-jss";
-import _ from "lodash";
+import React from 'react';
+import { useMutation, useQuery } from '@apollo/client';
+import { useHistory } from 'react-router-dom';
+import gql from 'graphql-tag';
+import { Form, Button, Image, Card, Grid } from 'semantic-ui-react';
+import { DateTimeInput } from 'semantic-ui-calendar-react';
+import moment from 'moment';
+import { Helmet } from 'react-helmet';
+import { Formik, FieldArray } from 'formik';
+import { createUseStyles } from 'react-jss';
+import _ from 'lodash';
 
 const UPDATE_CHALLENGE = gql`
   mutation UpdateChallenge($uuid: ID!, $challenge: ChallengeInput!) {
@@ -60,7 +60,7 @@ function ChallengeUpdate(props) {
   const { id } = props.match.params;
 
   const { loading, data, error } = useQuery(graphql, {
-    fetchPolicy: "cache-and-network",
+    fetchPolicy: 'cache-and-network',
     variables: { id },
   });
   const classes = useStyles();
@@ -70,7 +70,7 @@ function ChallengeUpdate(props) {
     history.push(`/challenges/${id}/edit`, {
       messages: data.graphQLErrors.map((error) => ({
         body: error.message,
-        type: "negative",
+        type: 'negative',
       })),
     });
   };
@@ -87,7 +87,7 @@ function ChallengeUpdate(props) {
     }
   );
 
-  const challenge = _.get(data, "category");
+  const challenge = _.get(data, 'category');
 
   if ((loading && !error) || !challenge) {
     return (
@@ -108,8 +108,8 @@ function ChallengeUpdate(props) {
           images: challenge.images || [],
           name: challenge.name,
           summary: challenge.summary,
-          start_date: challenge.start_date.formatted || "",
-          end_date: challenge.end_date.formatted || "",
+          start_date: challenge.start_date.formatted || '',
+          end_date: challenge.end_date.formatted || '',
         }}
         onSubmit={(values, e, a) => {
           let start_date = {};
@@ -117,13 +117,13 @@ function ChallengeUpdate(props) {
           if (values.start_date) {
             start_date.formatted = moment(
               values.start_date,
-              "YYYY-MM-DD HH:mm"
+              'YYYY-MM-DD HH:mm'
             ).toISOString();
           }
           if (values.end_date) {
             end_date.formatted = moment(
               values.end_date,
-              "YYYY-MM-DD HH:mm"
+              'YYYY-MM-DD HH:mm'
             ).toISOString();
           }
 
@@ -239,7 +239,7 @@ function ChallengeUpdate(props) {
                 <DateTimeInput
                   name="start_date"
                   placeholder="Format: YYYY-MM-DD HH:MM, always in UTC"
-                  dateTimeFormat={"YYYY-MM-DD HH:mm"}
+                  dateTimeFormat={'YYYY-MM-DD HH:mm'}
                   value={values.start_date}
                   onChange={handleChangeSelect}
                 />
@@ -249,7 +249,7 @@ function ChallengeUpdate(props) {
                 <DateTimeInput
                   name="end_date"
                   placeholder="Format: YYYY-MM-DD HH:MM, always in UTC"
-                  dateTimeFormat={"YYYY-MM-DD HH:mm"}
+                  dateTimeFormat={'YYYY-MM-DD HH:mm'}
                   value={values.end_date}
                   onChange={handleChangeSelect}
                 />

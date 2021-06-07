@@ -1,8 +1,8 @@
-import React, { useEffect } from "react";
-import { useLazyQuery } from "@apollo/client";
-import gql from "graphql-tag";
-import { Button, Card } from "semantic-ui-react";
-import GraphGistCard from "./GraphGistCard";
+import React, { useEffect } from 'react';
+import { useLazyQuery } from '@apollo/client';
+import gql from 'graphql-tag';
+import { Button, Card } from 'semantic-ui-react';
+import GraphGistCard from './GraphGistCard';
 
 const GET_GISTS_BY_USER = gql`
   query graphGistsByAuthorUserQuery($uuid: ID!, $first: Int, $offset: Int) {
@@ -60,7 +60,7 @@ function GraphGistsByPerson({ personUUID, userUUID, myGraphGists }) {
     loadMyGraphGists,
     { data: myGraphGistsData, loading, error, fetchMore },
   ] = useLazyQuery(query, {
-    fetchPolicy: "cache-and-network",
+    fetchPolicy: 'cache-and-network',
     onCompleted: (data) => {
       if (data && data.graphgists) {
         setHasMore(data.graphgists.length >= rowsPerPage);

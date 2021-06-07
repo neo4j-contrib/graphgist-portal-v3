@@ -3,7 +3,7 @@
 /*eslint no-throw-literal: 0*/
 /*eslint no-sequences: 0*/
 
-import $ from "jquery";
+import $ from 'jquery';
 
 /**
  * Licensed to Neo Technology under one or more contributor license agreements. See the NOTICE file distributed with
@@ -41,10 +41,10 @@ export default function (config, ready) {
     getUrl,
     gist_id,
     neo4j_version;
-  $IFRAME = $("<iframe/>").attr("id", "console").addClass("cypherdoc-console");
-  $IFRAME_WRAPPER = $("<div/>").attr("id", "console-wrapper");
-  RESIZE_OUT_ICON = "ui expand icon";
-  RESIZE_IN_ICON = "ui large compress icon";
+  $IFRAME = $('<iframe/>').attr('id', 'console').addClass('cypherdoc-console');
+  $IFRAME_WRAPPER = $('<div/>').attr('id', 'console-wrapper');
+  RESIZE_OUT_ICON = 'ui expand icon';
+  RESIZE_IN_ICON = 'ui large compress icon';
   $RESIZE_BUTTON = $(
     '<a class="resize-toggle ui icon green button fi-arrows-expand"><i class="' +
       RESIZE_OUT_ICON +
@@ -63,10 +63,10 @@ export default function (config, ready) {
     '<a class="show-console-toggle ui icon button" data-toggle="tooltip"  title="Show or hide a Neo4j Console in order to try the examples in the GraphGist live."><i class="ui edit icon"></i> Show/Hide Live Console</a>'
   );
   $resizeOverlay = $('<div id="resize-overlay"/>');
-  consoleClass = "consoleClass" in config ? config.consoleClass : "console";
-  contentId = "contentId" in config ? config.contentId : "content";
+  consoleClass = 'consoleClass' in config ? config.consoleClass : 'console';
+  contentId = 'contentId' in config ? config.contentId : 'content';
   contentMoveSelector =
-    "contentMoveSelector" in config ? config.contentMoveSelector : "div.navbar";
+    'contentMoveSelector' in config ? config.contentMoveSelector : 'div.navbar';
   consoleUrl = config.url;
   neo4j_version = config.neo4j_version;
   $console_template = config.$console_template;
@@ -81,11 +81,11 @@ export default function (config, ready) {
       $verticalResizeButton,
       url;
     url = getUrl(
-      "none",
-      "none",
-      "\n\nUse the play/edit buttons to run the queries!"
+      'none',
+      'none',
+      '\n\nUse the play/edit buttons to run the queries!'
     );
-    $iframe = $IFRAME.clone().attr("src", url);
+    $iframe = $IFRAME.clone().attr('src', url);
     $iframe.load(function () {
       var consolr, iframeWindow;
       iframeWindow = $iframe[0].contentWindow;
@@ -93,7 +93,7 @@ export default function (config, ready) {
         return;
       }
       consolr = new Consolr(gistId, neo4j_version);
-      if (typeof ready === "function") {
+      if (typeof ready === 'function') {
         ready(consolr);
       }
       window.setTimeout(function () {
@@ -102,8 +102,8 @@ export default function (config, ready) {
           if (iframeWindow.location && iframeWindow.location.href) {
             consoleLocation = iframeWindow.location.href;
             if (
-              consoleLocation.indexOf("neo4j") === -1 &&
-              consoleLocation.indexOf("localhost") === -1
+              consoleLocation.indexOf('neo4j') === -1 &&
+              consoleLocation.indexOf('localhost') === -1
             ) {
               $iframe.replaceWith(
                 '<div class="alert alert-error"><h4>Error!</h4>The console can not be loaded. Please turn off ad blockers and reload the page!</div>'
@@ -122,7 +122,7 @@ export default function (config, ready) {
     $context
       .append($iframeWrapper)
       .append('<span id="console-label" class="label">Console expanded</span>');
-    $context.css("background", "none");
+    $context.css('background', 'none');
     $verticalResizeButton = $RESIZE_VERTICAL_BUTTON
       .clone()
       .appendTo($iframeWrapper)
@@ -143,11 +143,11 @@ export default function (config, ready) {
       },
       resize: function (event, ui) {
         if (!$resizeIcon.hasClass(RESIZE_OUT_ICON)) {
-          $contentMoveSelector.css("margin-top", ui.size.height + 11);
+          $contentMoveSelector.css('margin-top', ui.size.height + 11);
         }
       },
     });
-    $gistForm = $("#gist-form");
+    $gistForm = $('#gist-form');
     // contextHeight = 0;
     $resizeButton = $RESIZE_BUTTON
       .clone()
@@ -157,41 +157,41 @@ export default function (config, ready) {
           // contextHeight = $context.height();
           $context.height(36);
           $resizeIcon.removeClass(RESIZE_OUT_ICON).addClass(RESIZE_IN_ICON);
-          $iframeWrapper.addClass("fixed-console");
-          $context.addClass("fixed-console");
-          $contentMoveSelector.css("margin-top", $iframeWrapper.height() + 11);
-          $iframeWrapper.resizable("option", "alsoResize", null);
-          $gistForm.css("margin-right", 56);
+          $iframeWrapper.addClass('fixed-console');
+          $context.addClass('fixed-console');
+          $contentMoveSelector.css('margin-top', $iframeWrapper.height() + 11);
+          $iframeWrapper.resizable('option', 'alsoResize', null);
+          $gistForm.css('margin-right', 56);
         } else {
           $context.height($iframeWrapper.height());
           $resizeIcon.removeClass(RESIZE_IN_ICON).addClass(RESIZE_OUT_ICON);
-          $iframeWrapper.removeClass("fixed-console");
-          $context.removeClass("fixed-console");
-          $contentMoveSelector.css("margin-top", 0);
-          $iframeWrapper.resizable("option", "alsoResize", $context);
-          $gistForm.css("margin-right", 0);
+          $iframeWrapper.removeClass('fixed-console');
+          $context.removeClass('fixed-console');
+          $contentMoveSelector.css('margin-top', 0);
+          $iframeWrapper.resizable('option', 'alsoResize', $context);
+          $gistForm.css('margin-right', 0);
           document.body.scrollTop = $iframeWrapper.offset().top - 100;
         }
       });
-    $resizeIcon = $("i", $resizeButton);
+    $resizeIcon = $('i', $resizeButton);
     $toggleConsoleShowButton = $TOGGLE_CONSOLE_HIDE_BUTTON;
     $toggleConsoleShowButton.insertAfter($context);
-    if (!$context.is(":visible")) {
+    if (!$context.is(':visible')) {
       $toggleConsoleShowButton.addClass(
-        "ui button green icon show-console-toggle-hidden-console"
+        'ui button green icon show-console-toggle-hidden-console'
       );
     }
     $toggleConsoleShowButton.click(function () {
-      if ($context.is(":visible")) {
+      if ($context.is(':visible')) {
         if (!$resizeIcon.hasClass(RESIZE_OUT_ICON)) {
           $resizeButton.click();
         }
         $context.hide();
-        $toggleConsoleShowButton.addClass("show-console-toggle-hidden-console");
+        $toggleConsoleShowButton.addClass('show-console-toggle-hidden-console');
       } else {
         $context.show();
         $toggleConsoleShowButton.removeClass(
-          "show-console-toggle-hidden-console"
+          'show-console-toggle-hidden-console'
         );
       }
     });
@@ -200,18 +200,18 @@ export default function (config, ready) {
     var fill_text_area;
     fill_text_area = function (target) {
       var $textarea, e, text;
-      e = $(target).parents(".content").find(".query-wrapper")[0];
+      e = $(target).parents('.content').find('.query-wrapper')[0];
       text = e.innerText || e.textContent;
-      $textarea = $console_template.find("textarea");
+      $textarea = $console_template.find('textarea');
       $textarea.val(text);
       return $textarea[0].focus();
     };
-    $("div.query-wrapper")
+    $('div.query-wrapper')
       .parent()
       .append(
         $PLAY_BUTTON.clone().click(function (event) {
           fill_text_area(event.target);
-          $console_template.find(".run").click();
+          $console_template.find('.run').click();
           event.preventDefault();
         })
       )
@@ -223,54 +223,54 @@ export default function (config, ready) {
       );
   };
   getQueryFromButton = function (button) {
-    return $(button).prevAll("div.query-wrapper").first().data("query");
+    return $(button).prevAll('div.query-wrapper').first().data('query');
   };
   getUrl = function (database, command, message, session) {
     var url;
     url = consoleUrl;
     if (session != null) {
-      url += ";jsessionid=" + session;
+      url += ';jsessionid=' + session;
     }
-    url += "?";
+    url += '?';
     if (database != null) {
-      url += "init=" + encodeURIComponent(database);
+      url += 'init=' + encodeURIComponent(database);
     }
     if (command != null) {
-      url += "&query=" + encodeURIComponent(command);
+      url += '&query=' + encodeURIComponent(command);
     }
     if (message != null) {
-      url += "&message=" + encodeURIComponent(message);
+      url += '&message=' + encodeURIComponent(message);
     }
     if (window.neo4jVersion != null) {
-      url += "&version=" + encodeURIComponent(window.neo4jVersion);
+      url += '&version=' + encodeURIComponent(window.neo4jVersion);
     }
-    return url + "&no_root=true";
+    return url + '&no_root=true';
   };
   gist_id = function () {
-    gist_id = $("#" + contentId).data("gist-id");
+    gist_id = $('#' + contentId).data('gist-id');
     if (gist_id == null || gist_id.length === 0) {
       throw (
-        "The #" +
+        'The #' +
         contentId +
-        " element is supposed to have a data-gist-id attribute.  Where is it, punk?"
+        ' element is supposed to have a data-gist-id attribute.  Where is it, punk?'
       );
     }
     return gist_id;
   };
   createConsole = function (ready, elementClass, contentId) {
     var $element, consolr;
-    if ($("code.language-cypher").length) {
-      $element = $("p." + elementClass).first();
+    if ($('code.language-cypher').length) {
+      $element = $('p.' + elementClass).first();
       if ($element.length !== 1) {
-        $element = $("<p/>").addClass(elementClass);
-        $("#" + contentId).append($element);
+        $element = $('<p/>').addClass(elementClass);
+        $('#' + contentId).append($element);
         $element.hide();
       }
       consolr = new Consolr(gist_id(), neo4j_version);
       $element.each(function () {
         var $context;
         $context = $(this);
-        return typeof ready === "function" ? ready(consolr) : void 0;
+        return typeof ready === 'function' ? ready(consolr) : void 0;
       });
       addPlayButtons(consolr, $element);
     } else {
@@ -297,19 +297,19 @@ const Consolr = function (gistId, neo4j_version) {
   sessionId = void 0;
   query_queue = [];
   currently_querying = false;
-  authenticity_token = $("meta[name=csrf-token]").attr("content");
+  authenticity_token = $('meta[name=csrf-token]').attr('content');
   establishSession = function () {
     return $.ajax(process.env.REACT_APP_GRAPHQL_URI, {
-      method: "POST",
-      dataType: "json",
-      contentType: "application/json",
+      method: 'POST',
+      dataType: 'json',
+      contentType: 'application/json',
       data: JSON.stringify({
-        operationName: "sessionId",
+        operationName: 'sessionId',
         variables: {
           neo4j_version: neo4j_version,
         },
         query:
-          "query sessionId($neo4j_version: String) { getConsoleSessionId(neo4j_version: $neo4j_version) }",
+          'query sessionId($neo4j_version: String) { getConsoleSessionId(neo4j_version: $neo4j_version) }',
       }),
       crossDomain: true,
     }).done(function (result) {
@@ -328,18 +328,18 @@ const Consolr = function (gistId, neo4j_version) {
       (success = ref.success),
       (error = ref.error);
     return $.ajax(process.env.REACT_APP_GRAPHQL_URI, {
-      method: "POST",
-      dataType: "json",
-      contentType: "application/json",
+      method: 'POST',
+      dataType: 'json',
+      contentType: 'application/json',
       data: JSON.stringify({
-        operationName: "cypherQuery",
+        operationName: 'cypherQuery',
         variables: {
           session_id: sessionId,
           neo4j_version: neo4j_version,
           cypher: cypher,
         },
         query:
-          "query cypherQuery($neo4j_version: String, $session_id: String!, $cypher: String!) { queryConsole(neo4j_version: $neo4j_version, session_id: $session_id, cypher: $cypher) }",
+          'query cypherQuery($neo4j_version: String, $session_id: String!, $cypher: String!) { queryConsole(neo4j_version: $neo4j_version, session_id: $session_id, cypher: $cypher) }',
       }),
       crossDomain: true,
     }).done(function (result) {
@@ -347,17 +347,17 @@ const Consolr = function (gistId, neo4j_version) {
       try {
         data = JSON.parse(result.data.queryConsole);
       } catch (error) {
-        data = { error: "Can not reach neo4j-console server" };
+        data = { error: 'Can not reach neo4j-console server' };
       }
       (data.error ? error : success)(data);
       if (query_queue.length) {
         currently_querying = false;
         return process_query_queue(final_success, always);
       } else {
-        if (typeof final_success === "function") {
+        if (typeof final_success === 'function') {
           final_success();
         }
-        if (typeof always === "function") {
+        if (typeof always === 'function') {
           always();
         }
         return (currently_querying = false);

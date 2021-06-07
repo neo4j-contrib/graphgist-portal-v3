@@ -1,12 +1,12 @@
-import React from "react";
-import { Link } from "react-router-dom";
-import { Header, Loader, Grid, Divider, Button, Icon } from "semantic-ui-react";
-import { useQuery } from "@apollo/client";
-import gql from "graphql-tag";
-import _ from "lodash";
-import GraphGistList from "../graphgists/GraphGistList";
-import GraphGistCard from "../graphgists/GraphGistCard";
-import SimpleFormat from "../components/SimpleFormat.js";
+import React from 'react';
+import { Link } from 'react-router-dom';
+import { Header, Loader, Grid, Divider, Button, Icon } from 'semantic-ui-react';
+import { useQuery } from '@apollo/client';
+import gql from 'graphql-tag';
+import _ from 'lodash';
+import GraphGistList from '../graphgists/GraphGistList';
+import GraphGistCard from '../graphgists/GraphGistCard';
+import SimpleFormat from '../components/SimpleFormat.js';
 
 const graphql = gql`
   query Category($slug: String!) {
@@ -43,17 +43,17 @@ function CategoryPage(props) {
   const { categorySlug } = props.match.params;
 
   const { loading, data } = useQuery(graphql, {
-    fetchPolicy: "cache-and-network",
+    fetchPolicy: 'cache-and-network',
     variables: {
       slug: categorySlug,
     },
   });
 
-  const category = _.get(data, "category", null);
-  const isChallenge = _.get(category, "__typename") === "Challenge";
+  const category = _.get(data, 'category', null);
+  const isChallenge = _.get(category, '__typename') === 'Challenge';
 
   const canEditMetaData = () =>
-    isChallenge && category.my_perms.indexOf("edit") >= 0;
+    isChallenge && category.my_perms.indexOf('edit') >= 0;
 
   return loading || !category ? (
     <Loader active inline="centered" />
@@ -61,7 +61,7 @@ function CategoryPage(props) {
     <div>
       <Header as="h2">{category && category.name}</Header>
       <Grid>
-        <Grid.Column width={canEditMetaData() ? 13 : "100%"}>
+        <Grid.Column width={canEditMetaData() ? 13 : '100%'}>
           {category.summary && (
             <React.Fragment>
               <Divider horizontal>Summary</Divider>

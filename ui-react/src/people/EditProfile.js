@@ -1,13 +1,13 @@
-import React from "react";
-import { useQuery, useMutation } from "@apollo/client";
-import { useHistory } from "react-router-dom";
-import gql from "graphql-tag";
-import { Form, Button, Header, Select } from "semantic-ui-react";
-import _ from "lodash";
-import { Helmet } from "react-helmet";
-import { Formik } from "formik";
-import { createUseStyles } from "react-jss";
-import PageLoading from "../components/PageLoading.js";
+import React from 'react';
+import { useQuery, useMutation } from '@apollo/client';
+import { useHistory } from 'react-router-dom';
+import gql from 'graphql-tag';
+import { Form, Button, Header, Select } from 'semantic-ui-react';
+import _ from 'lodash';
+import { Helmet } from 'react-helmet';
+import { Formik } from 'formik';
+import { createUseStyles } from 'react-jss';
+import PageLoading from '../components/PageLoading.js';
 
 const GET_ME = gql`
   query personQuery {
@@ -50,7 +50,7 @@ function EditProfile() {
   const history = useHistory();
 
   const { loading, data, error } = useQuery(GET_ME, {
-    fetchPolicy: "cache-and-network",
+    fetchPolicy: 'cache-and-network',
   });
 
   const [updateGraphGist, { loading: isSaving }] = useMutation(UPDATE_USER, {
@@ -58,27 +58,27 @@ function EditProfile() {
       history.push(`/`, {
         messages: [
           {
-            body: "Your account has been updated successfully.",
-            type: "positive",
+            body: 'Your account has been updated successfully.',
+            type: 'positive',
           },
         ],
       });
     },
   });
 
-  const user = _.get(data, "me", null);
-  const person = _.get(user, "person", null);
+  const user = _.get(data, 'me', null);
+  const person = _.get(user, 'person', null);
 
   const tshitSizes = [
-    "",
-    "XS",
-    "S",
-    "M",
-    "L",
-    "XL",
-    "XXL",
-    "XXXL",
-    "Other",
+    '',
+    'XS',
+    'S',
+    'M',
+    'L',
+    'XL',
+    'XXL',
+    'XXXL',
+    'Other',
   ].map((item) => ({
     value: item,
     text: item,
@@ -96,11 +96,11 @@ function EditProfile() {
 
           <Formik
             initialValues={{
-              name: user.name || "",
-              twitter_username: user.twitter_username || "",
-              email: user.email || "",
-              tshirt_size: _.get(person, "tshirt_size") || "",
-              tshirt_size_other: _.get(person, "tshirt_size_other") || "",
+              name: user.name || '',
+              twitter_username: user.twitter_username || '',
+              email: user.email || '',
+              tshirt_size: _.get(person, 'tshirt_size') || '',
+              tshirt_size_other: _.get(person, 'tshirt_size_other') || '',
             }}
             onSubmit={(values, e, a) => {
               updateGraphGist({

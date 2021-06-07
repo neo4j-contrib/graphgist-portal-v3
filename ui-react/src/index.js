@@ -1,21 +1,21 @@
-import React from "react";
-import ReactDOM from "react-dom";
+import React from 'react';
+import ReactDOM from 'react-dom';
 import {
   ApolloClient,
   ApolloLink,
   ApolloProvider,
   InMemoryCache,
   concat,
-} from "@apollo/client";
-import { BrowserRouter } from "react-router-dom";
-import { Auth0Provider } from "@auth0/auth0-react";
-import { createUploadLink } from "apollo-upload-client";
-import * as Sentry from "@sentry/react";
-import { Integrations } from "@sentry/tracing";
-import App from "./App";
-import "./index.css";
+} from '@apollo/client';
+import { BrowserRouter } from 'react-router-dom';
+import { Auth0Provider } from '@auth0/auth0-react';
+import { createUploadLink } from 'apollo-upload-client';
+import * as Sentry from '@sentry/react';
+import { Integrations } from '@sentry/tracing';
+import App from './App';
+import './index.css';
 
-import { authToken } from "./auth/state";
+import { authToken } from './auth/state';
 
 const AUTH0_DOMAIN = process.env.REACT_APP_AUTH0_DOMAIN;
 const AUTH0_CLIENT_ID = process.env.REACT_APP_AUTH0_CLIENT_ID;
@@ -52,7 +52,7 @@ const Main = () => (
       <Auth0Provider
         domain={AUTH0_DOMAIN}
         clientId={AUTH0_CLIENT_ID}
-        redirectUri={window.location.origin + "/authorize"}
+        redirectUri={window.location.origin + '/authorize'}
       >
         <App />
       </Auth0Provider>
@@ -60,4 +60,4 @@ const Main = () => (
   </BrowserRouter>
 );
 
-ReactDOM.render(<Main />, document.getElementById("root"));
+ReactDOM.render(<Main />, document.getElementById('root'));

@@ -4,7 +4,7 @@
 window.CodeMirror = {};
 
 (function () {
-  "use strict";
+  'use strict';
 
   function splitLines(string) {
     return string.split(/\r?\n|\r/);
@@ -30,7 +30,7 @@ window.CodeMirror = {};
     },
     eat: function (match) {
       var ch = this.string.charAt(this.pos);
-      if (typeof match == "string") var ok = ch == match;
+      if (typeof match == 'string') var ok = ch == match;
       else var ok = ch && (match.test ? match.test(ch) : match(ch));
       if (ok) {
         ++this.pos;
@@ -67,7 +67,7 @@ window.CodeMirror = {};
       return 0;
     },
     match: function (pattern, consume, caseInsensitive) {
-      if (typeof pattern == "string") {
+      if (typeof pattern == 'string') {
         var cased = function (str) {
           return caseInsensitive ? str.toLowerCase() : str;
         };
@@ -112,33 +112,33 @@ window.CodeMirror = {};
     mimeModes[mime] = spec;
   };
   CodeMirror.resolveMode = function (spec) {
-    if (typeof spec == "string" && mimeModes.hasOwnProperty(spec)) {
+    if (typeof spec == 'string' && mimeModes.hasOwnProperty(spec)) {
       spec = mimeModes[spec];
     } else if (
       spec &&
-      typeof spec.name == "string" &&
+      typeof spec.name == 'string' &&
       mimeModes.hasOwnProperty(spec.name)
     ) {
       spec = mimeModes[spec.name];
     }
-    if (typeof spec == "string") return { name: spec };
-    else return spec || { name: "null" };
+    if (typeof spec == 'string') return { name: spec };
+    else return spec || { name: 'null' };
   };
   CodeMirror.getMode = function (options, spec) {
     spec = CodeMirror.resolveMode(spec);
     var mfactory = modes[spec.name];
-    if (!mfactory) throw new Error("Unknown mode: " + spec);
+    if (!mfactory) throw new Error('Unknown mode: ' + spec);
     return mfactory(options, spec);
   };
   CodeMirror.registerHelper = CodeMirror.registerGlobalHelper = Math.min;
-  CodeMirror.defineMode("null", function () {
+  CodeMirror.defineMode('null', function () {
     return {
       token: function (stream) {
         stream.skipToEnd();
       },
     };
   });
-  CodeMirror.defineMIME("text/plain", "null");
+  CodeMirror.defineMIME('text/plain', 'null');
 
   CodeMirror.runMode = function (string, modespec, callback, options) {
     var mode = CodeMirror.getMode({ indentUnit: 2 }, modespec);
@@ -147,17 +147,17 @@ window.CodeMirror = {};
       var tabSize = (options && options.tabSize) || 4;
       var node = callback,
         col = 0;
-      node.innerHTML = "";
+      node.innerHTML = '';
       callback = function (text, style) {
-        if (text == "\n") {
-          node.appendChild(document.createElement("br"));
+        if (text == '\n') {
+          node.appendChild(document.createElement('br'));
           col = 0;
           return;
         }
-        var content = "";
+        var content = '';
         // replace tabs
         for (var pos = 0; ; ) {
-          var idx = text.indexOf("\t", pos);
+          var idx = text.indexOf('\t', pos);
           if (idx == -1) {
             content += text.slice(pos);
             col += text.length - pos;
@@ -167,14 +167,14 @@ window.CodeMirror = {};
             content += text.slice(pos, idx);
             var size = tabSize - (col % tabSize);
             col += size;
-            for (var i = 0; i < size; ++i) content += " ";
+            for (var i = 0; i < size; ++i) content += ' ';
             pos = idx + 1;
           }
         }
 
         if (style) {
-          var sp = node.appendChild(document.createElement("span"));
-          sp.className = "cm-" + style.replace(/ +/g, " cm-");
+          var sp = node.appendChild(document.createElement('span'));
+          sp.className = 'cm-' + style.replace(/ +/g, ' cm-');
           sp.appendChild(document.createTextNode(content));
         } else {
           node.appendChild(document.createTextNode(content));
@@ -185,7 +185,7 @@ window.CodeMirror = {};
     var lines = splitLines(string),
       state = (options && options.state) || CodeMirror.startState(mode);
     for (var i = 0, e = lines.length; i < e; ++i) {
-      if (i) callback("\n");
+      if (i) callback('\n');
       var stream = new CodeMirror.StringStream(lines[i]);
       if (!stream.string && mode.blankLine) mode.blankLine(state);
       while (!stream.eol()) {

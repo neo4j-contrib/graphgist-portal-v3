@@ -1,42 +1,42 @@
 /* eslint no-mixed-operators: 0 */
 
-import $ from "jquery";
-import _ from "underscore";
-import Gist from "./Gist";
-import Neod3Renderer from "./Neod3Renderer";
-import CypherConsole from "./console";
-import DotWrapper from "./dot";
-import CodeMirror from "./CodeMirror";
-import jqueryMutate from "./jquery/mutate";
-import { renderTable as cypherRenderTable } from "./cypher.datatable";
+import $ from 'jquery';
+import _ from 'underscore';
+import Gist from './Gist';
+import Neod3Renderer from './Neod3Renderer';
+import CypherConsole from './console';
+import DotWrapper from './dot';
+import CodeMirror from './CodeMirror';
+import jqueryMutate from './jquery/mutate';
+import { renderTable as cypherRenderTable } from './cypher.datatable';
 
-import "./jquery/jquery.dataTables";
+import './jquery/jquery.dataTables';
 
 jqueryMutate($);
 
 const CONSOLE_VERSIONS = {
-  local: "http://localhost:8080/",
-  "1.9": "http://neo4j-console-19.herokuapp.com/",
-  "2.0.0-M06": "http://neo4j-console-20m06.herokuapp.com/",
-  "2.0.0-RC1": "http://neo4j-console-20rc1.herokuapp.com/",
-  "2.1": "http://neo4j-console-21.herokuapp.com/",
-  "2.2": "http://neo4j-console-22.herokuapp.com/",
-  "2.3": "http://neo4j-console-23.herokuapp.com/",
-  "3.0": "http://neo4j-console-30.herokuapp.com/",
-  "3.1": "http://neo4j-console-31.herokuapp.com/",
-  "3.2": "http://neo4j-console-32.herokuapp.com/",
-  "3.3": "http://neo4j-console-33.herokuapp.com/",
-  "3.4": "http://neo4j-console-34.herokuapp.com/",
-  "3.5": "http://neo4j-console-35.herokuapp.com/", // default
+  local: 'http://localhost:8080/',
+  1.9: 'http://neo4j-console-19.herokuapp.com/',
+  '2.0.0-M06': 'http://neo4j-console-20m06.herokuapp.com/',
+  '2.0.0-RC1': 'http://neo4j-console-20rc1.herokuapp.com/',
+  2.1: 'http://neo4j-console-21.herokuapp.com/',
+  2.2: 'http://neo4j-console-22.herokuapp.com/',
+  2.3: 'http://neo4j-console-23.herokuapp.com/',
+  '3.0': 'http://neo4j-console-30.herokuapp.com/',
+  3.1: 'http://neo4j-console-31.herokuapp.com/',
+  3.2: 'http://neo4j-console-32.herokuapp.com/',
+  3.3: 'http://neo4j-console-33.herokuapp.com/',
+  3.4: 'http://neo4j-console-34.herokuapp.com/',
+  3.5: 'http://neo4j-console-35.herokuapp.com/', // default
 };
-const DEFAULT_VERSION = "3.5";
+const DEFAULT_VERSION = '3.5';
 
 $.fn.goTo = function () {
-  $("html, body").animate(
+  $('html, body').animate(
     {
-      scrollTop: $(this).offset().top - 60 + "px",
+      scrollTop: $(this).offset().top - 60 + 'px',
     },
-    "fast"
+    'fast'
   );
   return this;
 };
@@ -86,8 +86,8 @@ const GraphGist = function (options, graphgist_cached_queries) {
     toggler;
   HAS_ERRORS = false;
   $WRAPPER = $('<div class="query-wrapper" />');
-  COLLAPSE_ICON = "ui large compress icon fi-arrows-compress";
-  EXPAND_ICON = "ui large expand icon fi-arrows-expand";
+  COLLAPSE_ICON = 'ui large compress icon fi-arrows-compress';
+  EXPAND_ICON = 'ui large expand icon fi-arrows-expand';
   $QUERY_OK_LABEL = $(
     '<span class="label label-success query-info">Test run OK</span>'
   );
@@ -99,39 +99,39 @@ const GraphGist = function (options, graphgist_cached_queries) {
   );
   $QUERY_TOGGLE_BUTTON = $TOGGLE_BUTTON
     .clone()
-    .addClass("query-toggle")
-    .attr("title", "Show/hide query.");
+    .addClass('query-toggle')
+    .attr('title', 'Show/hide query.');
   $RESULT_TOGGLE_BUTTON = $TOGGLE_BUTTON
     .clone()
-    .addClass("result-toggle")
-    .attr("title", "Show/hide result.");
-  $QUERY_MESSAGE = $("<pre/>").addClass("query-message");
-  $VISUALIZATION = $("<div/>").addClass("visualization");
+    .addClass('result-toggle')
+    .attr('title', 'Show/hide result.');
+  $QUERY_MESSAGE = $('<pre/>').addClass('query-message');
+  $VISUALIZATION = $('<div/>').addClass('visualization');
   VISUALIZATION_HEIGHT = 400;
   // DEFAULT_SOURCE = 'github-neo4j-contrib%2Fgists%2F%2Fmeta%2FHome.adoc';
   $VISUALIZATION_ICONS = $(
     '<div class="visualization-icons"><i class="ui large expand icon fi-arrows-expand fullscreen-icon" title="Toggle fullscreen mode"></i></div>'
   );
-  $I = $("<i/>");
+  $I = $('<i/>');
   neod3Renderer = new Neod3Renderer();
   var teardown = () => {};
   $content = void 0;
   $gistId = void 0;
   consolr = void 0;
-  content_id = "gist-body";
-  $content = $("#" + content_id);
-  $gistId = $("#gist-id");
+  content_id = 'gist-body';
+  $content = $('#' + content_id);
+  $gistId = $('#gist-id');
   gist = new Gist($, $content);
   $gistId.keydown(gist.readSourceId);
-  $console_template = $("#console-template");
+  $console_template = $('#console-template');
   querySearchParams = function () {
     var searchParams;
     searchParams = {};
     window.location.search
       .substr(1)
-      .split("&")
+      .split('&')
       .forEach(function (item) {
-        searchParams[item.split("=")[0]] = item.split("=")[1];
+        searchParams[item.split('=')[0]] = item.split('=')[1];
       });
     return searchParams;
   };
@@ -140,11 +140,11 @@ const GraphGist = function (options, graphgist_cached_queries) {
     version = postProcessPage();
     consoleUrl =
       CONSOLE_VERSIONS[version in CONSOLE_VERSIONS ? version : DEFAULT_VERSION];
-    if (querySearchParams()["use_test_console_server"] === "true") {
-      consoleUrl = "http://neo4j-console-test.herokuapp.com/";
+    if (querySearchParams()['use_test_console_server'] === 'true') {
+      consoleUrl = 'http://neo4j-console-test.herokuapp.com/';
     }
     if (
-      typeof graphgist_cached_queries !== "undefined" &&
+      typeof graphgist_cached_queries !== 'undefined' &&
       graphgist_cached_queries !== null
     ) {
       return executeQueries(function () {}, postProcessRendering);
@@ -157,9 +157,9 @@ const GraphGist = function (options, graphgist_cached_queries) {
           $console_template: $console_template,
         },
         function (conslr) {
-          if (typeof conslr !== "undefined") {
+          if (typeof conslr !== 'undefined') {
             consolr = conslr;
-            return typeof consolr.establishSession === "function"
+            return typeof consolr.establishSession === 'function'
               ? consolr.establishSession().done(function () {
                   return executeQueries(function () {}, postProcessRendering);
                 })
@@ -171,13 +171,13 @@ const GraphGist = function (options, graphgist_cached_queries) {
   };
   postProcessRendering = function () {
     var $status;
-    $status = $("#status");
+    $status = $('#status');
     if (HAS_ERRORS) {
-      $status.text("Errors.");
-      $status.addClass("label-important");
+      $status.text('Errors.');
+      $status.addClass('label-important');
     } else {
-      $status.text("No Errors.");
-      $status.addClass("label-success");
+      $status.text('No Errors.');
+      $status.addClass('label-success');
     }
     return DotWrapper($).scan();
   };
@@ -197,10 +197,10 @@ const GraphGist = function (options, graphgist_cached_queries) {
   // };
   initAndGetHeading = function () {
     var heading, headingText;
-    headingText = "Neo4j GraphGist";
-    heading = $("h1").first();
+    headingText = 'Neo4j GraphGist';
+    heading = $('h1').first();
     if (!heading.length) {
-      heading = $("h2").first();
+      heading = $('h2').first();
     }
     if (heading.length) {
       headingText = heading.text();
@@ -209,7 +209,7 @@ const GraphGist = function (options, graphgist_cached_queries) {
   };
   postProcessPage = function () {
     // var $footer,
-    var  $meta,
+    var $meta,
       author,
       // authorHtml,
       number,
@@ -217,25 +217,25 @@ const GraphGist = function (options, graphgist_cached_queries) {
       tags,
       twitter,
       version;
-    $meta = $("#metadata", $content);
-    version = $meta.attr("version");
-    tags = $meta.attr("tags");
-    author = $meta.attr("author");
-    twitter = $meta.attr("twitter");
+    $meta = $('#metadata', $content);
+    version = $meta.attr('version');
+    tags = $meta.attr('tags');
+    author = $meta.attr('author');
+    twitter = $meta.attr('twitter');
     regex = /^(\d+)\.(\d+)\.\d+$/;
-    if (typeof version !== "undefined" && version.match(regex)) {
-      version = version.replace(regex, "$1.$2");
+    if (typeof version !== 'undefined' && version.match(regex)) {
+      version = version.replace(regex, '$1.$2');
     }
-    if (tags === "{tags}") {
+    if (tags === '{tags}') {
       tags = false;
     }
-    if (author === "{author}") {
+    if (author === '{author}') {
       author = false;
     }
-    if (twitter === "{twitter}") {
+    if (twitter === '{twitter}') {
       twitter = false;
     }
-    if (typeof version === "undefined" || !(version in CONSOLE_VERSIONS)) {
+    if (typeof version === 'undefined' || !(version in CONSOLE_VERSIONS)) {
       version = DEFAULT_VERSION;
     }
     // $footer = $("footer");
@@ -243,7 +243,7 @@ const GraphGist = function (options, graphgist_cached_queries) {
     //   $footer.prepend('<i class="icon-tags"></i> Tags <em>' + tags + "</a> ");
     // }
     if (twitter) {
-      twitter = twitter.replace("@", "");
+      twitter = twitter.replace('@', '');
     }
     if (twitter && !author) {
       author = twitter;
@@ -276,60 +276,60 @@ const GraphGist = function (options, graphgist_cached_queries) {
     //     version +
     //     "</a> "
     // );
-    $("h2[id]")
+    $('h2[id]')
       .css({
-        cursor: "pointer",
+        cursor: 'pointer',
       })
       .click(function () {
         return (window.location.href = window.location.href.replace(
           /($|#.+?$)/,
-          "#" + $(this).attr("id")
+          '#' + $(this).attr('id')
         ));
       });
-    findQuery("span.hide-query", $content, function (codeElement) {
-      return $(codeElement.parentNode).addClass("hide-query");
+    findQuery('span.hide-query', $content, function (codeElement) {
+      return $(codeElement.parentNode).addClass('hide-query');
     });
-    findQuery("span.setup", $content, function (codeElement) {
-      return $(codeElement.parentNode).addClass("setup-query");
+    findQuery('span.setup', $content, function (codeElement) {
+      return $(codeElement.parentNode).addClass('setup-query');
     });
-    findQuery("span.query-output", $content, function (codeElement) {
-      return $(codeElement.parentNode).data("show-output", true);
+    findQuery('span.query-output', $content, function (codeElement) {
+      return $(codeElement.parentNode).data('show-output', true);
     });
     number = 0;
-    $("code", $content).each(function (index, el) {
+    $('code', $content).each(function (index, el) {
       var $el, $parent, $toggleQuery, $wrapper;
       $el = $(el);
-      if ($el.hasClass("language-cypher")) {
+      if ($el.hasClass('language-cypher')) {
         number++;
         $parent = $el.parent();
-        $parent.addClass("with-buttons");
-        $el.attr("data-lang", "cypher");
-        $parent.prepend("<h5>Query " + number + "</h5>");
+        $parent.addClass('with-buttons');
+        $el.attr('data-lang', 'cypher');
+        $parent.prepend('<h5>Query ' + number + '</h5>');
         $el.wrap($WRAPPER).each(function () {
-          return $el.parent().data("query", $el.text());
+          return $el.parent().data('query', $el.text());
         });
         $toggleQuery = $QUERY_TOGGLE_BUTTON.clone();
         $parent.append($toggleQuery);
         $toggleQuery.click(function () {
           var $icon, $queryMessage, $queryWrapper, action;
-          $icon = $("i", this);
-          $queryWrapper = $icon.parent().prevAll("div.query-wrapper").first();
+          $icon = $('i', this);
+          $queryWrapper = $icon.parent().prevAll('div.query-wrapper').first();
           action = toggler($queryWrapper, this);
-          if (action === "hide") {
-            $queryMessage = $queryWrapper.nextAll("pre.query-message").first();
-            $icon = $queryWrapper.nextAll("span.result-toggle").first();
-            toggler($queryMessage, $icon, "hide");
+          if (action === 'hide') {
+            $queryMessage = $queryWrapper.nextAll('pre.query-message').first();
+            $icon = $queryWrapper.nextAll('span.result-toggle').first();
+            toggler($queryMessage, $icon, 'hide');
           }
         });
-        if ($parent.hasClass("hide-query")) {
-          $wrapper = $toggleQuery.prevAll("div.query-wrapper").first();
-          return toggler($wrapper, $toggleQuery, "hide");
+        if ($parent.hasClass('hide-query')) {
+          $wrapper = $toggleQuery.prevAll('div.query-wrapper').first();
+          return toggler($wrapper, $toggleQuery, 'hide');
         }
       }
     });
-    $("pre code.language-cypher").addClass("cm-s-neo");
-    CodeMirror.colorize(document.getElementsByClassName("language-cypher"));
-    $("table").addClass("table");
+    $('pre code.language-cypher').addClass('cm-s-neo');
+    CodeMirror.colorize(document.getElementsByClassName('language-cypher'));
+    $('table').addClass('table');
     return version;
   };
   find_next_globally = function (element, selector) {
@@ -388,11 +388,11 @@ const GraphGist = function (options, graphgist_cached_queries) {
   };
   executeQueries = function (final_success, always) {
     var $elements;
-    $elements = $("div.query-wrapper");
+    $elements = $('div.query-wrapper');
     $elements.each(function (index, element) {
       var $element, error, statement, success;
       $element = $(element);
-      statement = $element.data("query");
+      statement = $element.data('query');
       success = function (data) {
         var i,
           j,
@@ -405,28 +405,28 @@ const GraphGist = function (options, graphgist_cached_queries) {
           table_elements,
           visualization_element,
           visualization_elements;
-        showOutput = $element.parent().data("show-output");
+        showOutput = $element.parent().data('show-output');
         createQueryResultButton(
           $QUERY_OK_LABEL,
           $element,
           data.result,
           !showOutput
         );
-        $element.data("visualization", data["visualization"]);
-        $element.data("data", data);
-        next_query_wrapper = find_next_globally($element, "div.query-wrapper");
+        $element.data('visualization', data['visualization']);
+        $element.data('data', data);
+        next_query_wrapper = find_next_globally($element, 'div.query-wrapper');
         table_elements =
           next_query_wrapper != null
-            ? find_between($element, next_query_wrapper, ".result-table")
-            : find_all_next_globally($element, ".result-table");
+            ? find_between($element, next_query_wrapper, '.result-table')
+            : find_all_next_globally($element, '.result-table');
         for (i = 0, len = table_elements.length; i < len; i++) {
           table_element = table_elements[i];
           renderTable(table_element, data);
         }
         visualization_elements =
           next_query_wrapper != null
-            ? find_between($element, next_query_wrapper, ".graph-visualization")
-            : find_all_next_globally($element, ".graph-visualization");
+            ? find_between($element, next_query_wrapper, '.graph-visualization')
+            : find_all_next_globally($element, '.graph-visualization');
         results = [];
         for (j = 0, len1 = visualization_elements.length; j < len1; j++) {
           visualization_element = visualization_elements[j];
@@ -448,13 +448,13 @@ const GraphGist = function (options, graphgist_cached_queries) {
         );
       };
       final_success = function () {
-        if ($("p.console").length) {
-          $("p.console").replaceWith($console_template.detach());
+        if ($('p.console').length) {
+          $('p.console').replaceWith($console_template.detach());
         }
         return $console_template.show();
       };
       if (
-        typeof graphgist_cached_queries !== "undefined" &&
+        typeof graphgist_cached_queries !== 'undefined' &&
         graphgist_cached_queries !== null
       ) {
         return success(graphgist_cached_queries[index]);
@@ -463,10 +463,10 @@ const GraphGist = function (options, graphgist_cached_queries) {
       }
     });
     if (
-      typeof graphgist_cached_queries !== "undefined" &&
+      typeof graphgist_cached_queries !== 'undefined' &&
       graphgist_cached_queries !== null
     ) {
-      $("p.console").hide();
+      $('p.console').hide();
     }
     if (!$elements.length) {
       return always();
@@ -474,26 +474,26 @@ const GraphGist = function (options, graphgist_cached_queries) {
   };
   display_result_section = function (section_name) {
     var $element;
-    $console_template.find(".result").show();
-    $console_template.find(".result > *").hide();
-    $element = $console_template.find(".result > ." + section_name);
+    $console_template.find('.result').show();
+    $console_template.find('.result > *').hide();
+    $element = $console_template.find('.result > .' + section_name);
     $element.show();
     return $element;
   };
   current_display_result_tab_name = function () {
-    return $console_template.find(".tabs .tab.active").data("name");
+    return $console_template.find('.tabs .tab.active').data('name');
   };
-  $console_template.find(".run").click(function () {
+  $console_template.find('.run').click(function () {
     var error, statement, success;
-    display_result_section("loading");
+    display_result_section('loading');
     $console_template.goTo();
-    statement = $console_template.find(".cypher").val();
+    statement = $console_template.find('.cypher').val();
     success = function (data) {
       var $element, display_result_tab_name;
       display_result_tab_name = current_display_result_tab_name();
-      $element = display_result_section("graph");
+      $element = display_result_section('graph');
       renderGraph($element, data, false);
-      $element = display_result_section("table");
+      $element = display_result_section('table');
       renderTable($element[0], data, false, {
         searching: false,
         paging: false,
@@ -502,17 +502,17 @@ const GraphGist = function (options, graphgist_cached_queries) {
     };
     error = function (data) {
       var $element;
-      $element = display_result_section("error");
-      return $element.html("<pre>" + data.error + "</pre>");
+      $element = display_result_section('error');
+      return $element.html('<pre>' + data.error + '</pre>');
     };
     return consolr.query(statement, success, error);
   });
-  $console_template.find(".tabs .tab").click(function (event) {
+  $console_template.find('.tabs .tab').click(function (event) {
     var $el;
     $el = $(event.target);
-    $console_template.find(".tabs .tab").removeClass("active");
-    $el.addClass("active");
-    return display_result_section($el.data("name"));
+    $console_template.find('.tabs .tab').removeClass('active');
+    $el.addClass('active');
+    return display_result_section($el.data('name'));
   });
   most_recent_visulization_number = 0;
   renderGraph = function (visualization_element, data, replace) {
@@ -538,12 +538,12 @@ const GraphGist = function (options, graphgist_cached_queries) {
     }
     $visualization_element = $(visualization_element);
     most_recent_visulization_number++;
-    id = "graph-visualization-" + most_recent_visulization_number;
-    $visContainer = $VISUALIZATION.clone().attr("id", id);
-    style = $visualization_element.attr("data-style");
+    id = 'graph-visualization-' + most_recent_visulization_number;
+    $visContainer = $VISUALIZATION.clone().attr('id', id);
+    style = $visualization_element.attr('data-style');
     show_result_only =
-      $visualization_element.attr("graph-mode") &&
-      $visualization_element.attr("graph-mode").indexOf("result") !== -1;
+      $visualization_element.attr('graph-mode') &&
+      $visualization_element.attr('graph-mode').indexOf('result') !== -1;
     selectedVisualization = handleSelection(
       data.visualization,
       show_result_only
@@ -551,45 +551,45 @@ const GraphGist = function (options, graphgist_cached_queries) {
     if (replace) {
       $visualization_element.replaceWith($visContainer);
     } else {
-      $visualization_element.html("");
+      $visualization_element.html('');
       $visualization_element.append($visContainer);
     }
     $visContainer.height(VISUALIZATION_HEIGHT);
     fullscreenClick = function () {
-      if ($visContainer.hasClass("fullscreen")) {
-        $("body").unbind("keydown", keyHandler);
+      if ($visContainer.hasClass('fullscreen')) {
+        $('body').unbind('keydown', keyHandler);
         return contract();
       } else {
         expand();
-        return $("body").keydown(keyHandler);
+        return $('body').keydown(keyHandler);
       }
     };
     expand = function () {
-      $visContainer.addClass("fullscreen");
-      $visContainer.height("100%");
-      return typeof subscriptions.expand === "function"
+      $visContainer.addClass('fullscreen');
+      $visContainer.height('100%');
+      return typeof subscriptions.expand === 'function'
         ? subscriptions.expand()
         : void 0;
     };
     contract = function () {
-      $visContainer.removeClass("fullscreen");
+      $visContainer.removeClass('fullscreen');
       $visContainer.height(400);
-      return typeof subscriptions.contract === "function"
+      return typeof subscriptions.contract === 'function'
         ? subscriptions.contract()
         : void 0;
     };
     sizeChange = function () {
-      return typeof subscriptions.sizeChange === "function"
+      return typeof subscriptions.sizeChange === 'function'
         ? subscriptions.sizeChange()
         : void 0;
     };
     keyHandler = function (event) {
-      if ("which" in event && event.which === 27) {
+      if ('which' in event && event.which === 27) {
         return contract();
       }
     };
     if (data) {
-      $visualization_element.data("visualization", data);
+      $visualization_element.data('visualization', data);
       rendererHooks = neod3Renderer.render(
         id,
         $visContainer,
@@ -597,27 +597,27 @@ const GraphGist = function (options, graphgist_cached_queries) {
         style
       );
       subscriptions =
-        "subscriptions" in rendererHooks ? rendererHooks["subscriptions"] : {};
-      actions = "actions" in rendererHooks ? rendererHooks["actions"] : {};
+        'subscriptions' in rendererHooks ? rendererHooks['subscriptions'] : {};
+      actions = 'actions' in rendererHooks ? rendererHooks['actions'] : {};
       teardown =
-        "teardown" in rendererHooks ? rendererHooks["teardown"] : () => {};
+        'teardown' in rendererHooks ? rendererHooks['teardown'] : () => {};
       $visualizationIcons = $VISUALIZATION_ICONS
         .clone()
         .appendTo($visContainer);
-      $visualizationIcons.children("i.fullscreen-icon").click(fullscreenClick);
+      $visualizationIcons.children('i.fullscreen-icon').click(fullscreenClick);
       for (iconName in actions) {
         actionData = actions[iconName];
         $I.clone()
           .addClass(iconName)
-          .attr("title", actionData.title)
+          .attr('title', actionData.title)
           .appendTo($visualizationIcons)
           .click(actionData.func);
       }
-      $visContainer.mutate("width", sizeChange);
+      $visContainer.mutate('width', sizeChange);
     } else {
       $visContainer
-        .text("There is no graph to render.")
-        .addClass("alert-error");
+        .text('There is no graph to render.')
+        .addClass('alert-error');
     }
     return $visContainer;
   };
@@ -660,7 +660,7 @@ const GraphGist = function (options, graphgist_cached_queries) {
       links: links,
     };
   };
-  $TABLE_CONTAINER = $("<div/>").addClass("result-table");
+  $TABLE_CONTAINER = $('<div/>').addClass('result-table');
   renderTable = function (table_element, data, replace, options) {
     var $table_container, $table_element;
     if (replace == null) {
@@ -674,13 +674,13 @@ const GraphGist = function (options, graphgist_cached_queries) {
     if (replace) {
       $table_element.replaceWith($table_container);
     } else {
-      $table_element.html("");
+      $table_element.html('');
       $table_element.append($table_container);
     }
     if (!cypherRenderTable($table_container, data, options)) {
       return $table_container
         .text("Couldn't render the result table.")
-        .addClass("alert-error");
+        .addClass('alert-error');
     }
   };
   replaceNewlines = function (str) {
@@ -696,7 +696,7 @@ const GraphGist = function (options, graphgist_cached_queries) {
     $button = $RESULT_TOGGLE_BUTTON.clone();
     $wrapper.after($label).after($button);
     $message = $QUERY_MESSAGE.clone().text(replaceNewlines(message));
-    toggler($message, $button, hide ? "hide" : "show");
+    toggler($message, $button, hide ? 'hide' : 'show');
     $button.click(function () {
       return toggler($message, $button);
     });
@@ -704,41 +704,41 @@ const GraphGist = function (options, graphgist_cached_queries) {
   };
   toggler = function ($target, button, action) {
     var $icon, stateIsExpanded;
-    $icon = $("i", button);
+    $icon = $('i', button);
     stateIsExpanded = $icon.hasClass(COLLAPSE_ICON);
     if (
-      (action && action === "hide") ||
+      (action && action === 'hide') ||
       (action === void 0 && stateIsExpanded)
     ) {
       $target.hide();
       $icon.removeClass(COLLAPSE_ICON).addClass(EXPAND_ICON);
-      return "hide";
+      return 'hide';
     } else {
       $target.show();
       $icon.removeClass(EXPAND_ICON).addClass(COLLAPSE_ICON);
-      return "show";
+      return 'show';
     }
   };
   findQuery = function (selector, context, operation) {
     $(selector, context).each(function () {
       $(this)
-        .nextAll("div.listingblock")
-        .children("div")
-        .children("pre.highlight")
-        .children("code.language-cypher")
+        .nextAll('div.listingblock')
+        .children('div')
+        .children('pre.highlight')
+        .children('code.language-cypher')
         .first()
         .each(function () {
           operation(this);
         });
     });
   };
-  if (typeof options !== "undefined") {
+  if (typeof options !== 'undefined') {
     options = {};
   }
-  if (typeof options.preProcess !== "undefined") {
+  if (typeof options.preProcess !== 'undefined') {
     options.preProcess = true;
   }
-  if ("support" in $) {
+  if ('support' in $) {
     $.support.cors = true;
   }
   return {

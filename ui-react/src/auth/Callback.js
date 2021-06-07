@@ -1,11 +1,11 @@
-import React, { useEffect, useState } from "react";
-import { useHistory } from "react-router-dom";
-import { Message, Loader } from "semantic-ui-react";
-import gql from "graphql-tag";
-import { useMutation } from "@apollo/client";
-import { useState as hookUseState } from "@hookstate/core";
+import React, { useEffect, useState } from 'react';
+import { useHistory } from 'react-router-dom';
+import { Message, Loader } from 'semantic-ui-react';
+import gql from 'graphql-tag';
+import { useMutation } from '@apollo/client';
+import { useState as hookUseState } from '@hookstate/core';
 
-import { authToken } from "./state";
+import { authToken } from './state';
 
 const AUTH_MUTATION = gql`
   mutation authMutation($token: String!) {
@@ -21,7 +21,7 @@ function Callback({ token }) {
 
   const [authenticate] = useMutation(AUTH_MUTATION, {
     onCompleted: () => {
-      history.push("/");
+      history.push('/');
     },
     onError: () => {
       setHasError(true);

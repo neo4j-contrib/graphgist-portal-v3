@@ -1,7 +1,7 @@
-import React from "react";
-import { useQuery, useMutation } from "@apollo/react-hooks";
-import { useParams, useHistory } from "react-router-dom";
-import gql from "graphql-tag";
+import React from 'react';
+import { useQuery, useMutation } from '@apollo/react-hooks';
+import { useParams, useHistory } from 'react-router-dom';
+import gql from 'graphql-tag';
 import {
   Form,
   Button,
@@ -13,17 +13,17 @@ import {
   Dimmer,
   Segment,
   Select,
-} from "semantic-ui-react";
-import _ from "lodash";
-import { Helmet } from "react-helmet";
-import { Formik } from "formik";
-import { createUseStyles } from "react-jss";
-import CodeMirrorTextArea from "./render/TextArea";
-import AuthorsSelect from "./components/AuthorsSelect";
-import IndustriesSelect from "./components/IndustriesSelect";
-import UseCasesSelect from "./components/UseCasesSelect";
-import ChallengesSelect from "./components/ChallengesSelect";
-import GraphGistRenderer from "./render/GraphGistRenderer.js";
+} from 'semantic-ui-react';
+import _ from 'lodash';
+import { Helmet } from 'react-helmet';
+import { Formik } from 'formik';
+import { createUseStyles } from 'react-jss';
+import CodeMirrorTextArea from './render/TextArea';
+import AuthorsSelect from './components/AuthorsSelect';
+import IndustriesSelect from './components/IndustriesSelect';
+import UseCasesSelect from './components/UseCasesSelect';
+import ChallengesSelect from './components/ChallengesSelect';
+import GraphGistRenderer from './render/GraphGistRenderer.js';
 
 const GET_GRAPHGIST = gql`
   query graphGistPage($id: ID!) {
@@ -111,13 +111,13 @@ const UPDATE_GRAPHGIST = gql`
 
 const useStyles = createUseStyles({
   previewContainer: {
-    margin: "0 0 60px 0",
-    padding: "0 40px",
+    margin: '0 0 60px 0',
+    padding: '0 40px',
     minHeight: 100,
-    maxHeight: "80vh",
-    width: "100%",
-    border: "1px solid #999",
-    overflow: "auto",
+    maxHeight: '80vh',
+    width: '100%',
+    border: '1px solid #999',
+    overflow: 'auto',
   },
   form: {
     marginBottom: 30,
@@ -136,7 +136,7 @@ function GraphGistEditByOwner() {
   const { id } = useParams();
 
   const { loading, data, error } = useQuery(GET_GRAPHGIST, {
-    fetchPolicy: "cache-and-network",
+    fetchPolicy: 'cache-and-network',
     variables: { id },
   });
 
@@ -161,11 +161,11 @@ function GraphGistEditByOwner() {
 
   const graphGistPreviewHTML = _.get(
     graphGistPreviewResult,
-    "PreviewGraphGist",
-    ""
+    'PreviewGraphGist',
+    ''
   );
-  const graphGist = _.get(data, "GraphGist[0].candidate", null);
-  const statusChoices = _.get(data, "statusChoices.enumValues", []).map(
+  const graphGist = _.get(data, 'GraphGist[0].candidate', null);
+  const statusChoices = _.get(data, 'statusChoices.enumValues', []).map(
     (item) => ({
       value: item.name,
       text: item.name,
@@ -296,8 +296,8 @@ function GraphGistEditByOwner() {
                 <label>Fatured</label>
                 <Select
                   options={[
-                    { value: false, text: "False" },
-                    { value: true, text: "True" },
+                    { value: false, text: 'False' },
+                    { value: true, text: 'True' },
                   ]}
                   name="featured"
                   value={values.featured}

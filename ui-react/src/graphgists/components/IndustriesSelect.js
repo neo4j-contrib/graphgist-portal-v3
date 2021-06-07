@@ -1,6 +1,6 @@
-import React from "react";
-import gql from "graphql-tag";
-import GraphQLSelect from "./GraphQLSelect";
+import React from 'react';
+import gql from 'graphql-tag';
+import GraphQLSelect from './GraphQLSelect';
 
 const GET_ITEMS = gql`
   query itemsPage {

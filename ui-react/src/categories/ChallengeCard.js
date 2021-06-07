@@ -1,11 +1,11 @@
-import React from "react";
-import gql from "graphql-tag";
-import { useHistory } from "react-router";
-import { Card, Image } from "semantic-ui-react";
-import { Link } from "react-router-dom";
+import React from 'react';
+import gql from 'graphql-tag';
+import { useHistory } from 'react-router';
+import { Card, Image } from 'semantic-ui-react';
+import { Link } from 'react-router-dom';
 // import { createUseStyles } from "react-jss";
 
-import missingImg from "../assets/missing.png";
+import missingImg from '../assets/missing.png';
 
 // const useStyles = createUseStyles({
 // });

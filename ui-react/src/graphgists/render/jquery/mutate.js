@@ -1,4 +1,4 @@
-import mutateEvents from "./mutate-events.js";
+import mutateEvents from './mutate-events.js';
 
 /**
  * @license jQuery-mutate
@@ -30,7 +30,7 @@ export default function ($) {
 
   function reset() {
     var parent = mutate;
-    if (parent.event_stack !== "undefined" && parent.event_stack.length) {
+    if (parent.event_stack !== 'undefined' && parent.event_stack.length) {
       $.each(parent.event_stack, function (j, k) {
         mutate.add_event(k);
       });
@@ -39,9 +39,9 @@ export default function ($) {
     $.each(parent.stack, function (i, n) {
       $(n.selector).each(function (a, b) {
         if (parent.events[n.event_name](b) === true) {
-          if (n["callback"]) n.callback(b, n);
+          if (n['callback']) n.callback(b, n);
         } else {
-          if (n["false_callback"]) n.false_callback(b, n);
+          if (n['false_callback']) n.false_callback(b, n);
         }
       });
     });
@@ -54,11 +54,11 @@ export default function ($) {
         callback = arguments[1],
         selector = this,
         false_callback = arguments[2] ? arguments[2] : function () {};
-      if (arguments[0].toLowerCase() === "extend") {
+      if (arguments[0].toLowerCase() === 'extend') {
         mutate.add_event(callback);
         return this;
       }
-      $.each($.trim(arguments[0]).split(" "), function (i, n) {
+      $.each($.trim(arguments[0]).split(' '), function (i, n) {
         event_name = n;
         mutate.add(event_name, selector, callback, false_callback);
       });

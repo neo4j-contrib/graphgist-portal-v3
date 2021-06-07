@@ -1,11 +1,11 @@
-import React from "react";
-import { Link } from "react-router-dom";
-import { createUseStyles } from "react-jss";
-import { Grid, Header } from "semantic-ui-react";
-import gql from "graphql-tag";
-import Pre from "./components/Pre";
-import GraphGistList from "./graphgists/GraphGistList";
-import GraphGistCard from "./graphgists/GraphGistCard";
+import React from 'react';
+import { Link } from 'react-router-dom';
+import { createUseStyles } from 'react-jss';
+import { Grid, Header } from 'semantic-ui-react';
+import gql from 'graphql-tag';
+import Pre from './components/Pre';
+import GraphGistList from './graphgists/GraphGistList';
+import GraphGistCard from './graphgists/GraphGistCard';
 
 const useStyles = createUseStyles({
   // root: {
@@ -26,7 +26,7 @@ function Home() {
   const classes = useStyles();
 
   const isLoginEnabled =
-    typeof window !== "undefined" && !window.neo4jDesktopApi;
+    typeof window !== 'undefined' && !window.neo4jDesktopApi;
 
   return (
     <div className={classes.root}>
@@ -34,7 +34,7 @@ function Home() {
 
       {isLoginEnabled && (
         <p>
-          Already know what a graphgist is?{" "}
+          Already know what a graphgist is?{' '}
           <Link to="/submit_graphgist">Start yours now</Link>.
         </p>
       )}
@@ -81,7 +81,7 @@ function Home() {
             <Header as="h5">Pop Culture</Header>
             <GraphGistList
               graphql={list_graphql}
-              variables={{ uuid: "855363c7-cdeb-4c8b-b4a5-b72c8f2388e3" }}
+              variables={{ uuid: '855363c7-cdeb-4c8b-b4a5-b72c8f2388e3' }}
               group={false}
             />
           </Grid.Column>
@@ -89,7 +89,7 @@ function Home() {
             <Header as="h5">Open/Government Data and Politics</Header>
             <GraphGistList
               graphql={list_graphql}
-              variables={{ uuid: "c4eab62c-7f5e-4e17-8f75-811d65d83127" }}
+              variables={{ uuid: 'c4eab62c-7f5e-4e17-8f75-811d65d83127' }}
               group={false}
             />
           </Grid.Column>
@@ -97,7 +97,7 @@ function Home() {
             <Header as="h5">Investigative Journalism</Header>
             <GraphGistList
               graphql={list_graphql}
-              variables={{ uuid: "d9ec56c6-0a76-49ab-8f43-0504d92225f7" }}
+              variables={{ uuid: 'd9ec56c6-0a76-49ab-8f43-0504d92225f7' }}
               group={false}
             />
           </Grid.Column>
@@ -107,7 +107,7 @@ function Home() {
             <Header as="h5">Sports and Recreation</Header>
             <GraphGistList
               graphql={list_graphql}
-              variables={{ uuid: "14bdffc9-8ba4-464e-86f8-577f484428e6" }}
+              variables={{ uuid: '14bdffc9-8ba4-464e-86f8-577f484428e6' }}
               group={false}
             />
           </Grid.Column>
@@ -115,7 +115,7 @@ function Home() {
             <Header as="h5">Public Web APIs</Header>
             <GraphGistList
               graphql={list_graphql}
-              variables={{ uuid: "09bb2bbc-fb73-47a8-9778-3e5f22dcd27c" }}
+              variables={{ uuid: '09bb2bbc-fb73-47a8-9778-3e5f22dcd27c' }}
               group={false}
             />
           </Grid.Column>
@@ -132,8 +132,8 @@ function Home() {
       </p>
 
       <p>
-        First define a block of{" "}
-        <a href="http://neo4j.com/developer/cypher-query-language/">Cypher</a>{" "}
+        First define a block of{' '}
+        <a href="http://neo4j.com/developer/cypher-query-language/">Cypher</a>{' '}
         code to setup the database, this block can also use LOAD CSV. Please use
         a educational graph size (around 150 nodes and rels):
       </p>
@@ -154,7 +154,7 @@ CREATE (neo)-[:SUPPORTS]->(:Language {name:'Cypher'})
       </p>
 
       <div>
-        <Pre style={{ float: "left" }}>
+        <Pre style={{ float: 'left' }}>
           {`[source,cypher]
 ----
 MATCH (db:Database)-[:SUPPORTS]->(language:Language)

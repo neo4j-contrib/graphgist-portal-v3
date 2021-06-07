@@ -1,6 +1,6 @@
-import React from "react";
-import { Helmet } from "react-helmet";
-import GraphGistsByPerson from "./GraphGistsByPerson";
+import React from 'react';
+import { Helmet } from 'react-helmet';
+import GraphGistsByPerson from './GraphGistsByPerson';
 
 function MyGraphGists() {
   return (
