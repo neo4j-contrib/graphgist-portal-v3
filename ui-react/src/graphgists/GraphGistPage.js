@@ -1,9 +1,9 @@
-import React from "react";
-import { useQuery } from "@apollo/client";
-import { useParams } from "react-router-dom";
-import gql from "graphql-tag";
-import _ from "lodash";
-import GraphGistUI from "./GraphGistUI.js";
+import React from 'react';
+import { useQuery } from '@apollo/client';
+import { useParams } from 'react-router-dom';
+import gql from 'graphql-tag';
+import _ from 'lodash';
+import GraphGistUI from './GraphGistUI.js';
 
 const GET_GRAPHGIST = gql`
   query graphGistPage($id: ID, $slug: String) {
@@ -64,11 +64,11 @@ function GraphGistPage() {
   const { id } = useParams();
 
   const { loading, data, error, refetch } = useQuery(GET_GRAPHGIST, {
-    fetchPolicy: "cache-and-network",
+    fetchPolicy: 'cache-and-network',
     variables: { id: id, slug: id },
   });
 
-  const graphGist = _.get(data, "GraphGist[0]", null);
+  const graphGist = _.get(data, 'GraphGist[0]', null);
 
   return (
     <GraphGistUI

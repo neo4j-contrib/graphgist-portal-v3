@@ -1,9 +1,9 @@
-import React from "react";
-import { useLazyQuery } from "@apollo/client";
-import gql from "graphql-tag";
-import { useHistory } from "react-router";
-import { Search } from "semantic-ui-react";
-import _ from "lodash";
+import React from 'react';
+import { useLazyQuery } from '@apollo/client';
+import gql from 'graphql-tag';
+import { useHistory } from 'react-router';
+import { Search } from 'semantic-ui-react';
+import _ from 'lodash';
 
 const SEARCH_CHALLENGE = gql`
   query challengeSearch($searchString: String!) {
@@ -20,16 +20,16 @@ const SEARCH_CHALLENGE = gql`
 
 function SearchAutoComplete() {
   const history = useHistory();
-  const [searchString, setSearchString] = React.useState("");
+  const [searchString, setSearchString] = React.useState('');
   const [results, setResults] = React.useState([]);
   const [fetch, { loading }] = useLazyQuery(SEARCH_CHALLENGE, {
-    fetchPolicy: "cache-and-network",
+    fetchPolicy: 'cache-and-network',
     onCompleted: (data) => {
       if (data && data.challengeSearch) {
         setResults(
           data.challengeSearch.map((g) => ({
             title: g.name,
-            image: _.get(g, "image[0].source_url", undefined),
+            image: _.get(g, 'image[0].source_url', undefined),
             description: `Name: ${g.name}`,
             url: `/challenges/${g.slug}`,
           }))

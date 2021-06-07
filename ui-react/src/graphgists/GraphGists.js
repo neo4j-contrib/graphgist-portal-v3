@@ -1,10 +1,10 @@
-import React from "react";
-import { useQuery } from "@apollo/client";
-import gql from "graphql-tag";
-import { Button, Checkbox, Card, Grid, Divider } from "semantic-ui-react";
-import { Helmet } from "react-helmet";
-import GraphGistCard from "./GraphGistCard";
-import SearchAutoComplete from "./SearchAutoComplete";
+import React from 'react';
+import { useQuery } from '@apollo/client';
+import gql from 'graphql-tag';
+import { Button, Checkbox, Card, Grid, Divider } from 'semantic-ui-react';
+import { Helmet } from 'react-helmet';
+import GraphGistCard from './GraphGistCard';
+import SearchAutoComplete from './SearchAutoComplete';
 
 const GET_GISTS = gql`
   query gistsPaginateQuery($first: Int, $offset: Int, $featured: Boolean) {
@@ -28,7 +28,7 @@ function GraphGists() {
   const [useFeatured, setUseFeatured] = React.useState(true);
 
   const { fetchMore, loading, data, error } = useQuery(GET_GISTS, {
-    fetchPolicy: "cache-and-network",
+    fetchPolicy: 'cache-and-network',
     variables: {
       first: rowsPerPage,
       offset: 0,

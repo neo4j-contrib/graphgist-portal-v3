@@ -1,52 +1,52 @@
-import React from "react";
-import gql from "graphql-tag";
-import { useHistory } from "react-router";
-import { Card, Image, Icon, List, Button, Label } from "semantic-ui-react";
-import { Link } from "react-router-dom";
-import { createUseStyles } from "react-jss";
+import React from 'react';
+import gql from 'graphql-tag';
+import { useHistory } from 'react-router';
+import { Card, Image, Icon, List, Button, Label } from 'semantic-ui-react';
+import { Link } from 'react-router-dom';
+import { createUseStyles } from 'react-jss';
 
-import missingImg from "../assets/missing.png";
+import missingImg from '../assets/missing.png';
 
 const useStyles = createUseStyles({
   content: {
-    flexGrow: "0 !important",
-    height: "70px",
+    flexGrow: '0 !important',
+    height: '70px',
   },
   categoryLabel: {
-    marginTop: "2px !important",
-    marginBottom: "2px !important",
-    marginLeft: "0 !important",
-    marginRight: "5px !important",
-    paddingLeft: "35px !important",
-    position: "relative",
+    marginTop: '2px !important',
+    marginBottom: '2px !important',
+    marginLeft: '0 !important',
+    marginRight: '5px !important',
+    paddingLeft: '35px !important',
+    position: 'relative',
   },
   categoryIcon: {
-    width: "1.7em",
-    height: "1.7em",
-    marginLeft: "-35px !important",
-    marginRight: "0 !important",
-    position: "absolute !important",
+    width: '1.7em',
+    height: '1.7em',
+    marginLeft: '-35px !important',
+    marginRight: '0 !important',
+    position: 'absolute !important',
   },
   card: {
     boxShadow:
-      "0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)",
-    borderRadius: "5px",
-    display: "grid",
-    gridTemplateRows: "70px 250px 2fr 1fr",
-    height: "600px",
+      '0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)',
+    borderRadius: '5px',
+    display: 'grid',
+    gridTemplateRows: '70px 250px 2fr 1fr',
+    height: '600px',
   },
   image: {
-    height: "250px",
-    alignSelf: "center",
-    justifySelf: "center",
-    objectFit: "cover",
+    height: '250px',
+    alignSelf: 'center',
+    justifySelf: 'center',
+    objectFit: 'cover',
   },
 });
 
 const categoriesUrlPath = {
-  UseCase: "use_cases",
-  Industry: "industries",
-  Challenge: "challenges",
+  UseCase: 'use_cases',
+  Industry: 'industries',
+  Challenge: 'challenges',
 };
 
 function GraphGistCard(props) {
@@ -101,7 +101,7 @@ function GraphGistCard(props) {
               <List.Item>
                 <List.Icon name="user" size="large" />
                 <List.Content>
-                  <Link to={"/people/" + graphGist.author.slug}>
+                  <Link to={'/people/' + graphGist.author.slug}>
                     {graphGist.author.name}
                   </Link>
                 </List.Content>

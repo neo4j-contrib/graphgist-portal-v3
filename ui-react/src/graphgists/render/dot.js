@@ -18,7 +18,7 @@ export default function ($) {
   function scanForScriptBlocks() {
     if (
       !document.createElementNS &&
-      !!document.createElementNS("http://www.w3.org/2000/svg", "svg")
+      !!document.createElementNS('http://www.w3.org/2000/svg', 'svg')
         .createSVGRect
     ) {
       return;
@@ -38,8 +38,8 @@ export default function ($) {
         loading = true;
         queue.push({ dot: dot, element: $element });
         $.ajax({
-          url: "js/viz.js",
-          dataType: "script",
+          url: 'js/viz.js',
+          dataType: 'script',
           cache: true,
           success: function () {
             vizLoaded = true;
@@ -59,7 +59,7 @@ export default function ($) {
       //     $elementTarget.after(svg);
       // } catch (ex) {
       // console.error('Graphviz rendering failed:\n', ex);
-      console.error("Graphviz rendering failed.");
+      console.error('Graphviz rendering failed.');
       // }
     }
   }

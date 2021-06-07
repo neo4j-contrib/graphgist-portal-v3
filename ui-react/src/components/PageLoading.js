@@ -1,5 +1,5 @@
-import React from "react";
-import { Grid } from "semantic-ui-react";
+import React from 'react';
+import { Grid } from 'semantic-ui-react';
 
 function PageLoading({ children, loading, error, obj }) {
   if (loading) {

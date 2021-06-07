@@ -1,6 +1,6 @@
-import React, { Component, createElement } from "react";
-import PropTypes from "prop-types";
-import sanitizeHtml from "sanitize-html";
+import React, { Component, createElement } from 'react';
+import PropTypes from 'prop-types';
+import sanitizeHtml from 'sanitize-html';
 
 export default class SimpleFormat extends Component {
   static propTypes = {
@@ -11,7 +11,7 @@ export default class SimpleFormat extends Component {
   };
 
   static defaultProps = {
-    wrapperTag: "div",
+    wrapperTag: 'div',
     wrapperTagProps: {},
   };
 
@@ -21,11 +21,11 @@ export default class SimpleFormat extends Component {
     const pattern = /([^\n]\n)(?=[^\n])/g;
     const text = sanitizeHtml(this.props.text);
     return text
-      .replace(/\r\n?/g, "\n")
+      .replace(/\r\n?/g, '\n')
       .split(/\n\n+/)
       .map((t) => {
         if (t.match(pattern)) {
-          return t.replace(pattern, "$1<br />");
+          return t.replace(pattern, '$1<br />');
         } else {
           return t;
         }

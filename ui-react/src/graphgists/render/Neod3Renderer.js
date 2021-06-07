@@ -2,10 +2,10 @@
 /* eslint no-loop-func: 0 */
 /* eslint eqeqeq: 0 */
 
-import $ from "jquery";
-import * as d3 from "d3";
-import neo from "./neod3";
-import { props } from "./cypher.datatable";
+import $ from 'jquery';
+import * as d3 from 'd3';
+import neo from './neod3';
+import { props } from './cypher.datatable';
 
 export default function () {
   var styleContents = `
@@ -29,16 +29,16 @@ export default function () {
     }\n`;
 
   var skip = [
-    "id",
-    "start",
-    "end",
-    "source",
-    "target",
-    "labels",
-    "type",
-    "selected",
+    'id',
+    'start',
+    'end',
+    'source',
+    'target',
+    'labels',
+    'type',
+    'selected',
   ];
-  var prio_props = ["name", "title", "tag", "username", "lastname"];
+  var prio_props = ['name', 'title', 'tag', 'username', 'lastname'];
 
   var serializer = null;
 
@@ -50,10 +50,10 @@ export default function () {
       $downloadSvgLink.hide();
     });
   var downloadSvgLink = $downloadSvgLink[0];
-  var blobSupport = "Blob" in window;
-  var URLSupport = "URL" in window && "createObjectURL" in window.URL;
-  var msBlobSupport = typeof window.navigator.msSaveOrOpenBlob !== "undefined";
-  var svgStyling = "<style>\ntext{font-family:sans-serif}\n</style>";
+  var blobSupport = 'Blob' in window;
+  var URLSupport = 'URL' in window && 'createObjectURL' in window.URL;
+  var msBlobSupport = typeof window.navigator.msSaveOrOpenBlob !== 'undefined';
+  var svgStyling = '<style>\ntext{font-family:sans-serif}\n</style>';
 
   var existingStyles = {};
   var currentColor = 1;
@@ -72,29 +72,29 @@ export default function () {
 
     function node_styles(nodes) {
       function label(n) {
-        var labels = n["labels"];
+        var labels = n['labels'];
         if (labels && labels.length) {
           return labels[labels.length - 1];
         }
-        return "";
+        return '';
       }
 
       var style = {};
       for (var i = 0; i < nodes.length; i++) {
         var props = (nodes[i].properties = extract_props(nodes[i]));
         var keys = Object.keys(props);
-        if (label(nodes[i]) !== "" && keys.length > 0) {
+        if (label(nodes[i]) !== '' && keys.length > 0) {
           var selected_keys = prio_props.filter(function (k) {
             return keys.indexOf(k) !== -1;
           });
-          selected_keys = selected_keys.concat(keys).concat(["id"]);
+          selected_keys = selected_keys.concat(keys).concat(['id']);
           var selector = selectorFor(label(nodes[i]));
           var selectedKey = selected_keys[0];
           if (
-            typeof props[selectedKey] === "string" &&
+            typeof props[selectedKey] === 'string' &&
             props[selectedKey].length > 30
           ) {
-            props[selectedKey] = props[selectedKey].substring(0, 30) + " ...";
+            props[selectedKey] = props[selectedKey].substring(0, 30) + ' ...';
           }
           style[selector] = style[selector] || selectedKey;
         }
@@ -103,29 +103,29 @@ export default function () {
     }
 
     function isSelector(label) {
-      return label && label.substring(0, 5) == "node.";
+      return label && label.substring(0, 5) == 'node.';
     }
     function selectorFor(label) {
-      return "node." + label;
+      return 'node.' + label;
     }
     function styleFor(label, property, color) {
       var textColor = window.isInternetExplorer
-        ? "#000000"
-        : color["text-color-internal"];
+        ? '#000000'
+        : color['text-color-internal'];
       var result =
         (isSelector(label) ? label : selectorFor(label)) +
         " {caption: '{" +
         property +
         "}' " +
-        "; color: " +
+        '; color: ' +
         color.color +
-        "; border-color: " +
-        color["border-color"] +
-        "; text-color-internal: " +
+        '; border-color: ' +
+        color['border-color'] +
+        '; text-color-internal: ' +
         textColor +
-        "; text-color-external: " +
+        '; text-color-external: ' +
         textColor +
-        "; }";
+        '; }';
       return result;
     }
 
@@ -141,8 +141,8 @@ export default function () {
         var colors = color.split(/\//);
         style[selectorFor(label)] = styleFor(label, prop, {
           color: colors[0],
-          "border-color": colors[1] || colors[0],
-          "text-color-internal": colors[2] || "#000000",
+          'border-color': colors[1] || colors[0],
+          'text-color-internal': colors[2] || '#000000',
         });
       }
       return style;
@@ -164,42 +164,42 @@ export default function () {
         }
         styleItems.push(styleItem);
       }
-      return styleContents + styleItems.join("\n");
+      return styleContents + styleItems.join('\n');
     }
 
     function applyZoom() {
       renderer
-        .select(".nodes")
+        .select('.nodes')
         .attr(
-          "transform",
-          "translate(" + d3.event.translate + ")scale(" + d3.event.scale + ")"
+          'transform',
+          'translate(' + d3.event.translate + ')scale(' + d3.event.scale + ')'
         );
       renderer
-        .select(".relationships")
+        .select('.relationships')
         .attr(
-          "transform",
-          "translate(" + d3.event.translate + ")scale(" + d3.event.scale + ")"
+          'transform',
+          'translate(' + d3.event.translate + ')scale(' + d3.event.scale + ')'
         );
     }
 
     function enableZoomHandlers() {
-      renderer.on("wheel.zoom", zoomHandlers.wheel);
-      renderer.on("mousewheel.zoom", zoomHandlers.mousewheel);
-      renderer.on("mousedown.zoom", zoomHandlers.mousedown);
-      renderer.on("DOMMouseScroll.zoom", zoomHandlers.DOMMouseScroll);
-      renderer.on("touchstart.zoom", zoomHandlers.touchstart);
-      renderer.on("touchmove.zoom", zoomHandlers.touchmove);
-      renderer.on("touchend.zoom", zoomHandlers.touchend);
+      renderer.on('wheel.zoom', zoomHandlers.wheel);
+      renderer.on('mousewheel.zoom', zoomHandlers.mousewheel);
+      renderer.on('mousedown.zoom', zoomHandlers.mousedown);
+      renderer.on('DOMMouseScroll.zoom', zoomHandlers.DOMMouseScroll);
+      renderer.on('touchstart.zoom', zoomHandlers.touchstart);
+      renderer.on('touchmove.zoom', zoomHandlers.touchmove);
+      renderer.on('touchend.zoom', zoomHandlers.touchend);
     }
 
     function disableZoomHandlers() {
-      renderer.on("wheel.zoom", null);
-      renderer.on("mousewheel.zoom", null);
-      renderer.on("mousedown.zoom", null);
-      renderer.on("DOMMouseScroll.zoom", null);
-      renderer.on("touchstart.zoom", null);
-      renderer.on("touchmove.zoom", null);
-      renderer.on("touchend.zoom", null);
+      renderer.on('wheel.zoom', null);
+      renderer.on('mousewheel.zoom', null);
+      renderer.on('mousedown.zoom', null);
+      renderer.on('DOMMouseScroll.zoom', null);
+      renderer.on('touchstart.zoom', null);
+      renderer.on('touchmove.zoom', null);
+      renderer.on('touchend.zoom', null);
     }
 
     function keyHandler() {
@@ -227,32 +227,32 @@ export default function () {
       .style(styleSheet)
       .width($container.width())
       .height($container.height())
-      .on("nodeClicked", dummyFunc)
-      .on("relationshipClicked", dummyFunc)
-      .on("nodeDblClicked", dummyFunc);
+      .on('nodeClicked', dummyFunc)
+      .on('relationshipClicked', dummyFunc)
+      .on('nodeDblClicked', dummyFunc);
     var renderer = d3
-      .select("#" + id)
-      .append("svg")
+      .select('#' + id)
+      .append('svg')
       .data([graphModel]);
     var zoomHandlers = {};
     var zoomBehavior = d3.behavior
       .zoom()
-      .on("zoom", applyZoom)
+      .on('zoom', applyZoom)
       .scaleExtent([0.2, 8]);
 
     renderer.call(graphView);
     renderer.call(zoomBehavior);
 
-    zoomHandlers.wheel = renderer.on("wheel.zoom");
-    zoomHandlers.mousewheel = renderer.on("mousewheel.zoom");
-    zoomHandlers.mousedown = renderer.on("mousedown.zoom");
-    zoomHandlers.DOMMouseScroll = renderer.on("DOMMouseScroll.zoom");
-    zoomHandlers.touchstart = renderer.on("touchstart.zoom");
-    zoomHandlers.touchmove = renderer.on("touchmove.zoom");
-    zoomHandlers.touchend = renderer.on("touchend.zoom");
+    zoomHandlers.wheel = renderer.on('wheel.zoom');
+    zoomHandlers.mousewheel = renderer.on('mousewheel.zoom');
+    zoomHandlers.mousedown = renderer.on('mousedown.zoom');
+    zoomHandlers.DOMMouseScroll = renderer.on('DOMMouseScroll.zoom');
+    zoomHandlers.touchstart = renderer.on('touchstart.zoom');
+    zoomHandlers.touchmove = renderer.on('touchmove.zoom');
+    zoomHandlers.touchend = renderer.on('touchend.zoom');
     disableZoomHandlers();
 
-    d3.select("body").on("keydown", keyHandler).on("keyup", keyHandler);
+    d3.select('body').on('keydown', keyHandler).on('keyup', keyHandler);
 
     function refresh() {
       graphView.height($container.height());
@@ -261,21 +261,21 @@ export default function () {
     }
 
     function saveToSvg() {
-      var svgElement = $("#" + id)
-        .children("svg")
+      var svgElement = $('#' + id)
+        .children('svg')
         .first()[0];
       var xml = serializeSvg(svgElement, $container);
-      if (!msBlobSupport && downloadSvgLink.href !== "#") {
+      if (!msBlobSupport && downloadSvgLink.href !== '#') {
         window.URL.revokeObjectURL(downloadSvgLink.href);
       }
       var blob = new window.Blob([xml], {
-        type: "image/svg+xml",
+        type: 'image/svg+xml',
       });
-      var fileName = id + ".svg";
+      var fileName = id + '.svg';
       if (!msBlobSupport) {
         downloadSvgLink.href = window.URL.createObjectURL(blob);
         $downloadSvgLink.appendTo($container).show();
-        $downloadSvgLink.attr("download", fileName);
+        $downloadSvgLink.attr('download', fileName);
       } else {
         window.navigator.msSaveOrOpenBlob(blob, fileName);
       }
@@ -284,8 +284,8 @@ export default function () {
     function getFunctions() {
       var funcs = {};
       if (blobSupport && (URLSupport || msBlobSupport)) {
-        funcs["ui large download icon fi-download"] = {
-          title: "Save as SVG",
+        funcs['ui large download icon fi-download'] = {
+          title: 'Save as SVG',
           func: saveToSvg,
         };
       }
@@ -305,7 +305,7 @@ export default function () {
 
   function serializeSvg(element, $container) {
     if (serializer === null) {
-      if (typeof window.XMLSerializer !== "undefined") {
+      if (typeof window.XMLSerializer !== 'undefined') {
         var xmlSerializer = new XMLSerializer();
         serializer = function (emnt) {
           return xmlSerializer.serializeToString(emnt);
@@ -315,7 +315,7 @@ export default function () {
           return (
             '<svg xmlns="http://www.w3.org/2000/svg">' +
             $(emnt).html() +
-            "</svg>"
+            '</svg>'
           );
         };
       }
@@ -323,14 +323,14 @@ export default function () {
     var svg = serializer(element);
     svg = svg
       .replace(
-        "<svg ",
+        '<svg ',
         '<svg height="' +
           $container.height() +
           '" width="' +
           $container.width() +
           '" '
       )
-      .replace(/<g/, "\n" + svgStyling + "\n<g");
+      .replace(/<g/, '\n' + svgStyling + '\n<g');
     return svg;
   }
 

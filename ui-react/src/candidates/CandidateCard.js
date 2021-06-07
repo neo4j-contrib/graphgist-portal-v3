@@ -1,23 +1,23 @@
-import React from "react";
-import gql from "graphql-tag";
-import { useHistory } from "react-router";
-import { Card, Image, List } from "semantic-ui-react";
-import { Link } from "react-router-dom";
-import { createUseStyles } from "react-jss";
+import React from 'react';
+import gql from 'graphql-tag';
+import { useHistory } from 'react-router';
+import { Card, Image, List } from 'semantic-ui-react';
+import { Link } from 'react-router-dom';
+import { createUseStyles } from 'react-jss';
 
-import missingImg from "../assets/missing.png";
+import missingImg from '../assets/missing.png';
 
 const useStyles = createUseStyles({
   categoryIcon: {
-    width: "1.7em",
-    height: "1.7em",
+    width: '1.7em',
+    height: '1.7em',
   },
 });
 
 const categoriesUrlPath = {
-  UseCase: "use_cases",
-  Industry: "industries",
-  Challenge: "challenges",
+  UseCase: 'use_cases',
+  Industry: 'industries',
+  Challenge: 'challenges',
 };
 
 function GraphGistCandidateCard(props) {
@@ -54,7 +54,7 @@ function GraphGistCandidateCard(props) {
               <List.Item>
                 <List.Icon name="user" size="large" />
                 <List.Content>
-                  <Link to={"people/" + graphGist.author.slug}>
+                  <Link to={'people/' + graphGist.author.slug}>
                     {graphGist.author.name}
                   </Link>
                 </List.Content>

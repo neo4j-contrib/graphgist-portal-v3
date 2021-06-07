@@ -1,9 +1,9 @@
-import React from "react";
-import { useQuery } from "@apollo/client";
-import gql from "graphql-tag";
-import { Button, Card, Grid } from "semantic-ui-react";
-import { Helmet } from "react-helmet";
-import CandidateCard from "./CandidateCard";
+import React from 'react';
+import { useQuery } from '@apollo/client';
+import gql from 'graphql-tag';
+import { Button, Card, Grid } from 'semantic-ui-react';
+import { Helmet } from 'react-helmet';
+import CandidateCard from './CandidateCard';
 
 const GET_GISTS = gql`
   query gistsPaginateQuery($first: Int, $offset: Int) {
@@ -24,7 +24,7 @@ function GraphGistCandidates() {
   const [hasMore, setHasMore] = React.useState(false);
 
   const { fetchMore, loading, data, error } = useQuery(GET_GISTS, {
-    fetchPolicy: "cache-and-network",
+    fetchPolicy: 'cache-and-network',
     variables: {
       first: rowsPerPage,
       offset: 0,

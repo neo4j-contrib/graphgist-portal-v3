@@ -1,14 +1,14 @@
-import React from "react";
-import { useQuery } from "@apollo/client";
-import gql from "graphql-tag";
-import { Button, Card, Grid, Icon, Divider } from "semantic-ui-react";
-import { Helmet } from "react-helmet";
-import ChallengeCard from "./ChallengeCard";
-import SearchAutoComplete from "./SearchAutoComplete";
-import { createUseStyles } from "react-jss";
-import _ from "lodash";
+import React from 'react';
+import { useQuery } from '@apollo/client';
+import gql from 'graphql-tag';
+import { Button, Card, Grid, Icon, Divider } from 'semantic-ui-react';
+import { Helmet } from 'react-helmet';
+import ChallengeCard from './ChallengeCard';
+import SearchAutoComplete from './SearchAutoComplete';
+import { createUseStyles } from 'react-jss';
+import _ from 'lodash';
 
-import { useHistory } from "react-router";
+import { useHistory } from 'react-router';
 const GET_CHALLENGES = gql`
   query getChallengesPaginateQuery($first: Int, $offset: Int) {
     Challenge(first: $first, offset: $offset, orderBy: [name_asc]) {
@@ -25,7 +25,7 @@ const GET_CHALLENGES = gql`
 const rowsPerPage = 30;
 const useStyles = createUseStyles({
   button: {
-    color: "rgba(0,0,0,0.6)",
+    color: 'rgba(0,0,0,0.6)',
   },
 });
 function ChallengesList() {
@@ -34,7 +34,7 @@ function ChallengesList() {
   const history = useHistory();
 
   const { fetchMore, loading, data, error } = useQuery(GET_CHALLENGES, {
-    fetchPolicy: "cache-and-network",
+    fetchPolicy: 'cache-and-network',
     variables: {
       first: rowsPerPage,
       offset: 0,
@@ -47,7 +47,7 @@ function ChallengesList() {
     },
   });
 
-  const me = _.get(data, "me", null);
+  const me = _.get(data, 'me', null);
 
   function loadMore() {
     fetchMore({
@@ -67,7 +67,7 @@ function ChallengesList() {
     });
   }
   function addNew() {
-    history.push("/challenges/new");
+    history.push('/challenges/new');
   }
 
   return (

@@ -1,12 +1,12 @@
-import React from "react";
-import PropTypes from "prop-types";
-import { Card, Loader, Message } from "semantic-ui-react";
-import { useQuery } from "@apollo/client";
-import GraphGistCard from "./GraphGistCard";
+import React from 'react';
+import PropTypes from 'prop-types';
+import { Card, Loader, Message } from 'semantic-ui-react';
+import { useQuery } from '@apollo/client';
+import GraphGistCard from './GraphGistCard';
 
 function GraphGistList({ graphql, variables, group }) {
   const { loading, data, error } = useQuery(graphql, {
-    fetchPolicy: "cache-and-network",
+    fetchPolicy: 'cache-and-network',
     variables,
   });
 

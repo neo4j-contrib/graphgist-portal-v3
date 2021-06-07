@@ -1,6 +1,6 @@
-import React, { useEffect } from "react";
-import gql from "graphql-tag";
-import { useQuery } from "@apollo/client";
+import React, { useEffect } from 'react';
+import gql from 'graphql-tag';
+import { useQuery } from '@apollo/client';
 import {
   Switch,
   Route,
@@ -8,7 +8,7 @@ import {
   Link,
   useLocation,
   useHistory,
-} from "react-router-dom";
+} from 'react-router-dom';
 import {
   Menu,
   Container,
@@ -16,40 +16,40 @@ import {
   Dropdown,
   Label,
   Icon,
-} from "semantic-ui-react";
-import { createUseStyles } from "react-jss";
-import { useAuth0 } from "@auth0/auth0-react";
-import { useState as hookUseState } from "@hookstate/core";
-import _ from "lodash";
-import { Helmet } from "react-helmet";
+} from 'semantic-ui-react';
+import { createUseStyles } from 'react-jss';
+import { useAuth0 } from '@auth0/auth0-react';
+import { useState as hookUseState } from '@hookstate/core';
+import _ from 'lodash';
+import { Helmet } from 'react-helmet';
 
-import ScrollToTop from "./components/ScrollToTop";
+import ScrollToTop from './components/ScrollToTop';
 
-import Home from "./Home";
-import GraphGists from "./graphgists/GraphGists";
-import GraphGuides from "./graphgists/GraphGuides";
-import GraphGistPage from "./graphgists/GraphGistPage";
-import GraphGistCandidatePage from "./graphgists/GraphGistCandidatePage";
-import GraphGistSourcePage from "./graphgists/GraphGistSourcePage";
-import GraphGistEditByOwner from "./graphgists/GraphGistEditByOwner";
-import GraphGistCreate from "./graphgists/GraphGistCreate";
-import MyGraphGists from "./graphgists/MyGraphGists";
-import PersonGraphGists from "./people/PersonGraphGists";
+import Home from './Home';
+import GraphGists from './graphgists/GraphGists';
+import GraphGuides from './graphgists/GraphGuides';
+import GraphGistPage from './graphgists/GraphGistPage';
+import GraphGistCandidatePage from './graphgists/GraphGistCandidatePage';
+import GraphGistSourcePage from './graphgists/GraphGistSourcePage';
+import GraphGistEditByOwner from './graphgists/GraphGistEditByOwner';
+import GraphGistCreate from './graphgists/GraphGistCreate';
+import MyGraphGists from './graphgists/MyGraphGists';
+import PersonGraphGists from './people/PersonGraphGists';
 
-import CategoryPage from "./categories/CategoryPage";
-import ChallengesList from "./categories/ChallengesList";
-import ChallengeCreate from "./categories/ChallengeCreate";
-import ChallengeUpdate from "./categories/ChallengeUpdate";
+import CategoryPage from './categories/CategoryPage';
+import ChallengesList from './categories/ChallengesList';
+import ChallengeCreate from './categories/ChallengeCreate';
+import ChallengeUpdate from './categories/ChallengeUpdate';
 
-import Candidates from "./candidates/Candidates";
+import Candidates from './candidates/Candidates';
 
-import EditProfile from "./people/EditProfile";
+import EditProfile from './people/EditProfile';
 
-import AuthCallbackPage from "./auth/Callback";
+import AuthCallbackPage from './auth/Callback';
 
-import { authToken } from "./auth/state";
+import { authToken } from './auth/state';
 
-import "semantic-ui-css/semantic.min.css";
+import 'semantic-ui-css/semantic.min.css';
 
 export function getImage(field) {
   return field.length > 0 ? field[0].source_url : null;
@@ -111,10 +111,10 @@ function App() {
       isAuthed: false,
     },
   });
-  const me = _.get(data, "me");
-  const useCases = _.get(data, "useCases", []);
-  const industries = _.get(data, "industries", []);
-  const challenges = _.get(data, "challenges", []);
+  const me = _.get(data, 'me');
+  const useCases = _.get(data, 'useCases', []);
+  const industries = _.get(data, 'industries', []);
+  const challenges = _.get(data, 'challenges', []);
 
   useEffect(() => {
     (async () => {
@@ -122,7 +122,7 @@ function App() {
         const token = await getIdTokenClaims();
         if (token) {
           authTokenState.set(token.__raw);
-          window.localStorage.setItem("authToken", token.__raw);
+          window.localStorage.setItem('authToken', token.__raw);
           refetch({ isAuthed: true });
         }
       } catch (e) {
@@ -134,14 +134,14 @@ function App() {
   const handleLogout = (e) => {
     e.preventDefault();
     authTokenState.set(null);
-    window.localStorage.removeItem("authToken");
+    window.localStorage.removeItem('authToken');
     logout({ returnTo: window.location.origin });
   };
 
-  const messages = _.get(location.state, "messages", []);
+  const messages = _.get(location.state, 'messages', []);
 
   const isLoginEnabled =
-    typeof window !== "undefined" && !window.neo4jDesktopApi;
+    typeof window !== 'undefined' && !window.neo4jDesktopApi;
 
   return (
     <React.Fragment>
@@ -188,7 +188,7 @@ function App() {
                 >
                   {category_image && (
                     <img src={category_image} width="30" alt={category.name} />
-                  )}{" "}
+                  )}{' '}
                   {category.name} <Label>{category.num_graphgists}</Label>
                 </Dropdown.Item>
               );
@@ -207,7 +207,7 @@ function App() {
                 >
                   {category_image && (
                     <img src={category_image} width="30" alt={category.name} />
-                  )}{" "}
+                  )}{' '}
                   {category.name} <Label>{category.num_graphgists}</Label>
                 </Dropdown.Item>
               );
@@ -226,7 +226,7 @@ function App() {
                 >
                   {category_image && (
                     <img src={category_image} width="30" alt={category.name} />
-                  )}{" "}
+                  )}{' '}
                   {category.name} <Label>{category.num_graphgists}</Label>
                 </Dropdown.Item>
               );
@@ -236,7 +236,7 @@ function App() {
         <Menu.Item as={NavLink} to="/graph_guides">
           Graph Guides
         </Menu.Item>
-        {has_perm(me, "review_candidates") && (
+        {has_perm(me, 'review_candidates') && (
           <Menu.Item as={NavLink} to="/candidates/waiting_review">
             Candidates
           </Menu.Item>
@@ -252,7 +252,7 @@ function App() {
                     src={me.image}
                     style={{
                       marginLeft: 8,
-                      position: "absolute",
+                      position: 'absolute',
                       top: 5,
                       right: 10,
                       width: 30,

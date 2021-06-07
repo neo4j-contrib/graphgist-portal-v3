@@ -4,7 +4,7 @@
 /* eslint no-unused-vars: 0 */
 /* eslint no-sequences: 0 */
 
-import * as d3 from "d3";
+import * as d3 from 'd3';
 
 var __hasProp = {}.hasOwnProperty;
 
@@ -36,7 +36,7 @@ neo.utils = {
   isArray:
     Array.isArray ||
     function (obj) {
-      return Object.prototype.toString.call(obj) === "[object Array]";
+      return Object.prototype.toString.call(obj) === '[object Array]';
     },
   isObject: function (obj) {
     return Object(obj) === obj;
@@ -111,12 +111,12 @@ neo.models.Graph = (function () {
       source =
         this.nodeMap[item.source] ||
         (function () {
-          throw "Invalid source";
+          throw 'Invalid source';
         })();
       target =
         this.nodeMap[item.target] ||
         (function () {
-          throw "Invalid target";
+          throw 'Invalid target';
         })();
       this.relationshipMap[item.id] = new neo.models.Relationship(
         item.id,
@@ -208,9 +208,9 @@ NeoD3Geometry = (function () {
     var _results;
     _results = [];
     while (!(word.length <= 2)) {
-      word = word.substr(0, word.length - 2) + "\u2026";
+      word = word.substr(0, word.length - 2) + '\u2026';
       if (measure(word) < line.remainingWidth) {
-        line.text += " " + word;
+        line.text += ' ' + word;
         break;
       } else {
         _results.push(void 0);
@@ -246,9 +246,9 @@ NeoD3Geometry = (function () {
     _results = [];
     for (_i = 0, _len = nodes.length; _i < _len; _i++) {
       node = nodes[_i];
-      template = style.forNode(node).get("caption");
+      template = style.forNode(node).get('caption');
       captionText = style.interpolate(template, node.id, node.propertyMap);
-      words = captionText.split(" ");
+      words = captionText.split(' ');
       lines = [];
       for (
         i = _j = 0, _ref = words.length - 1;
@@ -285,15 +285,15 @@ NeoD3Geometry = (function () {
       _i,
       _ref,
       _ref1;
-    template = style.forNode(node).get("caption");
+    template = style.forNode(node).get('caption');
     captionText = style.interpolate(template, node.id, node.propertyMap);
-    fontFamily = "sans-serif";
-    fontSize = parseFloat(style.forNode(node).get("font-size"));
+    fontFamily = 'sans-serif';
+    fontSize = parseFloat(style.forNode(node).get('font-size'));
     lineHeight = fontSize;
     measure = function (text) {
       return neo.utils.measureText(text, fontFamily, fontSize);
     };
-    words = captionText.split(" ");
+    words = captionText.split(' ');
     emptyLine = function (lineCount, iLine) {
       var baseline, constainingHeight, lineWidth;
       baseline = (1 + iLine - lineCount / 2) * lineHeight;
@@ -303,7 +303,7 @@ NeoD3Geometry = (function () {
         Math.sqrt(square(node.radius) - square(constainingHeight)) * 2;
       return {
         node: node,
-        text: "",
+        text: '',
         baseline: baseline,
         remainingWidth: lineWidth,
       };
@@ -320,10 +320,10 @@ NeoD3Geometry = (function () {
         line = emptyLine(lineCount, iLine);
         while (
           iWord < words.length &&
-          measure(" " + words[iWord]) < line.remainingWidth
+          measure(' ' + words[iWord]) < line.remainingWidth
         ) {
-          line.text += " " + words[iWord];
-          line.remainingWidth -= measure(" " + words[iWord]);
+          line.text += ' ' + words[iWord];
+          line.remainingWidth -= measure(' ' + words[iWord]);
           iWord++;
         }
         lines.push(line);
@@ -371,12 +371,12 @@ NeoD3Geometry = (function () {
     caption
   ) {
     var fontFamily, fontSize, padding;
-    fontFamily = "sans-serif";
+    fontFamily = 'sans-serif';
     fontSize = parseFloat(
-      this.style.forRelationship(relationship).get("font-size")
+      this.style.forRelationship(relationship).get('font-size')
     );
     padding = parseFloat(
-      this.style.forRelationship(relationship).get("padding")
+      this.style.forRelationship(relationship).get('padding')
     );
     return neo.utils.measureText(caption, fontFamily, fontSize) + padding * 2;
   };
@@ -385,8 +385,8 @@ NeoD3Geometry = (function () {
     relationship
   ) {
     return (
-      parseFloat(this.style.forRelationship(relationship).get("shaft-width")) >
-      parseFloat(this.style.forRelationship(relationship).get("font-size"))
+      parseFloat(this.style.forRelationship(relationship).get('shaft-width')) >
+      parseFloat(this.style.forRelationship(relationship).get('font-size'))
     );
   };
 
@@ -405,8 +405,8 @@ NeoD3Geometry = (function () {
         (relationship.captionLayout = this.captionFitsInsideArrowShaftWidth(
           relationship
         )
-          ? "internal"
-          : "external")
+          ? 'internal'
+          : 'external')
       );
     }
     return _results;
@@ -421,9 +421,9 @@ NeoD3Geometry = (function () {
     shortCaption = caption;
     while (true) {
       if (shortCaption.length <= 2) {
-        return ["", 0];
+        return ['', 0];
       }
-      shortCaption = shortCaption.substr(0, shortCaption.length - 2) + "\u2026";
+      shortCaption = shortCaption.substr(0, shortCaption.length - 2) + '\u2026';
       width = this.measureRelationshipCaption(relationship, shortCaption);
       if (width < targetWidth) {
         return [shortCaption, width];
@@ -463,7 +463,7 @@ NeoD3Geometry = (function () {
       };
       shaftRadius =
         parseFloat(
-          this.style.forRelationship(relationship).get("shaft-width")
+          this.style.forRelationship(relationship).get('shaft-width')
         ) / 2 || 2;
       headRadius = shaftRadius + 3;
       headHeight = headRadius * 2;
@@ -491,74 +491,74 @@ NeoD3Geometry = (function () {
           : this.shortenCaption(relationship, relationship.type, shaftLength)),
         (relationship.shortCaption = _ref[0]),
         (relationship.shortCaptionLength = _ref[1]);
-      if (relationship.captionLayout === "external") {
+      if (relationship.captionLayout === 'external') {
         startBreak = (shaftLength - relationship.shortCaptionLength) / 2;
         endBreak = shaftLength - startBreak;
         _results.push(
           (relationship.arrowOutline = [
-            "M",
+            'M',
             0,
             shaftRadius,
-            "L",
+            'L',
             startBreak,
             shaftRadius,
-            "L",
+            'L',
             startBreak,
             -shaftRadius,
-            "L",
+            'L',
             0,
             -shaftRadius,
-            "Z",
-            "M",
+            'Z',
+            'M',
             endBreak,
             shaftRadius,
-            "L",
+            'L',
             shaftLength,
             shaftRadius,
-            "L",
+            'L',
             shaftLength,
             headRadius,
-            "L",
+            'L',
             relationship.arrowLength,
             0,
-            "L",
+            'L',
             shaftLength,
             -headRadius,
-            "L",
+            'L',
             shaftLength,
             -shaftRadius,
-            "L",
+            'L',
             endBreak,
             -shaftRadius,
-            "Z",
-          ].join(" "))
+            'Z',
+          ].join(' '))
         );
       } else {
         _results.push(
           (relationship.arrowOutline = [
-            "M",
+            'M',
             0,
             shaftRadius,
-            "L",
+            'L',
             shaftLength,
             shaftRadius,
-            "L",
+            'L',
             shaftLength,
             headRadius,
-            "L",
+            'L',
             relationship.arrowLength,
             0,
-            "L",
+            'L',
             shaftLength,
             -headRadius,
-            "L",
+            'L',
             shaftLength,
             -shaftRadius,
-            "L",
+            'L',
             0,
             -shaftRadius,
-            "Z",
-          ].join(" "))
+            'Z',
+          ].join(' '))
         );
       }
     }
@@ -571,7 +571,7 @@ NeoD3Geometry = (function () {
     for (_i = 0, _len = nodes.length; _i < _len; _i++) {
       node = nodes[_i];
       _results.push(
-        (node.radius = parseFloat(this.style.forNode(node).get("diameter")) / 2)
+        (node.radius = parseFloat(this.style.forNode(node).get('diameter')) / 2)
       );
     }
     return _results;
@@ -599,7 +599,7 @@ neo.graphModel = function () {
     var args, callback, event, _i, _len, _ref, _results;
     (event = arguments[0]),
       (args = 2 <= arguments.length ? __slice.call(arguments, 1) : []);
-    event = "updated";
+    event = 'updated';
     if (model.callbacks[event]) {
       _ref = model.callbacks[event];
       _results = [];
@@ -615,20 +615,20 @@ neo.graphModel = function () {
       return graph.nodes();
     }
     graph.removeNodes().addNodes(items);
-    model.trigger("nodesAdded");
+    model.trigger('nodesAdded');
     return model;
   };
   model.nodes.add = function (items) {
     if (items != null) {
       graph.addNodes(items);
-      model.trigger("nodesAdded");
+      model.trigger('nodesAdded');
     }
     return model;
   };
   model.nodes.find = graph.findNode;
   model.nodes.remove = function () {
     graph.removeNodes.apply(null, arguments);
-    model.trigger("nodesRemoved");
+    model.trigger('nodesRemoved');
     return model;
   };
   model.relationships = function (items) {
@@ -636,20 +636,20 @@ neo.graphModel = function () {
       return graph.relationships();
     }
     graph.removeRelationships().addRelationships(items);
-    model.trigger("relationshipsAdded");
+    model.trigger('relationshipsAdded');
     return model;
   };
   model.relationships.add = function (items) {
     if (items != null) {
       graph.addRelationships(items);
-      model.trigger("relationshipsAdded");
+      model.trigger('relationshipsAdded');
     }
     return model;
   };
   model.relationships.find = graph.findRelationship;
   model.relationships.remove = function () {
     graph.removeRelationships.apply(null, arguments);
-    model.trigger("relationshipsRemoved");
+    model.trigger('relationshipsRemoved');
     return model;
   };
   model.on = function (event, callback) {
@@ -685,7 +685,7 @@ neo.graphView = function () {
     selection.each(function (graphModel) {
       if (!viz) {
         viz = neo.viz(this, graphModel, layout, style);
-        graphModel.on("updated", function () {
+        graphModel.on('updated', function () {
           return viz.update();
         });
         viz.trigger = trigger;
@@ -895,126 +895,126 @@ neo.style = (function () {
     autoColor: true,
     colors: [
       {
-        color: "#DFE1E3",
-        "border-color": "#D4D6D7",
-        "text-color-internal": "#000000",
+        color: '#DFE1E3',
+        'border-color': '#D4D6D7',
+        'text-color-internal': '#000000',
       },
       {
-        color: "#F25A29",
-        "border-color": "#DC4717",
-        "text-color-internal": "#FFFFFF",
+        color: '#F25A29',
+        'border-color': '#DC4717',
+        'text-color-internal': '#FFFFFF',
       },
       {
-        color: "#AD62CE",
-        "border-color": "#9453B1",
-        "text-color-internal": "#FFFFFF",
+        color: '#AD62CE',
+        'border-color': '#9453B1',
+        'text-color-internal': '#FFFFFF',
       },
       {
-        color: "#30B6AF",
-        "border-color": "#46A39E",
-        "text-color-internal": "#FFFFFF",
+        color: '#30B6AF',
+        'border-color': '#46A39E',
+        'text-color-internal': '#FFFFFF',
       },
       {
-        color: "#FCC940",
-        "border-color": "#F3BA25",
-        "text-color-internal": "#000000",
+        color: '#FCC940',
+        'border-color': '#F3BA25',
+        'text-color-internal': '#000000',
       },
       {
-        color: "#4356C0",
-        "border-color": "#3445A2",
-        "text-color-internal": "#FFFFFF",
+        color: '#4356C0',
+        'border-color': '#3445A2',
+        'text-color-internal': '#FFFFFF',
       },
       {
-        color: "#FF6C7C",
-        "border-color": "#EB5D6C",
-        "text-color-internal": "#FFFFFF",
+        color: '#FF6C7C',
+        'border-color': '#EB5D6C',
+        'text-color-internal': '#FFFFFF',
       },
       {
-        color: "#a2cf81",
-        "border-color": "#9bbd82",
-        "text-color-internal": "#000000",
+        color: '#a2cf81',
+        'border-color': '#9bbd82',
+        'text-color-internal': '#000000',
       },
       {
-        color: "#f79235",
-        "border-color": "#e68f40",
-        "text-color-internal": "#000000",
+        color: '#f79235',
+        'border-color': '#e68f40',
+        'text-color-internal': '#000000',
       },
       {
-        color: "#785cc7",
-        "border-color": "#625096",
-        "text-color-internal": "#FFFFFF",
+        color: '#785cc7',
+        'border-color': '#625096',
+        'text-color-internal': '#FFFFFF',
       },
       {
-        color: "#d05e7c",
-        "border-color": "#b05b72",
-        "text-color-internal": "#FFFFFF",
+        color: '#d05e7c',
+        'border-color': '#b05b72',
+        'text-color-internal': '#FFFFFF',
       },
       {
-        color: "#3986b7",
-        "border-color": "#3a7499",
-        "text-color-internal": "#FFFFFF",
+        color: '#3986b7',
+        'border-color': '#3a7499',
+        'text-color-internal': '#FFFFFF',
       },
     ],
     style: {
       node: {
-        diameter: "40px",
-        color: "#DFE1E3",
-        "border-color": "#D4D6D7",
-        "border-width": "2px",
-        "text-color-internal": "#000000",
-        caption: "{id}",
-        "font-size": "10px",
+        diameter: '40px',
+        color: '#DFE1E3',
+        'border-color': '#D4D6D7',
+        'border-width': '2px',
+        'text-color-internal': '#000000',
+        caption: '{id}',
+        'font-size': '10px',
       },
       relationship: {
-        color: "#D4D6D7",
-        "shaft-width": "1px",
-        "font-size": "8px",
-        padding: "3px",
-        "text-color-external": "#000000",
-        "text-color-internal": "#FFFFFF",
+        color: '#D4D6D7',
+        'shaft-width': '1px',
+        'font-size': '8px',
+        padding: '3px',
+        'text-color-external': '#000000',
+        'text-color-internal': '#FFFFFF',
       },
     },
     sizes: [
       {
-        diameter: "10px",
+        diameter: '10px',
       },
       {
-        diameter: "20px",
+        diameter: '20px',
       },
       {
-        diameter: "30px",
+        diameter: '30px',
       },
       {
-        diameter: "50px",
+        diameter: '50px',
       },
       {
-        diameter: "80px",
+        diameter: '80px',
       },
     ],
     arrayWidths: [
       {
-        "shaft-width": "1px",
+        'shaft-width': '1px',
       },
       {
-        "shaft-width": "2px",
+        'shaft-width': '2px',
       },
       {
-        "shaft-width": "3px",
+        'shaft-width': '3px',
       },
       {
-        "shaft-width": "5px",
+        'shaft-width': '5px',
       },
       {
-        "shaft-width": "8px",
+        'shaft-width': '8px',
       },
       {
-        "shaft-width": "13px",
+        'shaft-width': '13px',
       },
       {
-        "shaft-width": "25px",
+        'shaft-width': '25px',
       },
       {
-        "shaft-width": "38px",
+        'shaft-width': '38px',
       },
     ],
   };
@@ -1022,7 +1022,7 @@ neo.style = (function () {
     function Selector(selector) {
       var _ref;
       (_ref =
-        selector.indexOf(".") > 0 ? selector.split(".") : [selector, void 0]),
+        selector.indexOf('.') > 0 ? selector.split('.') : [selector, void 0]),
         (this.tag = _ref[0]),
         (this.klass = _ref[1]);
     }
@@ -1031,7 +1031,7 @@ neo.style = (function () {
       var str;
       str = this.tag;
       if (this.klass != null) {
-        str += "." + this.klass;
+        str += '.' + this.klass;
       }
       return str;
     };
@@ -1091,7 +1091,7 @@ neo.style = (function () {
     };
 
     StyleElement.prototype.get = function (attr) {
-      return this.props[attr] || "";
+      return this.props[attr] || '';
     };
 
     return StyleElement;
@@ -1204,9 +1204,9 @@ neo.style = (function () {
       if (node == null) {
         node = {};
       }
-      selector = "node";
+      selector = 'node';
       if (((_ref = node.labels) != null ? _ref.length : void 0) > 0) {
-        selector += "." + node.labels[0];
+        selector += '.' + node.labels[0];
       }
       return new Selector(selector);
     };
@@ -1216,9 +1216,9 @@ neo.style = (function () {
       if (rel == null) {
         rel = {};
       }
-      selector = "relationship";
+      selector = 'relationship';
       if (rel.type != null) {
-        selector += "." + rel.type;
+        selector += '.' + rel.type;
       }
       return new Selector(selector);
     };
@@ -1269,29 +1269,29 @@ neo.style = (function () {
         _len1,
         _ref,
         _ref1;
-      chars = string.split("");
+      chars = string.split('');
       insideString = false;
       insideProps = false;
-      keyword = "";
-      props = "";
+      keyword = '';
+      props = '';
       rules = {};
       for (_i = 0, _len = chars.length; _i < _len; _i++) {
         c = chars[_i];
         skipThis = true;
         switch (c) {
-          case "{":
+          case '{':
             if (!insideString) {
               insideProps = true;
             } else {
               skipThis = false;
             }
             break;
-          case "}":
+          case '}':
             if (!insideString) {
               insideProps = false;
               rules[keyword] = props;
-              keyword = "";
-              props = "";
+              keyword = '';
+              props = '';
             } else {
               skipThis = false;
             }
@@ -1317,10 +1317,10 @@ neo.style = (function () {
       for (k in rules) {
         v = rules[k];
         rules[k] = {};
-        _ref = v.split(";");
+        _ref = v.split(';');
         for (_j = 0, _len1 = _ref.length; _j < _len1; _j++) {
           prop = _ref[_j];
-          (_ref1 = prop.split(":")), (key = _ref1[0]), (val = _ref1[1]);
+          (_ref1 = prop.split(':')), (key = _ref1[0]), (val = _ref1[1]);
           if (!(key && val)) {
             continue;
           }
@@ -1334,7 +1334,7 @@ neo.style = (function () {
     GraphStyle.prototype.persist = function () {
       var _ref;
       return (_ref = this.storage) != null
-        ? _ref.add("grass", JSON.stringify(this.toSheet()))
+        ? _ref.add('grass', JSON.stringify(this.toSheet()))
         : void 0;
     };
 
@@ -1356,20 +1356,20 @@ neo.style = (function () {
 
     GraphStyle.prototype.toString = function () {
       var k, r, str, v, _i, _len, _ref, _ref1;
-      str = "";
+      str = '';
       _ref = this.rules;
       for (_i = 0, _len = _ref.length; _i < _len; _i++) {
         r = _ref[_i];
-        str += r.selector.toString() + " {\n";
+        str += r.selector.toString() + ' {\n';
         _ref1 = r.props;
         for (k in _ref1) {
           v = _ref1[k];
-          if (k === "caption") {
+          if (k === 'caption') {
             v = "'" + v + "'";
           }
-          str += "  " + k + ": " + v + ";\n";
+          str += '  ' + k + ': ' + v + ';\n';
         }
-        str += "}\n\n";
+        str += '}\n\n';
       }
       return str;
     };
@@ -1384,7 +1384,7 @@ neo.style = (function () {
       return str.replace(/\{([^{}]*)\}/g, function (a, b) {
         var r;
         r = properties[b] || id;
-        if (typeof r === "string" || typeof r === "number") {
+        if (typeof r === 'string' || typeof r === 'number') {
           return r;
         } else {
           return a;
@@ -1418,17 +1418,17 @@ neo.viz = function (el, graph, layout, style) {
   };
   onNodeClick = (function (_this) {
     return function (node) {
-      return viz.trigger("nodeClicked", node);
+      return viz.trigger('nodeClicked', node);
     };
   })(this);
   onNodeDblClick = (function (_this) {
     return function (node) {
-      return viz.trigger("nodeDblClicked", node);
+      return viz.trigger('nodeDblClicked', node);
     };
   })(this);
   onRelationshipClick = (function (_this) {
     return function (relationship) {
-      return viz.trigger("relationshipClicked", relationship);
+      return viz.trigger('relationshipClicked', relationship);
     };
   })(this);
   render = function () {
@@ -1443,15 +1443,15 @@ neo.viz = function (el, graph, layout, style) {
       _ref1,
       _results;
     geometry.onTick(graph);
-    nodeGroups = el.selectAll("g.node").attr("transform", function (node) {
-      return "translate(" + node.x + "," + node.y + ")";
+    nodeGroups = el.selectAll('g.node').attr('transform', function (node) {
+      return 'translate(' + node.x + ',' + node.y + ')';
     });
     _ref = neo.renderers.node;
     for (_i = 0, _len = _ref.length; _i < _len; _i++) {
       renderer = _ref[_i];
       nodeGroups.call(renderer.onTick, viz);
     }
-    relationshipGroups = el.selectAll("g.relationship");
+    relationshipGroups = el.selectAll('g.relationship');
     _ref1 = neo.renderers.relationship;
     _results = [];
     for (_j = 0, _len1 = _ref1.length; _j < _len1; _j++) {
@@ -1481,34 +1481,34 @@ neo.viz = function (el, graph, layout, style) {
     }
     height = (function () {
       try {
-        return parseInt(el.style("height").replace("px", ""));
+        return parseInt(el.style('height').replace('px', ''));
       } catch (_error) {}
     })();
     width = (function () {
       try {
-        return parseInt(el.style("width").replace("px", ""));
+        return parseInt(el.style('width').replace('px', ''));
       } catch (_error) {}
     })();
-    layers = el.selectAll("g.layer").data(["relationships", "nodes"]);
+    layers = el.selectAll('g.layer').data(['relationships', 'nodes']);
     layers
       .enter()
-      .append("g")
-      .attr("class", function (d) {
-        return "layer " + d;
+      .append('g')
+      .attr('class', function (d) {
+        return 'layer ' + d;
       });
     nodes = graph.nodes();
     relationships = graph.relationships();
     relationshipGroups = el
-      .select("g.layer.relationships")
-      .selectAll("g.relationship")
+      .select('g.layer.relationships')
+      .selectAll('g.relationship')
       .data(relationships, function (d) {
         return d.id;
       });
     relationshipGroups
       .enter()
-      .append("g")
-      .attr("class", "relationship")
-      .on("click", onRelationshipClick);
+      .append('g')
+      .attr('class', 'relationship')
+      .on('click', onRelationshipClick);
     geometry.onGraphChange(graph);
     _ref = neo.renderers.relationship;
     for (_i = 0, _len = _ref.length; _i < _len; _i++) {
@@ -1517,15 +1517,15 @@ neo.viz = function (el, graph, layout, style) {
     }
     relationshipGroups.exit().remove();
     nodeGroups = el
-      .select("g.layer.nodes")
-      .selectAll("g.node")
+      .select('g.layer.nodes')
+      .selectAll('g.node')
       .data(nodes, function (d) {
         return d.id;
       });
     nodeGroups
       .enter()
-      .append("g")
-      .attr("class", "node")
+      .append('g')
+      .attr('class', 'node')
       .call(force.drag)
       .call(clickHandler);
     _ref1 = neo.renderers.node;
@@ -1537,8 +1537,8 @@ neo.viz = function (el, graph, layout, style) {
     return force.update(graph, [width, height]);
   };
   clickHandler = neo.utils.clickHandler();
-  clickHandler.on("click", onNodeClick);
-  clickHandler.on("dblclick", onNodeDblClick);
+  clickHandler.on('click', onNodeClick);
+  clickHandler.on('dblclick', onNodeDblClick);
   return viz;
 };
 
@@ -1690,12 +1690,12 @@ neo.utils.clickHandler = function () {
     tolerance = 5;
     last = void 0;
     wait = null;
-    selection.on("mousedown", function () {
+    selection.on('mousedown', function () {
       d3.event.target.__data__.fixed = true;
       down = d3.mouse(document.body);
       return (last = +new Date());
     });
-    return selection.on("mouseup", function () {
+    return selection.on('mouseup', function () {
       if (dist(down, d3.mouse(document.body)) > tolerance) {
       } else {
         if (wait) {
@@ -1716,22 +1716,22 @@ neo.utils.clickHandler = function () {
       }
     });
   };
-  event = d3.dispatch("click", "dblclick");
-  return d3.rebind(cc, event, "on");
+  event = d3.dispatch('click', 'dblclick');
+  return d3.rebind(cc, event, 'on');
 };
 
 neo.utils.measureText = (function () {
   var cache, measureUsingCanvas;
   measureUsingCanvas = function (text, font) {
     var canvas, canvasSelection, context;
-    canvasSelection = d3.select("canvas#textMeasurementCanvas").data([this]);
+    canvasSelection = d3.select('canvas#textMeasurementCanvas').data([this]);
     canvasSelection
       .enter()
-      .append("canvas")
-      .attr("id", "textMeasurementCanvas")
-      .style("display", "none");
+      .append('canvas')
+      .attr('id', 'textMeasurementCanvas')
+      .style('display', 'none');
     canvas = canvasSelection.node();
-    context = canvas.getContext("2d");
+    context = canvas.getContext('2d');
     context.font = font;
     return context.measureText(text).width;
   };
@@ -1757,7 +1757,7 @@ neo.utils.measureText = (function () {
   })();
   return function (text, fontFamily, fontSize) {
     var font;
-    font = "normal normal normal " + fontSize + "px/normal " + fontFamily;
+    font = 'normal normal normal ' + fontSize + 'px/normal ' + fontFamily;
     return cache(text + font, function () {
       return measureUsingCanvas(text, font);
     });
@@ -1776,10 +1776,10 @@ neo.utils.measureText = (function () {
   nodeOutline = new neo.Renderer({
     onGraphChange: function (selection, viz) {
       var circles;
-      circles = selection.selectAll("circle.outline").data(function (node) {
+      circles = selection.selectAll('circle.outline').data(function (node) {
         return [node];
       });
-      circles.enter().append("circle").classed("outline", true).attr({
+      circles.enter().append('circle').classed('outline', true).attr({
         cx: 0,
         cy: 0,
       });
@@ -1788,13 +1788,13 @@ neo.utils.measureText = (function () {
           return node.radius;
         },
         fill: function (node) {
-          return viz.style.forNode(node).get("color");
+          return viz.style.forNode(node).get('color');
         },
         stroke: function (node) {
-          return viz.style.forNode(node).get("border-color");
+          return viz.style.forNode(node).get('border-color');
         },
-        "stroke-width": function (node) {
-          return viz.style.forNode(node).get("border-width");
+        'stroke-width': function (node) {
+          return viz.style.forNode(node).get('border-width');
         },
       });
       return circles.exit().remove();
@@ -1804,30 +1804,30 @@ neo.utils.measureText = (function () {
   nodeCaption = new neo.Renderer({
     onGraphChange: function (selection, viz) {
       var text;
-      text = selection.selectAll("text").data(function (node) {
+      text = selection.selectAll('text').data(function (node) {
         return node.caption;
       });
-      text.enter().append("text").attr({
-        "text-anchor": "middle",
-        "font-weight": "bold",
-        stroke: "#FFFFFF",
-        "stroke-width": "0",
+      text.enter().append('text').attr({
+        'text-anchor': 'middle',
+        'font-weight': 'bold',
+        stroke: '#FFFFFF',
+        'stroke-width': '0',
       });
       text
         .text(function (line) {
           return line.text;
         })
-        .attr("y", function (line) {
+        .attr('y', function (line) {
           return line.baseline;
         })
-        .attr("font-size", function (line) {
-          return viz.style.forNode(line.node).get("font-size");
+        .attr('font-size', function (line) {
+          return viz.style.forNode(line.node).get('font-size');
         })
-        .attr("stroke", function (line) {
-          return viz.style.forNode(line.node).get("color");
+        .attr('stroke', function (line) {
+          return viz.style.forNode(line.node).get('color');
         })
-        .attr("fill", function (line) {
-          return viz.style.forNode(line.node).get("text-color-internal");
+        .attr('fill', function (line) {
+          return viz.style.forNode(line.node).get('text-color-internal');
         });
       return text.exit().remove();
     },
@@ -1836,7 +1836,7 @@ neo.utils.measureText = (function () {
   nodeOverlay = new neo.Renderer({
     onGraphChange: function (selection) {
       var circles;
-      circles = selection.selectAll("circle.overlay").data(function (node) {
+      circles = selection.selectAll('circle.overlay').data(function (node) {
         if (node.selected) {
           return [node];
         } else {
@@ -1845,15 +1845,15 @@ neo.utils.measureText = (function () {
       });
       circles
         .enter()
-        .insert("circle", ".outline")
-        .classed("ring", true)
-        .classed("overlay", true)
+        .insert('circle', '.outline')
+        .classed('ring', true)
+        .classed('overlay', true)
         .attr({
           cx: 0,
           cy: 0,
-          fill: "#f5F6F6",
-          stroke: "rgba(151, 151, 151, 0.2)",
-          "stroke-width": "3px",
+          fill: '#f5F6F6',
+          stroke: 'rgba(151, 151, 151, 0.2)',
+          'stroke-width': '3px',
         });
       circles.attr({
         r: function (node) {
@@ -1867,80 +1867,80 @@ neo.utils.measureText = (function () {
   arrowPath = new neo.Renderer({
     onGraphChange: function (selection, viz) {
       var paths;
-      paths = selection.selectAll("path").data(function (rel) {
+      paths = selection.selectAll('path').data(function (rel) {
         return [rel];
       });
-      paths.enter().append("path");
+      paths.enter().append('path');
       paths
-        .attr("fill", function (rel) {
-          return viz.style.forRelationship(rel).get("color");
+        .attr('fill', function (rel) {
+          return viz.style.forRelationship(rel).get('color');
         })
-        .attr("stroke", "none");
+        .attr('stroke', 'none');
       return paths.exit().remove();
     },
     onTick: function (selection) {
       return selection
-        .selectAll("path")
-        .attr("d", function (d) {
+        .selectAll('path')
+        .attr('d', function (d) {
           return d.arrowOutline;
         })
-        .attr("transform", function (d) {
+        .attr('transform', function (d) {
           return isNaN(d.startPoint.x) || isNaN(d.startPoint.y)
             ? null
-            : "translate(" +
+            : 'translate(' +
                 d.startPoint.x +
-                " " +
+                ' ' +
                 d.startPoint.y +
-                ") rotate(" +
+                ') rotate(' +
                 d.angle +
-                ")";
+                ')';
         });
     },
   });
   relationshipType = new neo.Renderer({
     onGraphChange: function (selection, viz) {
       var texts;
-      texts = selection.selectAll("text").data(function (rel) {
+      texts = selection.selectAll('text').data(function (rel) {
         return [rel];
       });
-      texts.enter().append("text").attr({
-        "text-anchor": "middle",
+      texts.enter().append('text').attr({
+        'text-anchor': 'middle',
       });
       texts
-        .attr("font-size", function (rel) {
-          return viz.style.forRelationship(rel).get("font-size");
+        .attr('font-size', function (rel) {
+          return viz.style.forRelationship(rel).get('font-size');
         })
-        .attr("fill", function (rel) {
+        .attr('fill', function (rel) {
           return viz.style
             .forRelationship(rel)
-            .get("text-color-" + rel.captionLayout);
+            .get('text-color-' + rel.captionLayout);
         });
       return texts.exit().remove();
     },
     onTick: function (selection, viz) {
       return selection
-        .selectAll("text")
-        .attr("x", function (rel) {
+        .selectAll('text')
+        .attr('x', function (rel) {
           return isNaN(rel.midShaftPoint.x) ? null : rel.midShaftPoint.x;
         })
-        .attr("y", function (rel) {
+        .attr('y', function (rel) {
           return isNaN(rel.midShaftPoint.y)
             ? null
             : rel.midShaftPoint.y +
-                parseFloat(viz.style.forRelationship(rel).get("font-size")) /
+                parseFloat(viz.style.forRelationship(rel).get('font-size')) /
                   2 -
                 1;
         })
-        .attr("transform", function (rel) {
+        .attr('transform', function (rel) {
           return isNaN(rel.midShaftPoint.x) || isNaN(rel.midShaftPoint.y)
             ? null
-            : "rotate(" +
+            : 'rotate(' +
                 rel.textAngle +
-                " " +
+                ' ' +
                 rel.midShaftPoint.x +
-                " " +
+                ' ' +
                 rel.midShaftPoint.y +
-                ")";
+                ')';
         })
         .text(function (rel) {
           return rel.shortCaption;
@@ -1950,19 +1950,19 @@ neo.utils.measureText = (function () {
   relationshipOverlay = new neo.Renderer({
     onGraphChange: function (selection) {
       var band, rects;
-      rects = selection.selectAll("rect").data(function (rel) {
+      rects = selection.selectAll('rect').data(function (rel) {
         return [rel];
       });
       band = 20;
       rects
         .enter()
-        .append("rect")
-        .classed("overlay", true)
-        .attr("fill", "yellow")
-        .attr("x", 0)
-        .attr("y", -band / 2)
-        .attr("height", band);
-      rects.attr("opacity", function (rel) {
+        .append('rect')
+        .classed('overlay', true)
+        .attr('fill', 'yellow')
+        .attr('x', 0)
+        .attr('y', -band / 2)
+        .attr('height', band);
+      rects.attr('opacity', function (rel) {
         if (rel.selected) {
           return 0.3;
         } else {
@@ -1973,24 +1973,24 @@ neo.utils.measureText = (function () {
     },
     onTick: function (selection) {
       return selection
-        .selectAll("rect")
-        .attr("width", function (d) {
+        .selectAll('rect')
+        .attr('width', function (d) {
           if (d.arrowLength > 0) {
             return d.arrowLength;
           } else {
             return 0;
           }
         })
-        .attr("transform", function (d) {
+        .attr('transform', function (d) {
           return isNaN(d.startPoint.x) || isNaN(d.startPoint.y)
             ? null
-            : "translate(" +
+            : 'translate(' +
                 d.startPoint.x +
-                " " +
+                ' ' +
                 d.startPoint.y +
-                ") rotate(" +
+                ') rotate(' +
                 d.angle +
-                ")";
+                ')';
         });
     },
   });

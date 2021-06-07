@@ -1,7 +1,7 @@
-import React from "react";
-import { useMutation } from "@apollo/client";
-import { Link, useHistory } from "react-router-dom";
-import gql from "graphql-tag";
+import React from 'react';
+import { useMutation } from '@apollo/client';
+import { Link, useHistory } from 'react-router-dom';
+import gql from 'graphql-tag';
 import {
   Form,
   Button,
@@ -10,17 +10,17 @@ import {
   Loader,
   Dimmer,
   Segment,
-} from "semantic-ui-react";
-import _ from "lodash";
-import { Helmet } from "react-helmet";
-import { Formik } from "formik";
+} from 'semantic-ui-react';
+import _ from 'lodash';
+import { Helmet } from 'react-helmet';
+import { Formik } from 'formik';
 // import { FieldArray } from "formik";
-import { createUseStyles } from "react-jss";
-import CodeMirrorTextArea from "./render/TextArea";
-import IndustriesSelect from "./components/IndustriesSelect";
-import UseCasesSelect from "./components/UseCasesSelect";
-import ChallengesSelect from "./components/ChallengesSelect";
-import GraphGistRenderer from "./render/GraphGistRenderer.js";
+import { createUseStyles } from 'react-jss';
+import CodeMirrorTextArea from './render/TextArea';
+import IndustriesSelect from './components/IndustriesSelect';
+import UseCasesSelect from './components/UseCasesSelect';
+import ChallengesSelect from './components/ChallengesSelect';
+import GraphGistRenderer from './render/GraphGistRenderer.js';
 
 const PREVIEW = gql`
   mutation Preview($asciidoc: String!) {
@@ -38,13 +38,13 @@ const CREATE_GRAPHGIST = gql`
 
 const useStyles = createUseStyles({
   previewContainer: {
-    margin: "0 0 60px 0",
-    padding: "0 40px",
+    margin: '0 0 60px 0',
+    padding: '0 40px',
     minHeight: 100,
-    maxHeight: "80vh",
-    width: "100%",
-    border: "1px solid #999",
-    overflow: "auto",
+    maxHeight: '80vh',
+    width: '100%',
+    border: '1px solid #999',
+    overflow: 'auto',
   },
   form: {
     marginBottom: 30,
@@ -62,10 +62,10 @@ function GraphGistCreate() {
   const history = useHistory();
 
   const showApiError = (data) => {
-    history.push("/submit_graphgist", {
+    history.push('/submit_graphgist', {
       messages: data.graphQLErrors.map((error) => ({
         body: error.message,
-        type: "negative",
+        type: 'negative',
       })),
     });
   };
@@ -98,8 +98,8 @@ function GraphGistCreate() {
 
   const graphGistPreviewHTML = _.get(
     graphGistPreviewResult,
-    "PreviewGraphGist",
-    ""
+    'PreviewGraphGist',
+    ''
   );
 
   return (
@@ -116,7 +116,7 @@ function GraphGistCreate() {
         consult <Link to={`/`}>this guide</Link>
       </p>
       <p>
-        If you still need help you can find us on{" "}
+        If you still need help you can find us on{' '}
         <a href="http://neo4j.com/blog/public-neo4j-users-slack-group/">
           Slack
         </a>
@@ -124,11 +124,11 @@ function GraphGistCreate() {
 
       <Formik
         initialValues={{
-          title: "",
-          asciidoc: "",
-          author: "",
-          summary: "",
-          status: "draft",
+          title: '',
+          asciidoc: '',
+          author: '',
+          summary: '',
+          status: 'draft',
           industries: [],
           challenges: [],
           use_cases: [],

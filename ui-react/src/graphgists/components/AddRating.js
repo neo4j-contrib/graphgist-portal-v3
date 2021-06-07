@@ -1,8 +1,8 @@
-import React, { useState } from "react";
-import { Rating } from "semantic-ui-react";
-import { useMutation } from "@apollo/client";
-import gql from "graphql-tag";
-import _ from "lodash";
+import React, { useState } from 'react';
+import { Rating } from 'semantic-ui-react';
+import { useMutation } from '@apollo/client';
+import gql from 'graphql-tag';
+import _ from 'lodash';
 
 const ADD_RATING = gql`
   mutation addRatingMutation($to: ID!, $level: Int!) {
@@ -14,7 +14,7 @@ const ADD_RATING = gql`
 
 function AddRating({ to, my_rating }) {
   const [currentRating, setCurrentRating] = useState(
-    _.get(my_rating, "level", "")
+    _.get(my_rating, 'level', '')
   );
 
   const [addRating, { loading }] = useMutation(ADD_RATING, {

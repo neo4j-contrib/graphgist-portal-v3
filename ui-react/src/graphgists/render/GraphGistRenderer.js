@@ -1,6 +1,6 @@
-import React from "react";
-import $ from "jquery";
-import GraphGist from "./GraphGist";
+import React from 'react';
+import $ from 'jquery';
+import GraphGist from './GraphGist';
 
 export default class extends React.Component {
   componentDidMount() {
@@ -8,7 +8,7 @@ export default class extends React.Component {
       preProcess: false,
     });
 
-    $(".sect1").addClass("ui container");
+    $('.sect1').addClass('ui container');
     let ref = $('code[class*="language-"]');
     for (let i = 0, len = ref.length; i < len; i++) {
       let code_element = ref[i];
@@ -26,14 +26,14 @@ export default class extends React.Component {
       })();
       for (let j = 0, len1 = classes.length; j < len1; j++) {
         let c = classes[j];
-        $(code_element).parent("pre").addClass(c);
+        $(code_element).parent('pre').addClass(c);
       }
     }
 
-    let ref1 = $("div.paragraph");
+    let ref1 = $('div.paragraph');
     for (let k = 0, len2 = ref1.length; k < len2; k++) {
       let element = ref1[k];
-      $(element).replaceWith($("<p>" + element.innerHTML + "</p>"));
+      $(element).replaceWith($('<p>' + element.innerHTML + '</p>'));
     }
 
     this.GraphGistRenderer.renderContent();
@@ -50,7 +50,7 @@ export default class extends React.Component {
         <div
           className="ui form"
           id="console-template"
-          style={{ display: "block" }}
+          style={{ display: 'block' }}
         >
           <div className="fields">
             <div className="fourteen wide field small-11 columns">

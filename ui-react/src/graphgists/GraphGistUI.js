@@ -1,5 +1,5 @@
-import React from "react";
-import { Link, useHistory } from "react-router-dom";
+import React from 'react';
+import { Link, useHistory } from 'react-router-dom';
 import {
   Button,
   Item,
@@ -8,20 +8,20 @@ import {
   Header,
   Divider,
   Label,
-} from "semantic-ui-react";
-import moment from "moment";
-import { Helmet } from "react-helmet";
-import _ from "lodash";
-import { useMutation } from "@apollo/client";
-import gql from "graphql-tag";
-import { createUseStyles } from "react-jss";
-import SimpleFormat from "../components/SimpleFormat.js";
-import GraphGistRenderer from "./render/GraphGistRenderer.js";
-import PageLoading from "../components/PageLoading.js";
-import AddRating from "./components/AddRating.js";
+} from 'semantic-ui-react';
+import moment from 'moment';
+import { Helmet } from 'react-helmet';
+import _ from 'lodash';
+import { useMutation } from '@apollo/client';
+import gql from 'graphql-tag';
+import { createUseStyles } from 'react-jss';
+import SimpleFormat from '../components/SimpleFormat.js';
+import GraphGistRenderer from './render/GraphGistRenderer.js';
+import PageLoading from '../components/PageLoading.js';
+import AddRating from './components/AddRating.js';
 
-import "./GraphGistPage.scss";
-import { FacebookShareButton, TwitterShareButton } from "react-share";
+import './GraphGistPage.scss';
+import { FacebookShareButton, TwitterShareButton } from 'react-share';
 
 const PUBLISH_GRAPHGIST = gql`
   mutation publishGraphGistCandidateMutation($uuid: ID!) {
@@ -70,14 +70,14 @@ const SUBMIT_FOR_APPROVAL_GRAPHGIST_GRAPHGIST = gql`
 
 const useStyles = createUseStyles({
   sidebarImg: {
-    maxWidth: "100%",
+    maxWidth: '100%',
   },
 });
 
 function GraphGistPage({ graphGist, loading, error, candidate, refetch }) {
   const slug = candidate
-    ? _.get(graphGist, "graphgist.slug")
-    : _.get(graphGist, "slug");
+    ? _.get(graphGist, 'graphgist.slug')
+    : _.get(graphGist, 'slug');
   return (
     <PageLoading loading={loading} error={error} obj={graphGist}>
       {graphGist && (
@@ -100,13 +100,13 @@ function GraphGistPage({ graphGist, loading, error, candidate, refetch }) {
                 <div
                   id="gist-body"
                   data-gist-id={graphGist.render_id || graphGist.uuid}
-                  className={graphGist.cached && "cached"}
+                  className={graphGist.cached && 'cached'}
                   dangerouslySetInnerHTML={{ __html: graphGist.raw_html }}
                 />
               </GraphGistRenderer>
             </Grid.Column>
             <Grid.Column width={3}>
-              {!candidate && graphGist.status === "live" && slug && (
+              {!candidate && graphGist.status === 'live' && slug && (
                 <>
                   <a href={`https://neo4j.com/graphgist/${slug}`}>
                     Live Version
@@ -115,7 +115,7 @@ function GraphGistPage({ graphGist, loading, error, candidate, refetch }) {
                 </>
               )}
 
-              {graphGist.my_perms.indexOf("edit") >= 0 && (
+              {graphGist.my_perms.indexOf('edit') >= 0 && (
                 <>
                   {candidate && (
                     <p>
@@ -145,7 +145,7 @@ function GraphGistPage({ graphGist, loading, error, candidate, refetch }) {
 
                   <Label
                     color={_.get(
-                      { candidate: "orange", live: "teal", disabled: "red" },
+                      { candidate: 'orange', live: 'teal', disabled: 'red' },
                       graphGist.status,
                       undefined
                     )}
@@ -177,7 +177,7 @@ function GraphGistPage({ graphGist, loading, error, candidate, refetch }) {
 function AssetExtraButtons({ graphGist, candidate, slug, refetch }) {
   const history = useHistory();
   const classes = useStyles();
-  const uuid = candidate ? _.get(graphGist, "graphgist.uuid") : graphGist.uuid;
+  const uuid = candidate ? _.get(graphGist, 'graphgist.uuid') : graphGist.uuid;
 
   const [
     publishGraphGistCandidateMutation,
@@ -255,11 +255,11 @@ function AssetExtraButtons({ graphGist, candidate, slug, refetch }) {
   const shareUrl = `https://portal.graphgist.org/graph_gists/${graphGist.slug}`;
 
   const isLoginEnabled =
-    typeof window !== "undefined" && !window.neo4jDesktopApi;
+    typeof window !== 'undefined' && !window.neo4jDesktopApi;
 
   return (
     <React.Fragment>
-      {graphGist.my_perms.indexOf("admin") >= 0 && (
+      {graphGist.my_perms.indexOf('admin') >= 0 && (
         <React.Fragment>
           {candidate && (
             <>
@@ -302,7 +302,7 @@ function AssetExtraButtons({ graphGist, candidate, slug, refetch }) {
         </Button>
       )}
 
-      {!candidate && graphGist.my_perms.indexOf("admin") >= 0 && (
+      {!candidate && graphGist.my_perms.indexOf('admin') >= 0 && (
         <React.Fragment>
           <Divider />
           <Button
@@ -312,7 +312,7 @@ function AssetExtraButtons({ graphGist, candidate, slug, refetch }) {
             loading={isSavingAsFeatured}
             onClick={handleMarkAsFeatured}
           >
-            {graphGist.featured ? "Remove from featured" : "Add to featured"}
+            {graphGist.featured ? 'Remove from featured' : 'Add to featured'}
           </Button>
           <Divider />
           <Button
@@ -322,11 +322,11 @@ function AssetExtraButtons({ graphGist, candidate, slug, refetch }) {
             loading={isSavingAsGuide}
             onClick={handleMarkAsGuide}
           >
-            {graphGist.is_guide ? "Remove from guides" : "Optimized as Guide"}
+            {graphGist.is_guide ? 'Remove from guides' : 'Optimized as Guide'}
           </Button>
         </React.Fragment>
       )}
-      {graphGist.my_perms.indexOf("edit") >= 0 && uuid && (
+      {graphGist.my_perms.indexOf('edit') >= 0 && uuid && (
         <React.Fragment>
           <Divider />
           <Button
@@ -342,9 +342,9 @@ function AssetExtraButtons({ graphGist, candidate, slug, refetch }) {
         </React.Fragment>
       )}
 
-      {graphGist.my_perms.indexOf("edit") >= 0 &&
+      {graphGist.my_perms.indexOf('edit') >= 0 &&
         uuid &&
-        graphGist.status === "draft" && (
+        graphGist.status === 'draft' && (
           <React.Fragment>
             <Divider />
             <Button
@@ -364,9 +364,9 @@ function AssetExtraButtons({ graphGist, candidate, slug, refetch }) {
           </React.Fragment>
         )}
 
-      {graphGist.my_perms.indexOf("edit") >= 0 &&
+      {graphGist.my_perms.indexOf('edit') >= 0 &&
         uuid &&
-        graphGist.status === "candidate" && (
+        graphGist.status === 'candidate' && (
           <React.Fragment>
             <Divider />
             <div>Submitted for Approval</div>
@@ -415,17 +415,19 @@ function AssetExtraButtons({ graphGist, candidate, slug, refetch }) {
             </Item.Content>
           </Item>
         )}
-        {graphGist.author && (<Item>
-          <Item.Content>
-            <Divider horizontal>Author</Divider>
-            <Item.Description>
-              <Icon name="user" size="large" />
-              <Link to={`/people/${graphGist.author.slug}`}>
-                {graphGist.author.name}
-              </Link>
-            </Item.Description>
-          </Item.Content>
-        </Item>)}
+        {graphGist.author && (
+          <Item>
+            <Item.Content>
+              <Divider horizontal>Author</Divider>
+              <Item.Description>
+                <Icon name="user" size="large" />
+                <Link to={`/people/${graphGist.author.slug}`}>
+                  {graphGist.author.name}
+                </Link>
+              </Item.Description>
+            </Item.Content>
+          </Item>
+        )}
         {isLoginEnabled && !candidate && (
           <Item>
             <Item.Content>
@@ -450,12 +452,12 @@ function AssetExtraButtons({ graphGist, candidate, slug, refetch }) {
               <Divider horizontal>Share</Divider>
               <TwitterShareButton
                 url={shareUrl}
-                title={"Check out this graph gist! " + graphGist.title}
-                style={{ width: "100%", height: 40 }}
+                title={'Check out this graph gist! ' + graphGist.title}
+                style={{ width: '100%', height: 40 }}
               >
                 <Button
                   primary
-                  style={{ width: "100%", height: "100%" }}
+                  style={{ width: '100%', height: '100%' }}
                   as="div"
                 >
                   Twitter
@@ -465,12 +467,12 @@ function AssetExtraButtons({ graphGist, candidate, slug, refetch }) {
               <FacebookShareButton
                 url={shareUrl}
                 hashtag="graphgist"
-                quote={"Check out this graph gist! " + graphGist.title}
-                style={{ width: "100%", height: 40, marginTop: 10 }}
+                quote={'Check out this graph gist! ' + graphGist.title}
+                style={{ width: '100%', height: 40, marginTop: 10 }}
               >
                 <Button
                   secondary
-                  style={{ width: "100%", height: "100%" }}
+                  style={{ width: '100%', height: '100%' }}
                   as="div"
                 >
                   Facebook
