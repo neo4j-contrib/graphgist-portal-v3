@@ -2,12 +2,15 @@ import {
   convertAsciiDocToHtml,
   renderMathJax,
   getGraphGistByUUID,
+  imageUrlRegex
 } from './utils';
+import {uploadImage, deleteImage} from '../images/imagekit';
 import S3 from '../images/s3';
 import _ from 'lodash';
 import { AuthenticationError } from 'apollo-server';
 import ejs from 'ejs';
 import { sendEmail } from '../mailer.js';
+import { v4 as uuidv4 } from "uuid";
 
 export const PreviewGraphGist = async (root, args, context, info) => {
   return renderMathJax(await convertAsciiDocToHtml(args.asciidoc));
@@ -24,14 +27,40 @@ export const CreateGraphGist = async (root, args, context, info) => {
       challenges,
       author,
       images,
-      ...proprieties
+      ...properties
     } = args.graphgist;
 
+    //Create new asciidoc text
+    let asciidoc = properties.asciidoc
+    const imagekitImages = []
+
+    const imagesMatches = args.graphgist.asciidoc.matchAll(imageUrlRegex)
+
+    for (const match of imagesMatches){
+      const originalUrl =  match[1]
+      try {
+        const id = String(uuidv4())
+        const {...imageData} = await uploadImage(originalUrl, id) //Upload image to imagekit
+        asciidoc = asciidoc.replace(originalUrl, imageData.url)
+        
+        imageData.uuid = id;
+        imageData.source = 'imagekit';
+        imagekitImages.push(imageData)
+        console.log(imageData)
+
+      } catch (err) {
+        console.log(`Error when uploading image: ${originalUrl}`)
+      }
+    }
+    //Overwrite the original asciidoc with new Urls
+    properties.asciidoc = asciidoc
+
+
     const graphgist_post = {
-      ...proprieties,
+      ...properties,
       status: 'draft',
       raw_html: renderMathJax(
-        await convertAsciiDocToHtml(proprieties.asciidoc)
+        await convertAsciiDocToHtml(properties.asciidoc)
       ),
       has_errors: false,
     };
@@ -69,7 +98,23 @@ export const CreateGraphGist = async (root, args, context, info) => {
     );
     const authorPerson = authorResult.records[0].get('p').properties;
 
-    var categoryUuid;
+    //imagekit
+    for (let imagekitImage of imagekitImages) {
+      await txc.run(
+        `
+        MATCH (g:GraphGist {uuid: $uuid})<-[:IS_VERSION]-(gc:GraphGistCandidate), (a:Person {uuid: $authorUuid})
+        CREATE (i:Image $image)
+        CREATE (i)<-[r:HAS_IMAGE]-(gc)
+        CREATE (i)<-[:HAS_IMAGE]-(g)
+        CREATE (i)<-[:OWN_IMAGE]-(a)
+        RETURN r
+        `,
+        { uuid: graphgist.uuid, image: imagekitImage, authorUuid: authorPerson.uuid }
+      );
+    }
+
+
+    let categoryUuid;
 
     for (categoryUuid of industries) {
       await txc.run(
@@ -82,7 +127,6 @@ export const CreateGraphGist = async (root, args, context, info) => {
         {
           uuid: graphgist.uuid,
           candidateUuid: candidate.uuid,
-          authorUuid: author,
           categoryUuid: categoryUuid,
         }
       );
@@ -99,7 +143,6 @@ export const CreateGraphGist = async (root, args, context, info) => {
         {
           uuid: graphgist.uuid,
           candidateUuid: candidate.uuid,
-          authorUuid: author,
           categoryUuid: categoryUuid,
         }
       );
@@ -116,7 +159,6 @@ export const CreateGraphGist = async (root, args, context, info) => {
         {
           uuid: graphgist.uuid,
           candidateUuid: candidate.uuid,
-          authorUuid: author,
           categoryUuid: categoryUuid,
         }
       );
@@ -126,16 +168,17 @@ export const CreateGraphGist = async (root, args, context, info) => {
       const image_uploaded = await S3.upload(image_upload);
       await txc.run(
         `
-        MATCH (g:GraphGist {uuid: $uuid}), (gc:GraphGistCandidate {uuid: $candidateUuid})
+        MATCH (g:GraphGist {uuid: $uuid}), (gc:GraphGistCandidate {uuid: $candidateUuid}), (a:Person {uuid: $authorUuid})
         CREATE (i:Image $image)
         CREATE (i)<-[r:HAS_IMAGE]-(g)
-        CREATE (i)<-[rr:HAS_IMAGE]-(gc)
-        RETURN r, rr
+        CREATE (i)<-[:HAS_IMAGE]-(gc)
+        CREATE (i)<-[:OWN_IMAGE]-(a)
+        RETURN r
         `,
         {
           uuid: graphgist.uuid,
           candidateUuid: candidate.uuid,
-          authorUuid: author,
+          authorUuid: authorPerson.uuid,
           image: image_uploaded,
         }
       );
@@ -261,13 +304,45 @@ export const UpdateGraphGist = async (root, args, context, info) => {
   if (!current_user) {
     throw new AuthenticationError('You must be authenticated');
   }
-
+  
   try {
-    const graphGist = await getGraphGistByUUID(txc, args.uuid);
 
+    const graphGist = await getGraphGistByUUID(txc, args.uuid);
     const { industries, use_cases, challenges, author, images, ...properties } =
       args.graphgist;
-    const rawHtml = await convertAsciiDocToHtml(properties.asciidoc);
+
+    //Create new asciidoc text
+    let asciidoc = properties.asciidoc
+
+    const imagesMatches = args.graphgist.asciidoc.matchAll(imageUrlRegex)
+
+    for (const match of imagesMatches){
+      const originalUrl =  match[1]
+      const id = String(uuidv4())
+      const {...imageData} = await uploadImage(originalUrl, id) //Upload image to imagekit
+      asciidoc = asciidoc.replace(originalUrl, imageData.url)
+
+      imageData.uuid = id;
+      imageData.source = 'imagekit';
+
+      await txc.run(
+        `
+        MATCH (g:GraphGist {uuid: $uuid})<-[:IS_VERSION]-(gc:GraphGistCandidate), (User {uuid: $authorUuid})-[:IS_PERSON]->(p:Person)
+        CREATE (i:Image $image)
+        CREATE (i)<-[r:HAS_IMAGE]-(gc)
+        CREATE (i)<-[:OWN_IMAGE]-(p)
+        RETURN r
+        `,
+        { uuid: args.uuid, image: imageData, authorUuid: current_user.uuid }
+      );
+    }
+    //Overwrite the original asciidoc with new Urls
+    properties.asciidoc = asciidoc
+
+
+
+
+    const rawHtml = await convertAsciiDocToHtml(asciidoc);
     if (typeof rawHtml === 'object') {
       throw rawHtml;
     }
@@ -370,10 +445,12 @@ export const UpdateGraphGist = async (root, args, context, info) => {
       for (let image_upload of uploaded_images) {
         const image_uploaded = await S3.upload(image_upload);
         await txc.run(
+
           `
-          MATCH (gc:GraphGistCandidate {uuid: $uuid})
+          MATCH (gc:GraphGistCandidate {uuid: $uuid}), (a:Person {uuid: $authorUuid})
           CREATE (i:Image $image)
           CREATE (i)<-[r:HAS_IMAGE]-(gc)
+          CREATE (i)<-[r:OWN_IMAGE]-(a)
           RETURN r
           `,
           { uuid: candidate.uuid, image: image_uploaded }

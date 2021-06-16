@@ -6,12 +6,15 @@ export const Image = {
       uuid,
       source_file_name,
       source_updated_at,
+      source = null,
+      url = null
     } = obj.source_url.properties;
+    if (source) return url;
     const size = "medium";
     const partitions = uuid
       .match(/.{9}/g)[0]
       .match(/.{1,3}/g)
       .join("/");
-    return `https://${AWS_S3_BUCKET_NAME}.s3.amazonaws.com/graph_starter/images/sources/${partitions}/${size}/${source_file_name}?${source_updated_at}`;
+      return `https://${AWS_S3_BUCKET_NAME}.s3.amazonaws.com/graph_starter/images/sources/${partitions}/${size}/${source_file_name}?${source_updated_at}`;
   },
 };

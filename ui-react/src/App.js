@@ -43,6 +43,8 @@ import ChallengeUpdate from './categories/ChallengeUpdate';
 
 import Candidates from './candidates/Candidates';
 
+import MyGallery from './images/MyGallery';
+
 import EditProfile from './people/EditProfile';
 
 import AuthCallbackPage from './auth/Callback';
@@ -241,6 +243,11 @@ function App() {
             Candidates
           </Menu.Item>
         )}
+        {me && (
+          <Menu.Item as={NavLink} to="/my_gallery">
+            My Gallery
+          </Menu.Item>
+        )}
         {isLoginEnabled && (
           <Menu.Menu position="right">
             {me && (
@@ -278,6 +285,7 @@ function App() {
           <Route exact path="/people/:slug" component={PersonGraphGists} />
           <Route exact path="/my_graphgists" component={MyGraphGists} />
           <Route exact path="/graph_guides" component={GraphGuides} />
+          <Route exact path="/my_gallery" component={MyGallery} />
           <Route exact path="/challenges" component={ChallengesList} />
           <Route exact path="/challenges/new" component={ChallengeCreate} />
           <Route
