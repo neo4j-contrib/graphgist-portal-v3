@@ -27,6 +27,7 @@ import * as graphgistsTypes from "./graphgists/types";
 import * as categoriesMutations from "./categories/mutations";
 import * as categoriesTypes from "./categories/types";
 
+import * as imagesMutations from "./images/mutations";
 import * as imagesTypes from "./images/types";
 import { getGraphGistBySlug, getGraphGistByUUID } from "./graphgists/utils";
 
@@ -85,6 +86,7 @@ export const schema = makeAugmentedSchema({
       ...usersMutations,
       ...graphgistsMutations,
       ...categoriesMutations,
+      ...imagesMutations,
     },
     Query: {
       ...usersQueries,

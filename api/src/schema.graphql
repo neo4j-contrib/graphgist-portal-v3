@@ -69,6 +69,13 @@ type Query {
     neo4j_version: String
     session_id: String!
   ): String
+  myImages: [Image]
+    @cypher(
+      statement: """
+      MATCH (i:Image)<-[r:OWN_IMAGE]-(p:Person)<-[:IS_PERSON]-(u:User {uuid: $cypherParams.currentUser})
+      RETURN i
+      """
+    )
   me: User
 }
 
@@ -86,6 +93,7 @@ type Mutation {
   UpdateChallenge(uuid: ID!, challenge: ChallengeInput!): Challenge
   Rate(to: ID!, level: Int!): Rating
   SubmitForApprovalGraphGist(uuid: ID!): GraphGist
+  DeleteImage(uuid: ID!): Boolean
 }
 
 type User {

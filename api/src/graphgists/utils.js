@@ -156,3 +156,5 @@ export async function convertAsciiDocToHtml(asciidoc) {
   }
   return rawHtml;
 }
+
+export const imageUrlRegex = /^image::(https?:\/\/(?!ik\.imagekit\.io\/ggp)[^[]+)\[/gim
