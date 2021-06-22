@@ -64,8 +64,8 @@ const useStyles = createUseStyles({
 });
 
 const GET_TOOLBAR = gql`
-  query meQuery($isAuthed: Boolean!) {
-    me @include(if: $isAuthed) {
+  query meQuery {
+    me {
       uuid
       name
       image
@@ -108,11 +108,7 @@ function App() {
   const classes = useStyles();
   const { loginWithRedirect, logout, getIdTokenClaims } = useAuth0();
   const authTokenState = hookUseState(authToken);
-  const { data, refetch } = useQuery(GET_TOOLBAR, {
-    variables: {
-      isAuthed: false,
-    },
-  });
+  const { data, refetch } = useQuery(GET_TOOLBAR);
   const me = _.get(data, 'me');
   const useCases = _.get(data, 'useCases', []);
   const industries = _.get(data, 'industries', []);
@@ -125,7 +121,7 @@ function App() {
         if (token) {
           authTokenState.set(token.__raw);
           window.localStorage.setItem('authToken', token.__raw);
-          refetch({ isAuthed: true });
+          refetch();
         }
       } catch (e) {
         console.error(e);
