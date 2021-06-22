@@ -55,7 +55,7 @@ function ImageCard(props) {
     } catch (e) {
       console.log(e);
     } finally {
-    setIsLoading(true);
+      setIsLoading(true);
     }
   }
 

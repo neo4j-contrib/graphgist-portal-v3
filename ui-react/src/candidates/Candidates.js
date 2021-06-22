@@ -64,7 +64,7 @@ function GraphGistCandidates() {
       {error && !loading && <p>Error</p>}
       {data && !loading && !error && (
         <Grid.Row>
-          <Card.Group itemsPerRow={3}>
+          <Card.Group itemsPerRow={3} style={{width: '100%'}}>
             {data.GraphGistCandidate.map((graphGist) => (
               <CandidateCard key={graphGist.uuid} graphGist={graphGist} />
             ))}

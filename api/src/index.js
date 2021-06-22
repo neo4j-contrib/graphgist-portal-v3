@@ -3,7 +3,7 @@ import express from "express";
 import cors from "cors";
 import neo4j from "neo4j-driver";
 import { makeAugmentedSchema } from "neo4j-graphql-js";
-import { GraphQLUpload } from "graphql-upload";
+import { GraphQLUpload, graphqlUploadExpress } from "graphql-upload";
 import Asciidoctor from "asciidoctor";
 
 import dotenv from "dotenv";
@@ -65,6 +65,7 @@ app.use(Sentry.Handlers.tracingHandler());
 
 app.use(express.json({ limit: "50mb" }));
 app.use(express.urlencoded({ limit: "50mb", extended: true }));
+app.use(graphqlUploadExpress({ maxFileSize: 10000000, maxFiles: 10 }));
 app.use(cors({
   origin: true,
   credentials: true
@@ -123,6 +124,7 @@ const server = new ApolloServer({
   schema: schema,
   introspection: true,
   playground: true,
+  uploads: false,
   formatError: (error) => ({
     ...error,
     state: error.originalError && error.originalError.state,

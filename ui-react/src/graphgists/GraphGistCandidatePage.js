@@ -25,8 +25,9 @@ const GET_GRAPHGIST = gql`
       created_at {
         formatted
       }
-      image {
+      image(filter: {source: "file_upload"}) {
         source_url
+        source
       }
       categories {
         __typename

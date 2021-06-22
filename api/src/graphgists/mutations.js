@@ -45,8 +45,8 @@ export const CreateGraphGist = async (root, args, context, info) => {
         
         imageData.uuid = id;
         imageData.source = 'imagekit';
+        imageData.originalUrl = originalUrl
         imagekitImages.push(imageData)
-        console.log(imageData)
 
       } catch (err) {
         console.log(`Error when uploading image: ${originalUrl}`)
@@ -104,10 +104,9 @@ export const CreateGraphGist = async (root, args, context, info) => {
         `
         MATCH (g:GraphGist {uuid: $uuid})<-[:IS_VERSION]-(gc:GraphGistCandidate), (a:Person {uuid: $authorUuid})
         CREATE (i:Image $image)
-        CREATE (i)<-[r:HAS_IMAGE]-(gc)
+        CREATE (i)<-[:HAS_IMAGE]-(gc)
         CREATE (i)<-[:HAS_IMAGE]-(g)
         CREATE (i)<-[:OWN_IMAGE]-(a)
-        RETURN r
         `,
         { uuid: graphgist.uuid, image: imagekitImage, authorUuid: authorPerson.uuid }
       );
@@ -166,6 +165,7 @@ export const CreateGraphGist = async (root, args, context, info) => {
 
     for (let image_upload of images) {
       const image_uploaded = await S3.upload(image_upload);
+      image_uploaded.source = 'file_upload';
       await txc.run(
         `
         MATCH (g:GraphGist {uuid: $uuid}), (gc:GraphGistCandidate {uuid: $candidateUuid}), (a:Person {uuid: $authorUuid})
@@ -232,8 +232,8 @@ export const SubmitForApprovalGraphGist = async (root, args, context, info) => {
   const txc = session.beginTransaction();
 
   const current_user = context.user;
-  if (!current_user || !current_user.admin) {
-    throw new AuthenticationError('You must be an admin');
+  if (!current_user) {
+    throw new AuthenticationError('You must be logged in');
   }
 
   try {
@@ -324,6 +324,7 @@ export const UpdateGraphGist = async (root, args, context, info) => {
 
       imageData.uuid = id;
       imageData.source = 'imagekit';
+      imageData.originalUrl = originalUrl
 
       await txc.run(
         `
@@ -444,16 +445,15 @@ export const UpdateGraphGist = async (root, args, context, info) => {
 
       for (let image_upload of uploaded_images) {
         const image_uploaded = await S3.upload(image_upload);
+        image_uploaded.source = 'file_upload';
         await txc.run(
-
           `
           MATCH (gc:GraphGistCandidate {uuid: $uuid}), (a:Person {uuid: $authorUuid})
           CREATE (i:Image $image)
-          CREATE (i)<-[r:HAS_IMAGE]-(gc)
-          CREATE (i)<-[r:OWN_IMAGE]-(a)
-          RETURN r
+          CREATE (i)<-[:HAS_IMAGE]-(gc)
+          CREATE (i)<-[:OWN_IMAGE]-(a)
           `,
-          { uuid: candidate.uuid, image: image_uploaded }
+          { uuid: candidate.uuid, image: image_uploaded, authorUuid: author }
         );
       }
     }

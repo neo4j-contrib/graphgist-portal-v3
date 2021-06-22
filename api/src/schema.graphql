@@ -145,6 +145,7 @@ type Image {
   details: String
   original_url: String
   source_url: String @cypher(statement: "RETURN this")
+  source: String
 
   source_content_type: String
   source_file_name: String
