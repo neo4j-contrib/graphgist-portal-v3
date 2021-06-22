@@ -177,8 +177,9 @@ GraphGistCard.fragments = {
       avg_rating
       is_candidate_updated
       status
-      image(first: 1) {
+      image(first: 1, filter: {source: "file_upload"}) {
         source_url
+        source
       }
       candidate {
         uuid

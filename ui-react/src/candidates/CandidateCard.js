@@ -9,9 +9,38 @@ import Clampy from '@clampy-js/react-clampy';
 import missingImg from '../assets/missing.png';
 
 const useStyles = createUseStyles({
+  content: {
+    flexGrow: '0 !important',
+    height: '70px',
+  },
+  categoryLabel: {
+    marginTop: '2px !important',
+    marginBottom: '2px !important',
+    marginLeft: '0 !important',
+    marginRight: '5px !important',
+    paddingLeft: '35px !important',
+    position: 'relative',
+  },
   categoryIcon: {
     width: '1.7em',
     height: '1.7em',
+    marginLeft: '-35px !important',
+    marginRight: '0 !important',
+    position: 'absolute !important',
+  },
+  card: {
+    boxShadow:
+      '0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)',
+    borderRadius: '5px',
+    display: 'grid',
+    gridTemplateRows: '70px 250px 2fr 1fr',
+    height: '600px',
+  },
+  image: {
+    height: '250px',
+    alignSelf: 'center',
+    justifySelf: 'center',
+    objectFit: 'cover',
   },
 });
 
@@ -32,8 +61,8 @@ function GraphGistCandidateCard(props) {
   }
 
   return (
-    <Card key={graphGist.id} link onClick={onCardClick} as="div">
-      <Card.Content>
+    <Card className={classes.card} key={graphGist.id} link onClick={onCardClick} as="div">
+      <Card.Content className={classes.content}>
         <Card.Header>
           <Link to={graphGistUrl}>
             <Clampy clampSize="2">{graphGist.title}</Clampy>
@@ -43,6 +72,7 @@ function GraphGistCandidateCard(props) {
 
       <Image
         width="100%"
+        className={classes.image}
         src={
           graphGist.image.length > 0
             ? graphGist.image[0].source_url
@@ -50,7 +80,7 @@ function GraphGistCandidateCard(props) {
         }
       />
 
-      <Card.Content>
+      <Card.Content className={classes.content}>
         <Card.Description>
           <List divided relaxed>
             {graphGist.author && (
@@ -108,15 +138,16 @@ GraphGistCandidateCard.fragments = {
         uuid
         status
       }
-      image(first: 1) {
+      image(first: 1, filter: {source: "file_upload"}) {
         source_url
+        source
       }
       categories(first: 3) {
         __typename
         uuid
         slug
         name
-        image(first: 1) {
+        image {
           source_url
         }
       }

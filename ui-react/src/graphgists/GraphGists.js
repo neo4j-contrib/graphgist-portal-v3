@@ -87,7 +87,7 @@ function GraphGists() {
           </Grid.Column>
         )}
         {data && !loading && !error && (
-          <Card.Group itemsPerRow={3}>
+          <Card.Group itemsPerRow={3} style={{width: '100%'}}>
             {data.GraphGist.map((graphGist) => (
               <GraphGistCard key={graphGist.uuid} graphGist={graphGist} />
             ))}

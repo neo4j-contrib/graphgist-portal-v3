@@ -55,6 +55,7 @@ const GET_GRAPHGIST = gql`
           title
           description
           source_url
+          source
         }
         industries {
           uuid
