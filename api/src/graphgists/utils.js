@@ -127,7 +127,7 @@ export async function convertAsciiDocToHtml(asciidoc) {
       }
 
       try {
-        const response = await fetch(url);
+        const response = await fetch(url, { timeout: 10000 });
         if (!response.ok) {
           throw new ValidationError(
             [
