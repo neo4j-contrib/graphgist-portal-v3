@@ -1,12 +1,10 @@
-name: Cypher Queries
+name: Check Cypher Queries
 
 on:
-  push:
-    branches:
-      - 'master'
-  pull_request:
-    branches:
-      - '*'
+  workflow_dispatch:
+  schedule:
+    # every day at 2pm (UTC)
+    - cron:  "0 14 * * *"
 
 jobs:
   build:
