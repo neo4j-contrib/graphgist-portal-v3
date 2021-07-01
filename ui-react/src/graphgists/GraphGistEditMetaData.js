@@ -268,7 +268,7 @@ function GraphGistEditByOwner() {
                 </Card.Group>
                 <Form.Field className={classes.imageField}>
                   <label>Add Image</label>
-                  <input name="image" type="file" />
+                  <input name="image" type="file" accept="image/*"/>
                 </Form.Field>
               </div>
               <Form.Field>
