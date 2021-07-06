@@ -117,7 +117,8 @@ const server = new ApolloServer({
       driver,
       user,
       cypherParams: {
-        currentUser: user ? user.uuid : null
+        currentUser: user ? user.uuid : null,
+        iscurrentUserAdmin: user ? user.admin : false,
       }
     };
   },
