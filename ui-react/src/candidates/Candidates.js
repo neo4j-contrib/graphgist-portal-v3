@@ -7,10 +7,12 @@ import CandidateCard from './CandidateCard';
 
 const GET_GISTS = gql`
   query gistsPaginateQuery($first: Int, $offset: Int) {
-    GraphGistCandidate(
+    GraphGistCandidate: GraphGistCandidate(
       first: $first
-      offset: $offset
-      filter: { status: candidate }
+      offset: $offset,
+      filter: {
+        status: candidate
+      }
     ) {
       ...CandidateCard
     }

@@ -2,6 +2,7 @@ import { getGraphGistByUUID } from "./utils";
 import { neo4jgraphql } from "neo4j-graphql-js";
 import Neo4jTempDB from "neo4j-temp-db";
 import neo4j from "neo4j-driver";
+import { AuthenticationError } from 'apollo-server';
 
 import fetch from "node-fetch";
 import { v4 as uuidv4 } from "uuid";
@@ -101,4 +102,27 @@ export const getConsoleSessionId = async (obj, args, context, info) => {
 export const queryConsole = async (obj, args, context, info) => {
   const result = await tempDb.runCypherOnDatabase(args.session_id, args.neo4j_version, args.cypher);
   return JSON.stringify(result);
+};
+
+export const GraphGistCandidate = async (obj, args, context, info) => {
+  const current_user = context.user;
+  if (!current_user) {
+    throw new AuthenticationError('You must be authenticated');
+  }
+
+  if(!current_user.admin) {
+    args = {
+      ...args,
+      filter: {
+        ...args.filter,
+        author: {
+          user: {
+            uuid: current_user.uuid
+          }
+        }
+      }
+    }
+  }
+
+  return neo4jgraphql(obj, args, context, info);
 };
