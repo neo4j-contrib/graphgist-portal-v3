@@ -63,7 +63,7 @@ function MyGallery() {
       <h1>My Gallery</h1>
       {error && !loading && <p>Error</p>}
       {data && !error && (
-        <Card.Group itemsPerRow={3}>
+        <Card.Group  stackable itemsPerRow={3}>
           {data.myImages.map((image) => (
             <ImageCard key={image.uuid} image={image} onDeleted={onDeleted}/>
           ))}

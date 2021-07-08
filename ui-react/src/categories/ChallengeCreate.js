@@ -124,7 +124,7 @@ function ChallengeCreate() {
                     };
 
                     return (
-                      <Card.Group>
+                      <Card.Group stackable >
                         {values.images.map((image, i) => {
                           return (
                             <Card key={i}>

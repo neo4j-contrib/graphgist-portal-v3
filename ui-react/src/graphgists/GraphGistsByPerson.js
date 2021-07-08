@@ -105,7 +105,7 @@ function GraphGistsByPerson({ personUUID, userUUID, myGraphGists }) {
       {loading && !error && <p>Loading...</p>}
       {error && !loading && <p>Error</p>}
       {myGraphGistsData && !loading && !error && (
-        <Card.Group itemsPerRow={3}>
+        <Card.Group stackable itemsPerRow={3}>
           {myGraphGistsData.graphgists.map((graphGist) => (
             <GraphGistCard key={graphGist.uuid} graphGist={graphGist} />
           ))}

@@ -63,7 +63,7 @@ function GraphGuides() {
       {loading && !error && <p>Loading...</p>}
       {error && !loading && <p>Error</p>}
       {data && !loading && !error && (
-        <Card.Group itemsPerRow={3}>
+        <Card.Group stackable itemsPerRow={3}>
           {data.GraphGist.map((graphGist) => (
             <GraphGistCard key={graphGist.uuid} graphGist={graphGist} />
           ))}
