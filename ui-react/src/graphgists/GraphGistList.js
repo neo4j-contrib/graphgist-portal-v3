@@ -16,7 +16,7 @@ function GraphGistList({ graphql, variables, group }) {
     ));
 
     if (group) {
-      return <Card.Group itemsPerRow={3}>{items}</Card.Group>;
+      return <Card.Group stackable itemsPerRow={3}>{items}</Card.Group>;
     }
 
     return items;

@@ -75,7 +75,7 @@ function GraphGists() {
         </Grid.Column>
       </Grid.Row>
       <Divider />
-      <Grid.Row>
+      <Grid.Row style={{justifyContent: 'center'}}>
         {loading && !error && (
           <Grid.Column columns={12}>
             <p>Loading...</p>
@@ -87,7 +87,7 @@ function GraphGists() {
           </Grid.Column>
         )}
         {data && !loading && !error && (
-          <Card.Group itemsPerRow={3} style={{width: '100%'}}>
+          <Card.Group itemsPerRow={3} stackable style={{width: '100%'}}>
             {data.GraphGist.map((graphGist) => (
               <GraphGistCard key={graphGist.uuid} graphGist={graphGist} />
             ))}
