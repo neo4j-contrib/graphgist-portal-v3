@@ -89,7 +89,7 @@ function GraphGistPage({ graphGist, loading, error, candidate, refetch }) {
           </Header>
 
           <Grid>
-            <Grid.Column width={13}>
+            <Grid.Column computer={13} mobile={16}>
               {graphGist.summary && (
                 <React.Fragment>
                   <Divider horizontal>Summary</Divider>
@@ -105,7 +105,7 @@ function GraphGistPage({ graphGist, loading, error, candidate, refetch }) {
                 />
               </GraphGistRenderer>
             </Grid.Column>
-            <Grid.Column width={3}>
+            <Grid.Column computer={3} mobile={16}>
               {!candidate && graphGist.status === 'live' && slug && (
                 <>
                   <a href={`https://neo4j.com/graphgists/${slug}`}>
@@ -379,7 +379,6 @@ function AssetExtraButtons({ graphGist, candidate, slug, refetch }) {
           <Button
             icon
             labelPosition="left"
-            fluid
             as={Link}
             to={`/graph_gists/${slug}/source`}
           >
@@ -457,7 +456,7 @@ function AssetExtraButtons({ graphGist, candidate, slug, refetch }) {
               >
                 <Button
                   primary
-                  style={{ width: '100%', height: '100%' }}
+                  style={{ width: '100%' }}
                   as="div"
                 >
                   Twitter
@@ -468,11 +467,11 @@ function AssetExtraButtons({ graphGist, candidate, slug, refetch }) {
                 url={shareUrl}
                 hashtag="graphgist"
                 quote={'Check out this graph gist! ' + graphGist.title}
-                style={{ width: '100%', height: 40, marginTop: 10 }}
+                style={{ width: '100%', height: 40 }}
               >
                 <Button
                   secondary
-                  style={{ width: '100%', height: '100%' }}
+                  style={{ width: '100%' }}
                   as="div"
                 >
                   Facebook
