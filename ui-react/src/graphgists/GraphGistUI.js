@@ -105,13 +105,13 @@ function GraphGistPage({ graphGist, loading, error, candidate, refetch }) {
                 />
               </GraphGistRenderer>
             </Grid.Column>
-            <Grid.Column computer={3} mobile={16}>
+            <Grid.Column computer={3} mobile={16} id="gist-sidebar">
               {!candidate && graphGist.status === 'live' && slug && (
                 <>
                   <a href={`https://neo4j.com/graphgists/${slug}`}>
                     Live Version
                   </a>
-                  <Divider />
+                  <hr />
                 </>
               )}
 
@@ -153,11 +153,11 @@ function GraphGistPage({ graphGist, loading, error, candidate, refetch }) {
                     {graphGist.status}
                   </Label>
 
-                  <Divider />
+                  <hr />
                   {graphGist.neo4j_version && (
                     <>
                       <Label>{graphGist.neo4j_version}</Label>
-                      <Divider />
+                      <hr />
                     </>
                   )}
                 </>
@@ -276,7 +276,7 @@ function AssetExtraButtons({ graphGist, candidate, slug, refetch }) {
                 <Icon name="checkmark" />
                 Approve
               </Button>
-              <Divider />
+              <hr />
             </>
           )}
           <Button
@@ -288,7 +288,7 @@ function AssetExtraButtons({ graphGist, candidate, slug, refetch }) {
             <Icon name="remove" />
             Disable
           </Button>
-          <Divider />
+          <hr />
         </React.Fragment>
       )}
 
@@ -307,7 +307,7 @@ function AssetExtraButtons({ graphGist, candidate, slug, refetch }) {
 
       {!candidate && graphGist.my_perms.indexOf('admin') >= 0 && (
         <React.Fragment>
-          <Divider />
+          <hr />
           <Button
             icon
             labelPosition="left"
@@ -317,7 +317,7 @@ function AssetExtraButtons({ graphGist, candidate, slug, refetch }) {
           >
             {graphGist.featured ? 'Remove from featured' : 'Add to featured'}
           </Button>
-          <Divider />
+          <hr />
           <Button
             icon
             labelPosition="left"
@@ -331,7 +331,7 @@ function AssetExtraButtons({ graphGist, candidate, slug, refetch }) {
       )}
       {graphGist.my_perms.indexOf('edit') >= 0 && uuid && (
         <React.Fragment>
-          <Divider />
+          <hr />
           <Button
             icon
             labelPosition="left"
@@ -349,7 +349,7 @@ function AssetExtraButtons({ graphGist, candidate, slug, refetch }) {
         uuid &&
         graphGist.status === 'draft' && (
           <React.Fragment>
-            <Divider />
+            <hr />
             <Button
               fluid
               loading={isSubmittingForApproval}
@@ -357,7 +357,7 @@ function AssetExtraButtons({ graphGist, candidate, slug, refetch }) {
             >
               Submit for Approval
             </Button>
-            <Divider />
+            <hr />
             <div>
               If approved, your graphgist will appear on the
               Neo4j.com/graphgists. You can make edits at any time, and when you
@@ -371,14 +371,14 @@ function AssetExtraButtons({ graphGist, candidate, slug, refetch }) {
         uuid &&
         graphGist.status === 'candidate' && (
           <React.Fragment>
-            <Divider />
+            <hr />
             <div>Submitted for Approval</div>
           </React.Fragment>
         )}
 
       {slug && (
         <>
-          <Divider />
+          <hr />
           <Button
             icon
             labelPosition="left"
