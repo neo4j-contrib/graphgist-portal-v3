@@ -278,6 +278,10 @@ div.visualization > svg {
   text-transform: uppercase;
 }
 
+#preamble, code {
+  word-break: break-word;
+}
+
 #gist-body.cached {
   .console,
   .show-console-toggle {
@@ -360,9 +364,7 @@ pre {
   font-family: Consolas, Monaco, "Andale Mono", "Ubuntu Mono", monospace;
   direction: ltr;
   text-align: left;
-  white-space: pre;
   word-spacing: normal;
-  word-break: normal;
   word-wrap: normal;
   line-height: 1.5;
 
