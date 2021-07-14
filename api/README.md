@@ -20,6 +20,19 @@ This will start the GraphQL service (by default on localhost:4000) where you can
 
 ![GraphQL Playground](img/graphql-playground.png)
 
+## Local database
+
+In order to be able to create and connect to a local Neo4j database instance, you should [download Neo4j Desktop](https://neo4j.com/download/)
+
+Then, you can execute the downloaded file and run it:
+```bash
+chmod +x neo4j-desktop.AppImage
+./neo4j-desktop.AppImage
+```
+
+Now you can [create a new database in Neo4j Desktop](https://neo4j.com/developer/neo4j-desktop/#desktop-create-DBMS) and then, you have to [install and activate the APOC plugin in your database](https://neo4j.com/labs/apoc/4.2/installation/)   
+And, you just have to use its URI, user and password in [your .env file](#configure)
+
 ## Configure
 
 Set your Neo4j connection string and credentials in `.env`. For example:
