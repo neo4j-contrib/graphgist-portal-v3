@@ -1,0 +1,25 @@
+{
+  "name": "@neo4j/graphgist-portal",
+  "version": "3.0.0",
+  "description": "GraphGist portal site: https://portal.graphgist.org/.",
+  "scripts": {
+    "fetchAsciiDoc": "node tasks/fetch-asciidoc.js",
+    "checkQueries": "asciidoc-cypher-query-runner build/*.adoc"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/neo4j-contrib/graphgist-portal-v3.git"
+  },
+  "private": true,
+  "keywords": [],
+  "author": "",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/neo4j-contrib/graphgist-portal-v3/issues"
+  },
+  "homepage": "https://github.com/neo4j-contrib/graphgist-portal-v3#readme",
+  "devDependencies": {
+    "@neo4j-documentation/asciidoc-cypher-query-runner": "github:mogztter/asciidoc-cypher-query-runner#v0.1.10",
+    "node-fetch": "^2.6.1"
+  }
+}
