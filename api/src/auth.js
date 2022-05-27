@@ -16,6 +16,8 @@ function getKey(header, cb) {
     if (key) {
       var signingKey = key.publicKey || key.rsaPublicKey;
       cb(null, signingKey);
+    } else {
+      cb(err, key);
     }
   });
 }
@@ -27,14 +29,18 @@ const options = {
 };
 
 export function auth0Verify(token) {
+  if (process.env.NODE_ENV === 'development' && !process.env.AUTH0_DOMAIN) {
+    return null; // authentication can be disabled in development when AUTH0_DOMAIN is empty
+  }
   return new Promise((resolve, reject) => {
     if (!token) {
       resolve(null);
     } else {
       jwt.verify(token, getKey, options, (err, decoded) => {
-        // if (err) {
-        //   return reject(err);
-        // }
+        if (err) {
+          console.error('Cannot verify the token!', err)
+          return resolve(null);
+        }
         resolve(decoded);
       });
     }
