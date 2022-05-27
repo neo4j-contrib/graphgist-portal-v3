@@ -5,6 +5,7 @@ import neo4j from "neo4j-driver";
 import { makeAugmentedSchema } from "neo4j-graphql-js";
 import { GraphQLUpload, graphqlUploadExpress } from "graphql-upload";
 import Asciidoctor from "asciidoctor";
+import fetch from "node-fetch";
 import dotenv from "dotenv";
 
 import * as Sentry from "@sentry/node";
@@ -29,6 +30,8 @@ import * as imagesTypes from "./images/types";
 import { getGraphGistBySlug, getGraphGistByUUID } from "./graphgists/utils";
 
 dotenv.config();
+const adoc = Asciidoctor();
+const GITHUB_FILE_RX = /^https:\/\/github.com\/(?<org>[^\/]+)\/(?<repo>[^\/]+)\/blob\/(?<branch>[^\/]+)\/(?<path>.*)/
 
 /*
  * Create a Neo4j driver instance to connect to the database
@@ -157,26 +160,71 @@ const path = "/graphql";
  */
 server.applyMiddleware({ app, path });
 
+function convertToBrowserGuide (content, id) {
+  return adoc.convert(content, {
+    attributes: {
+      "graphGistId": id,
+      "env-guide": true,
+      "experimental": true
+    },
+    header_footer: true,
+    catalog_assets: true,
+    safe: 0,
+    template_dir: 'views',
+    template_cache: false,
+  })
+}
+
+app.get("/browser_guide", async function (req, res) {
+  try {
+    if ("source" in req.query) {
+      let url = req.query.source
+      const githubFileMatch = url.match(GITHUB_FILE_RX)
+      if (githubFileMatch) {
+        const { org, repo, branch, path } = githubFileMatch.groups
+        url = `https://raw.githubusercontent.com/${org}/${repo}/${branch}/${path}`
+      }
+      const response = await fetch(url)
+      const text = await response.text()
+      const html = convertToBrowserGuide(text, "1")
+      res.render("index", {
+        title: "Browser Guide",
+        html
+      });
+    } else {
+      res.render("400", { error: new Error("source parameter is mandatory") });
+    }
+  } catch (error) {
+    console.error(error);
+    res.render("400", { error });
+  }
+});
+
+app.get("/browser_guide/github/:org/:repo/:branch/:path", async function (req, res) {
+  try {
+    const { org, repo, branch, path } = req.params
+    const url = `https://raw.githubusercontent.com/${org}/${repo}/${branch}/${path}`
+    const response = await fetch(url)
+    const text = await response.text()
+    const html = convertToBrowserGuide(text, "1")
+    res.render("index", {
+      title: "Browser Guide",
+      html
+    });
+  } catch (error) {
+    console.error(error);
+    res.render("400", { error });
+  }
+});
+
 app.get("/graph_gists/:slug/graph_guide", function (req, res) {
   const session = driver.session();
   const txc = session.beginTransaction();
   getGraph(req.params.slug, txc).then((graph) => {
-    //const adocText =graph.asciidoc.replaceAll(/^=+ /, '== ')
-    const adoc = Asciidoctor();
+    const html = convertToBrowserGuide(graph.asciidoc, graph.uuid)
     res.render("index", {
       title: graph.title,
-      html: adoc.convert(graph.asciidoc, {
-        attributes: {
-          "graphGist": graph,
-          "env-guide": true,
-          "experimental": true
-        },
-        header_footer: true,
-        catalog_assets: true,
-        safe: 0,
-        template_dir: 'views',
-        template_cache: false,
-      })
+      html
     });
   }).catch((error) => {
     console.error(error);
