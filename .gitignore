@@ -26,3 +26,7 @@ yarn-error.log*
 .idea*
 
 ui-react/package
+
+# local db
+neo4j/config/
+neo4j/data/

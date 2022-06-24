@@ -5,10 +5,7 @@ import neo4j from "neo4j-driver";
 import { makeAugmentedSchema } from "neo4j-graphql-js";
 import { GraphQLUpload, graphqlUploadExpress } from "graphql-upload";
 import Asciidoctor from "asciidoctor";
-
 import dotenv from "dotenv";
-
-dotenv.config();
 
 import * as Sentry from "@sentry/node";
 import * as Tracing from "@sentry/tracing";
@@ -30,6 +27,8 @@ import * as categoriesTypes from "./categories/types";
 import * as imagesMutations from "./images/mutations";
 import * as imagesTypes from "./images/types";
 import { getGraphGistBySlug, getGraphGistByUUID } from "./graphgists/utils";
+
+dotenv.config();
 
 /*
  * Create a Neo4j driver instance to connect to the database
@@ -132,7 +131,7 @@ const server = new ApolloServer({
     extensions: {
       ...error.extensions,
       exception: {
-      ...error.extensions.exception,
+        ...error.extensions.exception,
         stacktrace: process.env.NODE_ENV !== "production" ? error.extensions.exception.stacktrace : undefined
       }
     }
