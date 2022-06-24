@@ -41,7 +41,7 @@
     "neo4j-graphql-js": "^2.19.4",
     "neo4j-temp-db": "git+https://github.com/neo4j-contrib/neo4j-temp-db.git#v0.2.1",
     "node-fetch": "^2.6.7",
-    "sharp": "^0.26.1",
+    "sharp": "^0.30.5",
     "shortid": "^2.2.15",
     "slugify": "^1.4.6",
     "uuid": "^8.3.0"
