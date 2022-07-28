@@ -319,7 +319,7 @@ export const UpdateGraphGist = async (root, args, context, info) => {
     for (const match of imagesMatches){
       const originalUrl =  match[1]
       const id = String(uuidv4())
-      const {...imageData} = await uploadImage(originalUrl, id) //Upload image to imagekit
+      const {versionInfo: _, ...imageData} = await uploadImage(originalUrl, id) //Upload image to imagekit
       asciidoc = asciidoc.replace(originalUrl, imageData.url)
 
       imageData.uuid = id;
