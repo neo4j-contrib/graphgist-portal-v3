@@ -36,7 +36,7 @@
     "react-jss": "^10.3.0",
     "react-router": "^5.1.2",
     "react-router-dom": "^5.1.2",
-    "react-scripts": "^3.4.1",
+    "react-scripts": "^5.0.1",
     "react-semantic-ui-datepickers": "^2.12.0",
     "react-share": "^4.3.1",
     "sanitize-html": "^2.3.2",
