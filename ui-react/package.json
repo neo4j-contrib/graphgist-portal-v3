@@ -28,7 +28,7 @@
     "graphql-tag": "^2.10.1",
     "http-proxy-middleware": "^0.20.0",
     "jquery": "^3.5.1",
-    "moment": "^2.29.1",
+    "moment": "^2.29.4",
     "node-sass": "^4.14.1",
     "react": "^16.9.0",
     "react-dom": "^16.9.0",
