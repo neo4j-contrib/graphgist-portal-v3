@@ -2,12 +2,11 @@
 
 <%
 var nowrap = node.getAttribute('nowrap') || opts.nowrap;
-var graphGist = node.getDocument().getAttribute('graphgist');
-var {uuid} = graphGist;
+var graphGistId = node.getDocument().getAttribute('graphgistid');
 var {style, language, sourceHighter, title} = node.getAttributes();
 %>
 
-<div id="<%= uuid && uuid %>" class="listingblock">
+<div id="<%= graphGistId && graphGistId %>" class="listingblock">
   <% if (title) { %>
     <div class="title"><%= title %></div>
   <% } %>
