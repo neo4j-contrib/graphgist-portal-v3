@@ -55,7 +55,7 @@
     "debug": "^4.3.1",
     "husky": "^1.3.1",
     "jest": "^26.0.1",
-    "lint-staged": "^8.2.1",
+    "lint-staged": "^13.1.0",
     "nodemon": "^1.19.1",
     "prettier": "^2.0.5",
     "shx": "^0.3.2"
